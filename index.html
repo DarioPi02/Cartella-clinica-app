@@ -349,7 +349,7 @@
          <div class="mt-4"><label class="block text-sm font-medium">Note</label><textarea data-field="notes" rows="2" class="w-full mt-1 p-2 border rounded-md"></textarea></div>
     </div>
 
-    <div id="custom-exam-template" class="flex items-center space-x-2 mt-3">
+    <div id="custom-exam-template" class="flex items-center space-x-2 mt-3 custom-exam-item">
         <input type="checkbox" class="h-4 w-4 rounded exam-checkbox" data-custom="true">
         <input type="text" placeholder="Nome esame..." class="custom-exam-name w-full px-2 py-1 bg-gray-50 border rounded-md">
         <button type="button" class="remove-custom-exam-btn text-red-500 hover:text-red-700 text-xl font-bold no-print">&times;</button>
@@ -413,14 +413,12 @@
             document.getElementById('monitoring-entries-container').innerHTML = '';
             document.getElementById('therapy-log-container').innerHTML = '';
 
-            // Resetta la sezione flebo con un solo elemento
             infusionContainer.innerHTML = '';
             const defaultInfusion = document.getElementById('infusion-row-template').cloneNode(true);
             defaultInfusion.id = '';
             defaultInfusion.classList.remove('hidden');
             infusionContainer.appendChild(defaultInfusion);
 
-            // Resetta la sezione farmaci con un solo elemento
             drugsContainer.innerHTML = '';
             const defaultDrug = document.createElement('input');
             defaultDrug.type = 'text';
@@ -437,7 +435,7 @@
         }
         document.getElementById('new-card-btn').addEventListener('click', clearForm);
 
-        // --- GESTIONE CAMPI CONDIZIONALI (rimangono solo dove ha senso) ---
+        // --- GESTIONE CAMPI CONDIZIONALI ---
         function handleConditionalVisibility(element) {
             const containerId = element.dataset.otherContainer;
             if (!containerId) return;
@@ -449,7 +447,7 @@
 
             if (isCheckbox) {
                 shouldShow = element.checked;
-            } else { // È un select
+            } else {
                 const conditionValue = element.dataset.conditionValue || 'Altro';
                 shouldShow = element.value === conditionValue;
             }
@@ -486,7 +484,7 @@
         setupDynamicSection('add-monitoring-btn', 'monitoring-entries-container', 'monitoring-entry-template');
         setupDynamicSection('add-therapy-log-btn', 'therapy-log-container', 'therapy-log-template');
 
-        // --- GESTIONE AGGIUNTA FLEBO (NUOVA FUNZIONE) ---
+        // --- GESTIONE AGGIUNTA FLEBO ---
         document.getElementById('add-infusion-btn').addEventListener('click', () => {
             const template = document.getElementById('infusion-row-template');
             const clone = template.cloneNode(true);
@@ -514,14 +512,11 @@
 
         // --- GESTIONE AGGIUNTA ESAMI PERSONALIZZATI ---
         document.getElementById('add-custom-exam-btn').addEventListener('click', () => {
-            const customExamContainer = document.createElement('div');
-            customExamContainer.className = 'flex items-center space-x-2 mt-3 custom-exam-item';
-            customExamContainer.innerHTML = `
-                <input type="checkbox" class="h-4 w-4 rounded exam-checkbox" data-custom="true">
-                <input type="text" placeholder="Nome esame..." class="custom-exam-name w-full px-2 py-1 bg-gray-50 border rounded-md">
-                <button type="button" class="remove-custom-exam-btn text-red-500 hover:text-red-700 text-xl font-bold no-print">&times;</button>
-            `;
-            examsToPerformList.appendChild(customExamContainer);
+            const customExamTemplate = document.getElementById('custom-exam-template');
+            const clone = customExamTemplate.cloneNode(true);
+            clone.classList.add('custom-exam-item');
+            clone.classList.remove('hidden');
+            examsToPerformList.appendChild(clone);
         });
 
         examsToPerformList.addEventListener('click', (e) => {
@@ -575,35 +570,54 @@
                 }
             }
             if (data.examsToPerform) {
+                // Gestisce gli esami predefiniti
                 for (const key in data.examsToPerform) {
-                    let elId = `exam-${key.replace('_type', '-other').replace('_desc', '-other').replace('_count', '-other').replace('_request', '-other')}`;
+                    let elId;
+                    if (key.includes('_')) {
+                        elId = `exam-${key.replace('_', '-other')}`;
+                    } else {
+                        elId = `exam-${key}`;
+                    }
                     const el = document.getElementById(elId);
-                    if(el) {
-                        if (el.type === 'checkbox') el.checked = data.examsToPerform[key];
-                        else el.value = data.examsToPerform[key] || '';
+                    if (el) {
+                        if (el.type === 'checkbox') {
+                            el.checked = data.examsToPerform[key];
+                        } else {
+                            el.value = data.examsToPerform[key] || '';
+                        }
                     }
                 }
-                 // Popola gli esami personalizzati
+                // Gestisce gli esami personalizzati
                 if (data.customExams) {
                     data.customExams.forEach(exam => {
-                        const customExamContainer = document.createElement('div');
-                        customExamContainer.className = 'flex items-center space-x-2 mt-3 custom-exam-item';
-                        customExamContainer.innerHTML = `
-                            <input type="checkbox" class="h-4 w-4 rounded exam-checkbox" data-custom="true" ${exam.checked ? 'checked' : ''}>
-                            <input type="text" placeholder="Nome esame..." class="custom-exam-name w-full px-2 py-1 bg-gray-50 border rounded-md" value="${exam.name || ''}">
-                            <button type="button" class="remove-custom-exam-btn text-red-500 hover:text-red-700 text-xl font-bold no-print">&times;</button>
-                        `;
-                        examsToPerformList.appendChild(customExamContainer);
+                        const customExamTemplate = document.getElementById('custom-exam-template');
+                        const clone = customExamTemplate.cloneNode(true);
+                        clone.id = '';
+                        clone.classList.remove('hidden');
+                        const checkbox = clone.querySelector('.exam-checkbox');
+                        const nameInput = clone.querySelector('.custom-exam-name');
+                        checkbox.checked = exam.checked;
+                        nameInput.value = exam.name || '';
+                        examsToPerformList.appendChild(clone);
                     });
                 }
             }
-             if (data.examsExecuted) {
+
+            if (data.examsExecuted) {
                 for (const key in data.examsExecuted) {
-                    let elId = `executed-exam-${key.replace('_text', '-text').replace('_type', '-other')}`;
+                    let elId;
+                    if (key.includes('_')) {
+                        elId = `executed-exam-${key.replace('_', '-')}`;
+                    } else {
+                        elId = `executed-exam-${key}`;
+                    }
                     const el = document.getElementById(elId);
-                    if(el) {
-                        if (el.type === 'checkbox') el.checked = data.examsExecuted[key];
-                        else el.value = data.examsExecuted[key] || '';
+                    if (el) {
+                        if (el.type === 'checkbox') {
+                            el.checked = data.examsExecuted[key];
+                        } else {
+                            el.value = data.examsExecuted[key] || '';
+                        }
                     }
                 }
             }
@@ -641,6 +655,7 @@
                         const newInput = document.createElement('input');
                         newInput.type = 'text';
                         newInput.value = drug;
+                        newInput.placeholder = 'Nome farmaco...';
                         newInput.className = 'w-full px-4 py-2 bg-gray-50 border rounded-lg';
                         container.appendChild(newInput);
                     });
@@ -673,10 +688,12 @@
         }
 
         function saveData() {
-            const getDynamicEntries = (containerId) => {
+            const getDynamicEntries = (containerId, fields) => {
                 return Array.from(document.querySelectorAll(`#${containerId} > div:not(.hidden)`)).map(entryDiv => {
                     const entryData = {};
-                    entryDiv.querySelectorAll('[data-field]').forEach(input => { entryData[input.dataset.field] = input.value; });
+                    entryDiv.querySelectorAll('[data-field]').forEach(input => {
+                        entryData[input.dataset.field] = input.value;
+                    });
                     return entryData;
                 });
             };
@@ -727,21 +744,21 @@
                 admissionTherapy: document.getElementById('admission-therapy').value.trim(),
                 examsToPerform: {
                     cbc: document.getElementById('exam-cbc').checked,
-                    biochem: document.getElementById('exam-biochem').checked, biochem_type: document.getElementById('exam-biochem-other').value.trim(),
-                    snap: document.getElementById('exam-snap').checked, snap_type: document.getElementById('exam-snap-other').value.trim(),
+                    biochem: document.getElementById('exam-biochem').checked, biochem_other: document.getElementById('exam-biochem-other').value.trim(),
+                    snap: document.getElementById('exam-snap').checked, snap_other: document.getElementById('exam-snap-other').value.trim(),
                     urinalysis: document.getElementById('exam-urinalysis').checked, pucu: document.getElementById('exam-pucu').checked,
-                    rx: document.getElementById('exam-rx').checked, rx_count: document.getElementById('exam-rx-other').value,
+                    rx: document.getElementById('exam-rx').checked, rx_other: document.getElementById('exam-rx-other').value,
                     ultrasound: document.getElementById('exam-ultrasound').checked, ecofast: document.getElementById('exam-ecofast').checked,
                     emogas: document.getElementById('exam-emogas').checked,
-                    surgery: document.getElementById('exam-surgery').checked, surgery_type: document.getElementById('exam-surgery-other').value.trim(),
-                    lab: document.getElementById('exam-lab').checked, lab_request: document.getElementById('exam-lab-other').value.trim(),
-                    other: document.getElementById('exam-other').checked, other_desc: document.getElementById('exam-other-other').value.trim(),
+                    surgery: document.getElementById('exam-surgery').checked, surgery_other: document.getElementById('exam-surgery-other').value.trim(),
+                    lab: document.getElementById('exam-lab').checked, lab_other: document.getElementById('exam-lab-other').value.trim(),
+                    other: document.getElementById('exam-other').checked, other_other: document.getElementById('exam-other-other').value.trim(),
                 },
                 customExams: customExams,
                 examsExecuted: {
                     cbc: document.getElementById('executed-exam-cbc').checked,
                     biochem: document.getElementById('executed-exam-biochem').checked,
-                    biochem_type: document.getElementById('executed-exam-biochem-other').value.trim(),
+                    biochem_other: document.getElementById('executed-exam-biochem-other').value.trim(),
                     snap: document.getElementById('executed-exam-snap').checked,
                     urinalysis: document.getElementById('executed-exam-urinalysis').checked,
                     pucu: document.getElementById('executed-exam-pucu').checked,
