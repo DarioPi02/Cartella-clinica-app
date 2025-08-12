@@ -6,24 +6,21 @@
     <title>Scheda Degenza Paziente Interattiva</title>
 
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-<script>
-    // Incolla qui l'oggetto firebaseConfig che hai copiato prima
-    const firebaseConfig = {
-  apiKey: "AIzaSyCy9YtgkIEoye2v4XJmXWv-wcHCY2XtgLU",
-  authDomain: "cartella-clinica-veterinaria.firebaseapp.com",
-  projectId: "cartella-clinica-veterinaria",
-  storageBucket: "cartella-clinica-veterinaria.firebasestorage.app",
-  messagingSenderId: "331086829436",
-  appId: "1:331086829436:web:06a9a6bb54003c95f7b6f9"
-};
-  // Inizializza Firebase
-  firebase.initializeApp(firebaseConfig);
-</script>
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyCy9YtgkIEoye2v4XJmXWv-wcHCY2XtgLU",
+        authDomain: "cartella-clinica-veterinaria.firebaseapp.com",
+        projectId: "cartella-clinica-veterinaria",
+        storageBucket: "cartella-clinica-veterinaria.firebasestorage.app",
+        messagingSenderId: "331086829436",
+        appId: "1:331086829436:web:06a9a6bb54003c95f7b6f9"
+      };
+      firebase.initializeApp(firebaseConfig);
+    </script>
 
-    
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -38,17 +35,17 @@
 
         /* Stili per la Stampa */
         @media print {
-            body { 
-                -webkit-print-color-adjust: exact; 
-                print-color-adjust: exact; 
-                margin: 0; 
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                margin: 0;
                 padding: 0;
             }
             .no-print { display: none !important; }
-            .printable-area { 
-                box-shadow: none; 
-                border: none; 
-                margin: 0; 
+            .printable-area {
+                box-shadow: none;
+                border: none;
+                margin: 0;
                 padding: 1cm;
             }
             body.print-evaluation-only .form-section:not(#medical-evaluation-section, .patient-info-print-only, #important-message-section) { display: none; }
@@ -64,19 +61,19 @@
             }
 
             /* Nasconde i campi input non compilati */
-            input:not([type="checkbox"]):not([type="date"]):not([value]):not([data-field]):not(.has-value), 
+            input:not([type="checkbox"]):not([type="date"]):not([value]):not([data-field]):not(.has-value),
             input[value=''],
-            textarea:not([data-field]):not(.has-value), 
+            textarea:not([data-field]):not(.has-value),
             textarea:empty {
                 display: none !important;
             }
             input[type="date"]:not([value='']) {
                 border: none;
             }
-            
+
             /* Aggiusta lo stile per i dati stampati */
-            input:not([type="checkbox"]):not([type="date"]), 
-            textarea, 
+            input:not([type="checkbox"]):not([type="date"]),
+            textarea,
             select {
                 background: none;
                 border: none;
@@ -113,9 +110,9 @@
                 margin-bottom: 0.5rem;
             }
             .space-y-6 > div, .space-y-4 > div { margin-top: 0.5rem !important; }
-            
+
             /* Stili specifici per i campi di testo per la stampa */
-            .printable-data { 
+            .printable-data {
                 margin-top: 0;
                 margin-bottom: 0;
                 padding: 0;
@@ -134,7 +131,7 @@
                 display: block;
                 margin-bottom: 0.25rem;
             }
-            
+
             #exams-to-perform-list > div,
             .custom-exam-item {
                 margin-bottom: 0.25rem;
@@ -154,32 +151,33 @@
         }
     </style>
 </head>
-    
-    <div id="login-screen" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50">
-    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center">
-        <h2 class="text-2xl font-bold text-gray-800 mb-4">Accedi al Sistema</h2>
-        <p class="text-sm text-gray-600 mb-6">Inserisci le tue credenziali per continuare.</p>
-        <form id="login-form" class="space-y-4">
-            <input type="email" id="login-email" placeholder="Email" required class="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
-            <input type="password" id="login-password" placeholder="Password" required class="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
-            <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">Accedi</button>
-        </form>
-        <p id="login-error" class="mt-4 text-red-600 text-sm hidden">Credenziali non valide. Riprova.</p>
-    </div>
-</div>
-    
 <body class="bg-gray-100 text-gray-800">
 
+    <div id="login-screen" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50">
+        <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Accedi al Sistema</h2>
+            <p class="text-sm text-gray-600 mb-6">Inserisci le tue credenziali per continuare.</p>
+            <form id="login-form" class="space-y-4">
+                <input type="email" id="login-email" placeholder="Email" required class="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                <input type="password" id="login-password" placeholder="Password" required class="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">Accedi</button>
+            </form>
+            <p id="login-error" class="mt-4 text-red-600 text-sm hidden">Credenziali non valide. Riprova.</p>
+        </div>
+    </div>
+    
     <div class="container mx-auto p-4 sm:p-6 lg:p-8">
 
         <div class="flex justify-between items-center mb-6 no-print">
-            <button type="button" id="logout-btn" class="px-5 py-2 border border-red-500 text-red-600 font-semibold rounded-lg hover:bg-red-50 transition">
-    Logout
-</button>
             <h1 class="text-3xl font-bold text-gray-800">Cartella Clinica</h1>
-            <button type="button" id="new-card-btn" class="px-5 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition">
-                + Crea Nuova Scheda
-            </button>
+            <div class="flex space-x-2">
+                 <button type="button" id="logout-btn" class="px-5 py-2 border border-red-500 text-red-600 font-semibold rounded-lg hover:bg-red-50 transition">
+                    Logout
+                </button>
+                <button type="button" id="new-card-btn" class="px-5 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition">
+                    + Crea Nuova Scheda
+                </button>
+            </div>
         </div>
 
         <div id="form-section" class="printable-area bg-white rounded-xl shadow-lg p-6 sm:p-8 mb-8">
@@ -532,25 +530,10 @@
 
 
     <script>
-        // --- GESTIONE DEL DATABASE LOCALE (Web Storage) ---
-        const DB_KEY = 'patient_records';
-
-        function getPatients() {
-            try {
-                return JSON.parse(localStorage.getItem(DB_KEY)) || {};
-            } catch (e) {
-                console.error("Errore nel recupero dati da localStorage:", e);
-                return {};
-            }
-        }
-
-        function savePatients(patients) {
-            try {
-                localStorage.setItem(DB_KEY, JSON.stringify(patients));
-            } catch (e) {
-                console.error("Errore nel salvataggio dati su localStorage:", e);
-            }
-        }
+        // --- Riferimenti a Firebase Authentication e Firestore ---
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const patientsCollection = db.collection('patients'); // Una "collezione" dove salveremo i pazienti
 
         // --- ELEMENTI DEL DOM ---
         const patientForm = document.getElementById('patient-form');
@@ -561,6 +544,15 @@
         const infusionContainer = document.getElementById('dynamic-infusion-inputs');
         const drugsContainer = document.getElementById('dynamic-drug-inputs');
         const importantMessageContainer = document.getElementById('important-message-container');
+
+        // Elementi di autenticazione
+        const loginScreen = document.getElementById('login-screen');
+        const loginForm = document.getElementById('login-form');
+        const loginEmail = document.getElementById('login-email');
+        const loginPassword = document.getElementById('login-password');
+        const loginError = document.getElementById('login-error');
+        const logoutBtn = document.getElementById('logout-btn');
+
 
         let currentPatientId = null;
 
@@ -794,21 +786,103 @@
             document.querySelectorAll('.form-section').forEach(section => section.style.display = '');
         };
 
-        // --- CARICAMENTO, POPOLAMENTO E SALVATAGGIO DATI ---
-        function loadPatientData(id) {
-            const patients = getPatients();
-            const data = patients[id];
-            if (data) {
-                clearForm();
-                populateForm(data);
-                currentPatientId = id;
-                saveButton.textContent = 'Aggiorna Scheda';
-                displayMessage(`Scheda di ${data.patientName} caricata.`, 'success');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+        // --- GESTIONE AUTHENTICATION E FIREBASE ---
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // L'utente è loggato
+                loginScreen.classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+                renderPatientsList();
             } else {
-                displayMessage("Paziente non trovato.", "error");
+                // L'utente non è loggato
+                loginScreen.classList.remove('hidden');
+                document.body.classList.add('overflow-hidden');
+                patientsListDiv.innerHTML = '<p class="text-gray-500">Effettua l\'accesso per vedere i pazienti.</p>';
+                clearForm();
+            }
+        });
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                await auth.signInWithEmailAndPassword(loginEmail.value, loginPassword.value);
+                loginError.classList.add('hidden');
+            } catch (error) {
+                console.error("Login fallito:", error);
+                loginError.textContent = "Credenziali non valide. Riprova.";
+                loginError.classList.remove('hidden');
+            }
+        });
+
+        logoutBtn.addEventListener('click', async () => {
+            await auth.signOut();
+        });
+
+        // --- CARICAMENTO, POPOLAMENTO E SALVATAGGIO DATI (FIREBASE) ---
+        async function renderPatientsList() {
+            const patientsListDiv = document.getElementById('patients-list');
+            patientsListDiv.innerHTML = '<p id="loading-patients" class="text-gray-500">Caricamento pazienti...</p>';
+
+            try {
+                const snapshot = await patientsCollection.orderBy('updatedAt', 'desc').get();
+                const patientsArray = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                patientsListDiv.innerHTML = '';
+                if (patientsArray.length === 0) {
+                    patientsListDiv.innerHTML = '<p class="text-gray-500">Nessun paziente salvato.</p>';
+                    return;
+                }
+
+                patientsArray.forEach(patient => {
+                    const patientCard = document.createElement('div');
+                    patientCard.className = 'p-4 border rounded-lg bg-gray-50 flex flex-col sm:flex-row justify-between sm:items-center';
+                    patientCard.innerHTML = `
+                        <div>
+                            <p class="font-bold text-lg text-blue-700">${patient.patientName || 'N/D'} <span class="text-sm font-normal text-gray-500">(${patient.species || 'N/D'})</span></p>
+                            <p class="text-gray-600">Proprietario: ${patient.ownerLastname || 'N/D'}</p>
+                            <p class="text-xs text-gray-400 mt-1">Ultima modifica: ${new Date(patient.updatedAt.toDate()).toLocaleString('it-IT')}</p>
+                        </div>
+                        <div class="flex space-x-2 mt-3 sm:mt-0">
+                            <button data-id="${patient.id}" class="open-patient-btn px-4 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-100 transition">Apri</button>
+                            <button data-id="${patient.id}" class="delete-patient-btn px-4 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition">Elimina</button>
+                        </div>
+                    `;
+                    patientsListDiv.appendChild(patientCard);
+                });
+            } catch (error) {
+                console.error("Errore nel caricamento dei pazienti:", error);
+                patientsListDiv.innerHTML = '<p class="text-red-500">Errore nel caricamento dei dati.</p>';
             }
         }
+
+        patientsListDiv.addEventListener('click', (e) => {
+            if (e.target.classList.contains('open-patient-btn')) {
+                loadPatientData(e.target.dataset.id);
+            }
+            if (e.target.classList.contains('delete-patient-btn')) {
+                deletePatientData(e.target.dataset.id);
+            }
+        });
+
+        async function loadPatientData(id) {
+            try {
+                const doc = await patientsCollection.doc(id).get();
+                if (doc.exists) {
+                    clearForm();
+                    populateForm(doc.data());
+                    currentPatientId = doc.id;
+                    saveButton.textContent = 'Aggiorna Scheda';
+                    displayMessage(`Scheda di ${doc.data().patientName} caricata.`, 'success');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    displayMessage("Paziente non trovato.", "error");
+                }
+            } catch (error) {
+                console.error("Errore nel caricamento del paziente:", error);
+                displayMessage("Errore nel caricamento dei dati.", "error");
+            }
+        }
+
 
         function populateForm(data) {
             // Popola i campi statici
@@ -943,7 +1017,7 @@
         }
 
 
-        function saveData() {
+        async function saveData() {
             const getDynamicEntries = (containerId) => {
                 return Array.from(document.querySelectorAll(`#${containerId} > div:not(.hidden)`)).map(entryDiv => {
                     const entryData = {};
@@ -972,7 +1046,6 @@
             } : null;
 
             const patientData = {
-                id: currentPatientId || `patient_${Date.now()}`,
                 entryDate: document.getElementById('entryDate').value,
                 ownerLastname: document.getElementById('ownerLastname').value.trim(),
                 phone: document.getElementById('phone').value.trim(),
@@ -1043,8 +1116,7 @@
                 importantMessage: importantMessageData,
                 monitoringEntries: getDynamicEntries('monitoring-entries-container'),
                 therapyLog: getDynamicEntries('therapy-log-container'),
-                updatedAt: new Date().toISOString(),
-                createdAt: currentPatientId ? getPatients()[currentPatientId].createdAt : new Date().toISOString(),
+                updatedAt: new Date(),
             };
 
             if (!patientData.ownerLastname || !patientData.patientName || !patientData.weight) {
@@ -1053,143 +1125,43 @@
                 return;
             }
 
-            const patients = getPatients();
-            if (currentPatientId) {
-                patients[currentPatientId] = patientData;
-                savePatients(patients);
-                displayMessage("Scheda aggiornata con successo!", "success");
-            } else {
-                const newId = `patient_${Date.now()}`;
-                patientData.id = newId;
-                patients[newId] = patientData;
-                savePatients(patients);
-                currentPatientId = newId;
-                saveButton.textContent = 'Aggiorna Scheda';
-                displayMessage("Scheda salvata con successo!", "success");
+            try {
+                if (currentPatientId) {
+                    await patientsCollection.doc(currentPatientId).update(patientData);
+                    displayMessage("Scheda aggiornata con successo!", "success");
+                } else {
+                    await patientsCollection.add({
+                        ...patientData,
+                        createdAt: new Date()
+                    });
+                    displayMessage("Scheda salvata con successo!", "success");
+                    clearForm();
+                }
+                renderPatientsList();
+            } catch (error) {
+                console.error("Errore nel salvataggio dei dati:", error);
+                displayMessage("Errore nel salvataggio dei dati.", "error");
             }
-
-            renderPatientsList();
         }
         saveButton.addEventListener('click', saveData);
 
-        function deletePatientData(id) {
+        async function deletePatientData(id) {
             if (confirm("Sei sicuro di voler eliminare questa scheda paziente? Questa azione è irreversibile.")) {
-                const patients = getPatients();
-                delete patients[id];
-                savePatients(patients);
-                displayMessage("Scheda eliminata con successo.", "success");
-                clearForm();
-                renderPatientsList();
+                try {
+                    await patientsCollection.doc(id).delete();
+                    displayMessage("Scheda eliminata con successo.", "success");
+                    clearForm();
+                    renderPatientsList();
+                } catch (error) {
+                    console.error("Errore nell'eliminazione della scheda:", error);
+                    displayMessage("Errore nell'eliminazione della scheda.", "error");
+                }
             }
         }
 
-        // --- FETCH E VISUALIZZAZIONE PAZIENTI ---
-        function renderPatientsList() {
-            const patients = getPatients();
-            const patientsArray = Object.values(patients);
-            const patientsListDiv = document.getElementById('patients-list');
-            patientsListDiv.innerHTML = '';
-
-            if (patientsArray.length === 0) {
-                patientsListDiv.innerHTML = '<p class="text-gray-500">Nessun paziente salvato.</p>';
-                return;
-            }
-
-            patientsArray.sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt));
-
-            patientsArray.forEach(patient => {
-                const patientCard = document.createElement('div');
-                patientCard.className = 'p-4 border rounded-lg bg-gray-50 flex flex-col sm:flex-row justify-between sm:items-center';
-                patientCard.innerHTML = `
-                    <div>
-                        <p class="font-bold text-lg text-blue-700">${patient.patientName || 'N/D'} <span class="text-sm font-normal text-gray-500">(${patient.species || 'N/D'})</span></p>
-                        <p class="text-gray-600">Proprietario: ${patient.ownerLastname || 'N/D'}</p>
-                        <p class="text-xs text-gray-400 mt-1">Ultima modifica: ${new Date(patient.updatedAt || patient.createdAt).toLocaleString('it-IT')}</p>
-                    </div>
-                    <div class="flex space-x-2 mt-3 sm:mt-0">
-                        <button data-id="${patient.id}" class="open-patient-btn px-4 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-100 transition">Apri</button>
-                        <button data-id="${patient.id}" class="delete-patient-btn px-4 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition">Elimina</button>
-                    </div>
-                `;
-                patientsListDiv.appendChild(patientCard);
-            });
-        }
-        patientsListDiv.addEventListener('click', (e) => {
-            if (e.target.classList.contains('open-patient-btn')) {
-                loadPatientData(e.target.dataset.id);
-            }
-            if (e.target.classList.contains('delete-patient-btn')) {
-                deletePatientData(e.target.dataset.id);
-            }
-        });
-
-        // --- Riferimenti a Firebase Authentication e Firestore ---
-const auth = firebase.auth();
-const db = firebase.firestore();
-const patientsCollection = db.collection('patients'); // Un "cassetto" dove salveremo tutti i pazienti
-
-        
-        // --- ELEMENTI DEL DOM ---
-const patientForm = document.getElementById('patient-form');
-// ... mantieni gli altri elementi DOM come sono ...
-const patientsListDiv = document.getElementById('patients-list');
-const saveButton = document.getElementById('save-button');
-const examsToPerformList = document.getElementById('exams-to-perform-list');
-const infusionContainer = document.getElementById('dynamic-infusion-inputs');
-const drugsContainer = document.getElementById('dynamic-drug-inputs');
-const importantMessageContainer = document.getElementById('important-message-container');
-
-// Elementi di autenticazione
-const loginScreen = document.getElementById('login-screen');
-const loginForm = document.getElementById('login-form');
-const loginEmail = document.getElementById('login-email');
-const loginPassword = document.getElementById('login-password');
-const loginError = document.getElementById('login-error');
-const logoutBtn = document.getElementById('logout-btn');
-
-let currentPatientId = null;
-
-// --- FUNZIONI DI BASE ---
-// ... mantieni tutte le tue funzioni di base (`displayMessage`, `clearForm`, etc.) ...
-
-// --- GESTIONE AUTHENTICATION E FIREBASE ---
-auth.onAuthStateChanged(user => {
-    if (user) {
-        // Utente loggato
-        loginScreen.classList.add('hidden');
-        document.body.classList.remove('overflow-hidden');
-        renderPatientsList();
-    } else {
-        // Utente non loggato
-        loginScreen.classList.remove('hidden');
-        document.body.classList.add('overflow-hidden');
-        patientsListDiv.innerHTML = '<p class="text-gray-500">Effettua l\'accesso per vedere i pazienti.</p>';
-        clearForm();
-    }
-});
-
-loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    try {
-        await auth.signInWithEmailAndPassword(loginEmail.value, loginPassword.value);
-        loginError.classList.add('hidden');
-    } catch (error) {
-        console.error("Login fallito:", error);
-        loginError.textContent = "Credenziali non valide. Riprova.";
-        loginError.classList.remove('hidden');
-    }
-});
-
-logoutBtn.addEventListener('click', async () => {
-    await auth.signOut();
-});
-
-// --- CARICAMENTO, POPOLAMENTO E SALVATAGGIO DATI (NUOVE FUNZIONI) ---
-// ... Ora sostituiremo le funzioni `getPatients`, `saveData`, `loadPatientData`, `deletePatientData` con le nuove versioni che usano Firestore ...
-
-        
+        window.onload = () => {
+            clearForm();
+        };
     </script>
 </body>
 </html>
-
-
