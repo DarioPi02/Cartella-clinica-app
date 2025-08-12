@@ -562,23 +562,29 @@
         }
 
         function populateForm(data) {
-            for (const key in data) {
-                const el = document.getElementById(key);
-                if (el) {
-                    if (el.type === 'checkbox') el.checked = data[key];
-                    else el.value = data[key] || '';
-                }
-            }
-            if (data.examsToPerform) {
-                // Gestisce gli esami predefiniti
-                for (const key in data.examsToPerform) {
-                    let elId;
-                    if (key.includes('_')) {
-                        elId = `exam-${key.replace('_', '-other')}`;
+            // Popola i campi statici
+            const formElements = document.querySelectorAll('#patient-form [id]');
+            formElements.forEach(el => {
+                if (data.hasOwnProperty(el.id)) {
+                    if (el.type === 'checkbox') {
+                        el.checked = data[el.id];
+                    } else if (el.tagName === 'SELECT') {
+                        el.value = data[el.id] || el.options[0].value;
                     } else {
-                        elId = `exam-${key}`;
+                        el.value = data[el.id] || '';
                     }
-                    const el = document.getElementById(elId);
+                }
+            });
+
+            // Gestisce i campi "other"
+            document.querySelectorAll('.conditional-select').forEach(el => {
+                el.dispatchEvent(new Event('change'));
+            });
+
+            // Popola gli esami da eseguire
+            if (data.examsToPerform) {
+                for (const key in data.examsToPerform) {
+                    const el = document.getElementById(`exam-${key}`);
                     if (el) {
                         if (el.type === 'checkbox') {
                             el.checked = data.examsToPerform[key];
@@ -587,31 +593,24 @@
                         }
                     }
                 }
-                // Gestisce gli esami personalizzati
-                if (data.customExams) {
-                    data.customExams.forEach(exam => {
-                        const customExamTemplate = document.getElementById('custom-exam-template');
-                        const clone = customExamTemplate.cloneNode(true);
-                        clone.id = '';
-                        clone.classList.remove('hidden');
-                        const checkbox = clone.querySelector('.exam-checkbox');
-                        const nameInput = clone.querySelector('.custom-exam-name');
-                        checkbox.checked = exam.checked;
-                        nameInput.value = exam.name || '';
-                        examsToPerformList.appendChild(clone);
-                    });
-                }
+            }
+            if (data.customExams) {
+                data.customExams.forEach(exam => {
+                    const template = document.getElementById('custom-exam-template');
+                    const clone = template.cloneNode(true);
+                    clone.classList.remove('hidden');
+                    const checkbox = clone.querySelector('.exam-checkbox');
+                    const nameInput = clone.querySelector('.custom-exam-name');
+                    checkbox.checked = exam.checked;
+                    nameInput.value = exam.name || '';
+                    examsToPerformList.appendChild(clone);
+                });
             }
 
+            // Popola gli esami eseguiti
             if (data.examsExecuted) {
                 for (const key in data.examsExecuted) {
-                    let elId;
-                    if (key.includes('_')) {
-                        elId = `executed-exam-${key.replace('_', '-')}`;
-                    } else {
-                        elId = `executed-exam-${key}`;
-                    }
-                    const el = document.getElementById(elId);
+                    const el = document.getElementById(`executed-exam-${key.replace('_', '-')}`);
                     if (el) {
                         if (el.type === 'checkbox') {
                             el.checked = data.examsExecuted[key];
@@ -620,54 +619,14 @@
                         }
                     }
                 }
+                const otherTextEl = document.getElementById('executed-exam-other-text');
+                if (otherTextEl) {
+                    otherTextEl.value = data.examsExecuted.other_text || '';
+                }
             }
-            document.querySelectorAll('.conditional-select').forEach(el => el.dispatchEvent(new Event('change')));
 
-            const populateInfusions = (entries) => {
-                const container = document.getElementById('dynamic-infusion-inputs');
-                container.innerHTML = '';
-                if (entries && entries.length > 0) {
-                    entries.forEach(entryData => {
-                        const template = document.getElementById('infusion-row-template');
-                        const clone = template.cloneNode(true);
-                        clone.id = '';
-                        clone.classList.remove('hidden');
-                        clone.querySelectorAll('[data-field]').forEach(input => {
-                            input.value = entryData[input.dataset.field] || '';
-                        });
-                        container.appendChild(clone);
-                    });
-                } else {
-                    const template = document.getElementById('infusion-row-template');
-                    const clone = template.cloneNode(true);
-                    clone.id = '';
-                    clone.classList.remove('hidden');
-                    container.appendChild(clone);
-                }
-            };
-            populateInfusions(data.infusionTherapy);
 
-            const populateDrugs = (entries) => {
-                const container = document.getElementById('dynamic-drug-inputs');
-                container.innerHTML = '';
-                if (entries && entries.length > 0) {
-                    entries.forEach(drug => {
-                        const newInput = document.createElement('input');
-                        newInput.type = 'text';
-                        newInput.value = drug;
-                        newInput.placeholder = 'Nome farmaco...';
-                        newInput.className = 'w-full px-4 py-2 bg-gray-50 border rounded-lg';
-                        container.appendChild(newInput);
-                    });
-                }
-                const emptyInput = document.createElement('input');
-                emptyInput.type = 'text';
-                emptyInput.placeholder = 'Nome farmaco...';
-                emptyInput.className = 'w-full px-4 py-2 bg-gray-50 border rounded-lg';
-                container.appendChild(emptyInput);
-            };
-            populateDrugs(data.drugsToAdminister);
-
+            // Popola le sezioni dinamiche (monitoraggio, terapia, flebo, farmaci)
             const populateDynamicSection = (containerId, templateId, entries) => {
                 const container = document.getElementById(containerId);
                 container.innerHTML = '';
@@ -677,22 +636,53 @@
                     clone.id = '';
                     clone.classList.remove('hidden');
                     clone.querySelectorAll('[data-field]').forEach(input => {
-                        input.value = entryData[input.dataset.field] || '';
+                        if (input.type === 'checkbox') {
+                            input.checked = entryData[input.dataset.field];
+                        } else {
+                            input.value = entryData[input.dataset.field] || '';
+                        }
                     });
                     container.appendChild(clone);
-                    clone.querySelectorAll('.conditional-select').forEach(sel => sel.dispatchEvent(new Event('change')));
                 });
+                // Assicura che ci sia sempre almeno un campo di default
+                if (container.children.length === 0 && templateId !== 'custom-exam-template') {
+                    const defaultClone = document.getElementById(templateId).cloneNode(true);
+                    defaultClone.id = '';
+                    defaultClone.classList.remove('hidden');
+                    container.appendChild(defaultClone);
+                }
             };
+
+            // Flebo
+            populateDynamicSection('dynamic-infusion-inputs', 'infusion-row-template', data.infusionTherapy);
+            // Farmaci
+            const drugsContainer = document.getElementById('dynamic-drug-inputs');
+            drugsContainer.innerHTML = '';
+            (data.drugsToAdminister || []).forEach(drug => {
+                const drugInput = document.createElement('input');
+                drugInput.type = 'text';
+                drugInput.placeholder = 'Nome farmaco...';
+                drugInput.className = 'w-full px-4 py-2 bg-gray-50 border rounded-lg';
+                drugInput.value = drug;
+                drugsContainer.appendChild(drugInput);
+            });
+            const emptyInput = document.createElement('input');
+            emptyInput.type = 'text';
+            emptyInput.placeholder = 'Nome farmaco...';
+            emptyInput.className = 'w-full px-4 py-2 bg-gray-50 border rounded-lg';
+            drugsContainer.appendChild(emptyInput);
+
+            // Monitoraggio e terapia log
             populateDynamicSection('monitoring-entries-container', 'monitoring-entry-template', data.monitoringEntries);
             populateDynamicSection('therapy-log-container', 'therapy-log-template', data.therapyLog);
         }
 
         function saveData() {
-            const getDynamicEntries = (containerId, fields) => {
+            const getDynamicEntries = (containerId) => {
                 return Array.from(document.querySelectorAll(`#${containerId} > div:not(.hidden)`)).map(entryDiv => {
                     const entryData = {};
                     entryDiv.querySelectorAll('[data-field]').forEach(input => {
-                        entryData[input.dataset.field] = input.value;
+                        entryData[input.dataset.field] = input.type === 'checkbox' ? input.checked : input.value;
                     });
                     return entryData;
                 });
