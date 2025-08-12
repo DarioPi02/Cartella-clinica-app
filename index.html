@@ -223,9 +223,13 @@
                                 <select id="iv-rate" data-other-container="iv-rate-other-container" class="w-full px-4 py-2 bg-gray-50 border rounded-lg conditional-select" data-condition-value="Pompa ad infusione"><option>Bolo veloce</option><option>Bolo lento</option><option>Goccia veloce</option><option>Goccia lenta</option><option value="Pompa ad infusione">Pompa ad infusione</option></select>
                             </div>
                         </div>
-                        <div id="iv-rate-other-container" class="hidden"><label for="iv-rate-other" class="block text-sm font-medium text-gray-700 mb-1">Quanti ml/kg/h?</label><input type="number" step="0.1" id="iv-rate-other" class="w-full px-4 py-2 bg-gray-50 border rounded-lg"></div>
+                        <div id="iv-rate-other-container" class="hidden mt-2"><label for="iv-rate-other" class="block text-sm font-medium text-gray-700 mb-1">Pompa infusione ml/kg/h</label><input type="text" id="iv-rate-other" class="w-full px-4 py-2 bg-gray-50 border rounded-lg"></div>
+                        
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Tipo di Farmaci da Somministrare (premere Invio per aggiungere)</label>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="block text-sm font-medium text-gray-700">Tipo di Farmaci da Somministrare</label>
+                                <button type="button" id="add-drug-btn" class="no-print px-3 py-1 text-sm bg-green-500 text-white rounded-lg hover:bg-green-600 transition">+ Aggiungi Farmaco</button>
+                            </div>
                             <div id="dynamic-drug-inputs" class="dynamic-input-container">
                                 <input type="text" placeholder="Nome farmaco..." class="w-full px-4 py-2 bg-gray-50 border rounded-lg">
                             </div>
@@ -462,6 +466,24 @@
         examsToPerformList.addEventListener('click', (e) => {
             if(e.target.classList.contains('remove-custom-exam-btn')) {
                 e.target.closest('.custom-exam-item').remove();
+            }
+        });
+        
+        // --- GESTIONE AGGIUNTA FARMACI (FIX PER MOBILE) ---
+        document.getElementById('add-drug-btn').addEventListener('click', () => {
+            const drugContainer = document.getElementById('dynamic-drug-inputs');
+            const newInput = document.createElement('input');
+            newInput.type = 'text';
+            newInput.placeholder = 'Nome farmaco...';
+            newInput.className = 'w-full px-4 py-2 bg-gray-50 border rounded-lg';
+            drugContainer.appendChild(newInput);
+            newInput.focus();
+        });
+        
+        document.getElementById('dynamic-drug-inputs').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('add-drug-btn').click();
             }
         });
 
