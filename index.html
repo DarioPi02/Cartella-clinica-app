@@ -5,6 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Scheda Degenza Paziente Interattiva</title>
 
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+    // Incolla qui l'oggetto firebaseConfig che hai copiato prima
+    const firebaseConfig = {
+  apiKey: "AIzaSyCy9YtgkIEoye2v4XJmXWv-wcHCY2XtgLU",
+  authDomain: "cartella-clinica-veterinaria.firebaseapp.com",
+  projectId: "cartella-clinica-veterinaria",
+  storageBucket: "cartella-clinica-veterinaria.firebasestorage.app",
+  messagingSenderId: "331086829436",
+  appId: "1:331086829436:web:06a9a6bb54003c95f7b6f9"
+};
+  // Inizializza Firebase
+  firebase.initializeApp(firebaseConfig);
+</script>
+
+    
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1094,3 +1113,4 @@
     </script>
 </body>
 </html>
+
