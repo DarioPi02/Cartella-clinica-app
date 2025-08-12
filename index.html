@@ -52,16 +52,16 @@
                     <p class="form-section-subtitle">Dati identificativi del paziente e del proprietario.</p>
                     <div class="space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div><label for="entry-date" class="block text-sm font-medium text-gray-700 mb-1">Data di Ingresso</label><input type="date" id="entry-date" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
-                            <div><label for="owner-lastname" class="block text-sm font-medium text-gray-700 mb-1">Cognome Proprietario <span class="text-red-500">*</span></label><input type="text" id="owner-lastname" placeholder="Es. Rossi" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required></div>
+                            <div><label for="entryDate" class="block text-sm font-medium text-gray-700 mb-1">Data di Ingresso</label><input type="date" id="entryDate" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
+                            <div><label for="ownerLastname" class="block text-sm font-medium text-gray-700 mb-1">Cognome Proprietario <span class="text-red-500">*</span></label><input type="text" id="ownerLastname" placeholder="Es. Rossi" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required></div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div><label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Telefono</label><input type="tel" id="phone" placeholder="Es. 3331234567" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
-                            <div><label for="alt-contact" class="block text-sm font-medium text-gray-700 mb-1">Persona diversa da contattare</label><input type="text" id="alt-contact" placeholder="Nome e telefono" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
+                            <div><label for="altContact" class="block text-sm font-medium text-gray-700 mb-1">Persona diversa da contattare</label><input type="text" id="altContact" placeholder="Nome e telefono" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
                         </div>
                         <hr class="my-6 border-t border-gray-200">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div><label for="patient-name" class="block text-sm font-medium text-gray-700 mb-1">Nome Paziente <span class="text-red-500">*</span></label><input type="text" id="patient-name" placeholder="Es. Fido" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required></div>
+                            <div><label for="patientName" class="block text-sm font-medium text-gray-700 mb-1">Nome Paziente <span class="text-red-500">*</span></label><input type="text" id="patientName" placeholder="Es. Fido" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required></div>
                             <div><label for="species" class="block text-sm font-medium text-gray-700 mb-1">Specie</label><input type="text" id="species" placeholder="Es. Cane" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -77,7 +77,7 @@
                 <div class="form-section">
                     <h2 class="form-section-title">Storico Paziente e Anamnesi</h2>
                     <div class="space-y-6">
-                        <div><label for="reason-for-hospitalization" class="block text-sm font-medium text-gray-700 mb-1">Motivo di Ricovero</label><textarea id="reason-for-hospitalization" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></textarea></div>
+                        <div><label for="reasonForHospitalization" class="block text-sm font-medium text-gray-700 mb-1">Motivo di Ricovero</label><textarea id="reasonForHospitalization" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></textarea></div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label for="vaccinations" class="block text-sm font-medium text-gray-700 mb-1">Vaccinazioni</label>
@@ -85,12 +85,12 @@
                                 <div id="vaccinations-other-container" class="mt-2 hidden"><label for="vaccinations-other" class="block text-sm font-medium text-gray-700 mb-1">Altro (specificare)</label><input type="text" id="vaccinations-other" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
                             </div>
                             <div>
-                                <label for="parasite-treatments" class="block text-sm font-medium text-gray-700 mb-1">Antiparassitari</label>
-                                <select id="parasite-treatments" data-other-container="parasite-treatments-other-container" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg conditional-select"><option>Regolari</option><option>Irregolari</option><option>Non note</option><option>Nessuna</option><option value="Altro">Altro</option></select>
+                                <label for="parasiteTreatments" class="block text-sm font-medium text-gray-700 mb-1">Antiparassitari</label>
+                                <select id="parasiteTreatments" data-other-container="parasite-treatments-other-container" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg conditional-select"><option>Regolari</option><option>Irregolari</option><option>Non note</option><option>Nessuna</option><option value="Altro">Altro</option></select>
                                 <div id="parasite-treatments-other-container" class="mt-2 hidden"><label for="parasite-treatments-other" class="block text-sm font-medium text-gray-700 mb-1">Altro (specificare)</label><input type="text" id="parasite-treatments-other" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
                             </div>
                         </div>
-                        <div><label for="previous-pathologies" class="block text-sm font-medium text-gray-700 mb-1">Patologie Pregresse</label><textarea id="previous-pathologies" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></textarea></div>
+                        <div><label for="previousPathologies" class="block text-sm font-medium text-gray-700 mb-1">Patologie Pregresse</label><textarea id="previousPathologies" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></textarea></div>
                     </div>
                 </div>
 
@@ -100,40 +100,40 @@
                     <div class="space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label for="mental-state" class="block text-sm font-medium text-gray-700 mb-1">Stato mentale/Reattività</label>
-                                <select id="mental-state" data-other-container="mental-state-other-container" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg conditional-select"><option>Normale</option><option>Depresso</option><option>Optunded</option><option>Stuporoso</option><option>Coma</option><option>Iperestesia</option><option value="Altro">Altro</option></select>
-                                <div id="mental-state-other-container" class="mt-2 hidden"><label for="mental-state-other" class="block text-sm font-medium text-gray-700 mb-1">Altro cosa?</label><input type="text" id="mental-state-other" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
+                                <label for="mentalState" class="block text-sm font-medium text-gray-700 mb-1">Stato mentale/Reattività</label>
+                                <select id="mentalState" data-other-container="mental-state-other-container" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg conditional-select"><option>Normale</option><option>Depresso</option><option>Optunded</option><option>Stuporoso</option><option>Coma</option><option>Iperestesia</option><option value="Altro">Altro</option></select>
+                                <div id="mental-state-other-container" class="mt-2 hidden"><label for="mentalStateOther" class="block text-sm font-medium text-gray-700 mb-1">Altro cosa?</label><input type="text" id="mentalStateOther" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
                             </div>
                             <div>
                                 <label for="gait" class="block text-sm font-medium text-gray-700 mb-1">Andatura</label>
                                 <select id="gait" data-other-container="gait-other-container" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg conditional-select" data-condition-value="Zoppia"><option>Normale</option><option>Atassia</option><option>Paresi</option><option>Paralisi</option><option value="Zoppia">Zoppia</option></select>
-                                <div id="gait-other-container" class="mt-2 hidden"><label for="gait-other" class="block text-sm font-medium text-gray-700 mb-1">Zoppia quale arto?</label><input type="text" id="gait-other" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
+                                <div id="gait-other-container" class="mt-2 hidden"><label for="gaitOther" class="block text-sm font-medium text-gray-700 mb-1">Zoppia quale arto?</label><input type="text" id="gaitOther" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
                             </div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             <div><label for="temperature" class="block text-sm font-medium text-gray-700 mb-1">Temperatura (°C)</label><input type="number" step="0.1" id="temperature" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
-                            <div><label for="capillary-refill-time" class="block text-sm font-medium text-gray-700 mb-1">Tempo Riempimento Capillare (s)</label><input type="number" step="0.1" id="capillary-refill-time" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
-                            <div><label for="mucous-membranes" class="block text-sm font-medium text-gray-700 mb-1">Colore Mucose</label><input type="text" id="mucous-membranes" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
+                            <div><label for="capillaryRefillTime" class="block text-sm font-medium text-gray-700 mb-1">Tempo Riempimento Capillare (s)</label><input type="number" step="0.1" id="capillaryRefillTime" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
+                            <div><label for="mucousMembranes" class="block text-sm font-medium text-gray-700 mb-1">Colore Mucose</label><input type="text" id="mucousMembranes" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
                             <div><label for="hydration" class="block text-sm font-medium text-gray-700 mb-1">Idratazione</label><select id="hydration" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"><option>Normale</option><option>Lieve</option><option>Moderata</option><option>Grave</option></select></div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label for="lymph-nodes" class="block text-sm font-medium text-gray-700 mb-1">Linfonodi Periferici</label>
-                                <select id="lymph-nodes" data-other-container="lymph-nodes-other-container" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg conditional-select" data-condition-value="Aumentati"><option>Normali</option><option value="Aumentati">Aumentati</option></select>
-                                <div id="lymph-nodes-other-container" class="mt-2 hidden"><label for="lymph-nodes-other" class="block text-sm font-medium text-gray-700 mb-1">Aumentati quali?</label><input type="text" id="lymph-nodes-other" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
+                                <label for="lymphNodes" class="block text-sm font-medium text-gray-700 mb-1">Linfonodi Periferici</label>
+                                <select id="lymphNodes" data-other-container="lymph-nodes-other-container" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg conditional-select" data-condition-value="Aumentati"><option>Normali</option><option value="Aumentati">Aumentati</option></select>
+                                <div id="lymph-nodes-other-container" class="mt-2 hidden"><label for="lymphNodesOther" class="block text-sm font-medium text-gray-700 mb-1">Aumentati quali?</label><input type="text" id="lymphNodesOther" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
                             </div>
-                            <div><label for="abdominal-palpation" class="block text-sm font-medium text-gray-700 mb-1">Palpazione Addominale</label><select id="abdominal-palpation" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"><option>Normale</option><option>Dolente</option><option>Tesa</option><option>Masse/Organomegalia</option></select></div>
+                            <div><label for="abdominalPalpation" class="block text-sm font-medium text-gray-700 mb-1">Palpazione Addominale</label><select id="abdominalPalpation" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"><option>Normale</option><option>Dolente</option><option>Tesa</option><option>Masse/Organomegalia</option></select></div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div><label for="cardiac-auscultation" class="block text-sm font-medium text-gray-700 mb-1">Auscultazione Cardiaca</label><select id="cardiac-auscultation" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"><option>Normale</option><option>Soffio</option><option>Battito doppio</option><option>Battito alternato</option><option>Accelerato</option><option>Bradicardico</option><option>Soffocato</option></select></div>
-                            <div><label for="pulmonary-auscultation" class="block text-sm font-medium text-gray-700 mb-1">Auscultazione Polmonare</label><select id="pulmonary-auscultation" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"><option>Normale</option><option>Ronchi</option><option>Crepitii</option><option>Fischi</option></select></div>
+                            <div><label for="cardiacAuscultation" class="block text-sm font-medium text-gray-700 mb-1">Auscultazione Cardiaca</label><select id="cardiacAuscultation" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"><option>Normale</option><option>Soffio</option><option>Battito doppio</option><option>Battito alternato</option><option>Accelerato</option><option>Bradicardico</option><option>Soffocato</option></select></div>
+                            <div><label for="pulmonaryAuscultation" class="block text-sm font-medium text-gray-700 mb-1">Auscultazione Polmonare</label><select id="pulmonaryAuscultation" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"><option>Normale</option><option>Ronchi</option><option>Crepitii</option><option>Fischi</option></select></div>
                         </div>
                         <div>
                             <label for="cns" class="block text-sm font-medium text-gray-700 mb-1">Sistema Nervoso Centrale</label>
                             <p class="text-xs text-gray-500 mb-1">(riflessi, reazioni posturali, collaborativo o non collaborativo, sedato)</p>
                             <textarea id="cns" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></textarea>
                         </div>
-                        <div><label for="other-findings" class="block text-sm font-medium text-gray-700 mb-1">Altri Rilievi Significativi</label><textarea id="other-findings" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></textarea></div>
+                        <div><label for="otherFindings" class="block text-sm font-medium text-gray-700 mb-1">Altri Rilievi Significativi</label><textarea id="otherFindings" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></textarea></div>
                     </div>
                 </div>
 
@@ -142,8 +142,8 @@
                     <h2 class="form-section-title">Trattamento in Atto (a casa) e Terapie all'Ingresso</h2>
                     <p class="form-section-subtitle">Trattamenti a casa e terapie segnate al ricovero (non necessariamente da eseguire).</p>
                     <div class="space-y-6">
-                        <div><label for="home-treatments" class="block text-sm font-medium text-gray-700 mb-1">Fluidi o farmaci A CASA (dosaggio, via e frequenza)</label><textarea id="home-treatments" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></textarea></div>
-                        <div><label for="admission-therapy" class="block text-sm font-medium text-gray-700 mb-1">Terapia medica ALL'ATTO DEL RICOVERO</label><textarea id="admission-therapy" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></textarea></div>
+                        <div><label for="homeTreatments" class="block text-sm font-medium text-gray-700 mb-1">Fluidi o farmaci A CASA (dosaggio, via e frequenza)</label><textarea id="homeTreatments" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></textarea></div>
+                        <div><label for="admissionTherapy" class="block text-sm font-medium text-gray-700 mb-1">Terapia medica ALL'ATTO DEL RICOVERO</label><textarea id="admissionTherapy" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></textarea></div>
 
                         <div>
                             <div class="flex justify-between items-center mb-2">
@@ -252,10 +252,10 @@
                         <button type="button" id="print-evaluation-button" class="no-print ml-4 px-4 py-2 border border-blue-500 text-blue-500 font-semibold rounded-lg hover:bg-blue-50 transition duration-200 whitespace-nowrap">Stampa Valutazione</button>
                     </div>
                     <div class="space-y-6">
-                        <div><label for="medical-course" class="block text-sm font-medium text-gray-700 mb-1">Valutazione e Decorso Medico</label><textarea id="medical-course" rows="4" class="w-full px-4 py-2 bg-gray-50 border rounded-lg"></textarea></div>
-                        <div><label for="discharge-conditions" class="block text-sm font-medium text-gray-700 mb-1">Condizioni all'Atto delle Dimissioni (con eventuale diagnosi)</label><textarea id="discharge-conditions" rows="4" class="w-full px-4 py-2 bg-gray-50 border rounded-lg"></textarea></div>
-                        <div><label for="home-therapy" class="block text-sm font-medium text-gray-700 mb-1">Terapie da Continuare a Casa</label><textarea id="home-therapy" rows="4" class="w-full px-4 py-2 bg-gray-50 border rounded-lg"></textarea></div>
-                        <div><label for="follow-up" class="block text-sm font-medium text-gray-700 mb-1">Follow-up</label><textarea id="follow-up" rows="3" class="w-full px-4 py-2 bg-gray-50 border rounded-lg"></textarea></div>
+                        <div><label for="medicalCourse" class="block text-sm font-medium text-gray-700 mb-1">Valutazione e Decorso Medico</label><textarea id="medicalCourse" rows="4" class="w-full px-4 py-2 bg-gray-50 border rounded-lg"></textarea></div>
+                        <div><label for="dischargeConditions" class="block text-sm font-medium text-gray-700 mb-1">Condizioni all'Atto delle Dimissioni (con eventuale diagnosi)</label><textarea id="dischargeConditions" rows="4" class="w-full px-4 py-2 bg-gray-50 border rounded-lg"></textarea></div>
+                        <div><label for="homeTherapy" class="block text-sm font-medium text-gray-700 mb-1">Terapie da Continuare a Casa</label><textarea id="homeTherapy" rows="4" class="w-full px-4 py-2 bg-gray-50 border rounded-lg"></textarea></div>
+                        <div><label for="followUp" class="block text-sm font-medium text-gray-700 mb-1">Follow-up</label><textarea id="followUp" rows="3" class="w-full px-4 py-2 bg-gray-50 border rounded-lg"></textarea></div>
                     </div>
                 </div>
             </form>
@@ -430,7 +430,7 @@
             document.querySelectorAll('.custom-exam-item').forEach(el => el.remove());
 
             saveButton.textContent = 'Salva Paziente';
-            document.getElementById('entry-date').valueAsDate = new Date();
+            document.getElementById('entryDate').valueAsDate = new Date();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         document.getElementById('new-card-btn').addEventListener('click', clearForm);
@@ -528,14 +528,14 @@
         // --- GESTIONE STAMPA ---
         document.getElementById('print-button').addEventListener('click', () => {
             document.body.classList.remove('print-evaluation-only');
-            document.querySelector('#patient-info-header-print h1').textContent = `Cartella Clinica: ${document.getElementById('patient-name').value || 'N/D'} (${document.getElementById('owner-lastname').value || 'N/D'})`;
+            document.querySelector('#patient-info-header-print h1').textContent = `Cartella Clinica: ${document.getElementById('patientName').value || 'N/D'} (${document.getElementById('ownerLastname').value || 'N/D'})`;
             document.querySelector('#patient-info-header-print p').textContent = `Data di Stampa: ${new Date().toLocaleDateString('it-IT')}`;
             document.getElementById('patient-info-header-print').classList.remove('hidden');
             window.print();
         });
         document.getElementById('print-evaluation-button').addEventListener('click', () => {
             document.body.classList.add('print-evaluation-only');
-            document.querySelector('#patient-info-header-print h1').textContent = `Valutazione Medica: ${document.getElementById('patient-name').value || 'N/D'} (${document.getElementById('owner-lastname').value || 'N/D'})`;
+            document.querySelector('#patient-info-header-print h1').textContent = `Valutazione Medica: ${document.getElementById('patientName').value || 'N/D'} (${document.getElementById('ownerLastname').value || 'N/D'})`;
             document.querySelector('#patient-info-header-print p').textContent = `Data di Stampa: ${new Date().toLocaleDateString('it-IT')}`;
             document.getElementById('patient-info-header-print').classList.remove('hidden');
             window.print();
@@ -565,13 +565,14 @@
             // Popola i campi statici
             const formElements = document.querySelectorAll('#patient-form [id]');
             formElements.forEach(el => {
-                if (data.hasOwnProperty(el.id)) {
+                const key = el.id;
+                if (data.hasOwnProperty(key)) {
                     if (el.type === 'checkbox') {
-                        el.checked = data[el.id];
+                        el.checked = data[key];
                     } else if (el.tagName === 'SELECT') {
-                        el.value = data[el.id] || el.options[0].value;
+                        el.value = data[key] || el.options[0].value;
                     } else {
-                        el.value = data[el.id] || '';
+                        el.value = data[key] || '';
                     }
                 }
             });
@@ -583,17 +584,26 @@
 
             // Popola gli esami da eseguire
             if (data.examsToPerform) {
-                for (const key in data.examsToPerform) {
-                    const el = document.getElementById(`exam-${key}`);
-                    if (el) {
-                        if (el.type === 'checkbox') {
-                            el.checked = data.examsToPerform[key];
-                        } else {
-                            el.value = data.examsToPerform[key] || '';
-                        }
-                    }
-                }
+                document.getElementById('exam-cbc').checked = data.examsToPerform.cbc;
+                document.getElementById('exam-biochem').checked = data.examsToPerform.biochem;
+                document.getElementById('exam-biochem-other').value = data.examsToPerform.biochem_other || '';
+                document.getElementById('exam-snap').checked = data.examsToPerform.snap;
+                document.getElementById('exam-snap-other').value = data.examsToPerform.snap_other || '';
+                document.getElementById('exam-urinalysis').checked = data.examsToPerform.urinalysis;
+                document.getElementById('exam-pucu').checked = data.examsToPerform.pucu;
+                document.getElementById('exam-rx').checked = data.examsToPerform.rx;
+                document.getElementById('exam-rx-other').value = data.examsToPerform.rx_other || '';
+                document.getElementById('exam-ultrasound').checked = data.examsToPerform.ultrasound;
+                document.getElementById('exam-ecofast').checked = data.examsToPerform.ecofast;
+                document.getElementById('exam-emogas').checked = data.examsToPerform.emogas;
+                document.getElementById('exam-surgery').checked = data.examsToPerform.surgery;
+                document.getElementById('exam-surgery-other').value = data.examsToPerform.surgery_other || '';
+                document.getElementById('exam-lab').checked = data.examsToPerform.lab;
+                document.getElementById('exam-lab-other').value = data.examsToPerform.lab_other || '';
+                document.getElementById('exam-other').checked = data.examsToPerform.other;
+                document.getElementById('exam-other-other').value = data.examsToPerform.other_other || '';
             }
+
             if (data.customExams) {
                 // Rimuove i vecchi esami custom prima di aggiungerli
                 document.querySelectorAll('.custom-exam-item').forEach(el => el.remove());
@@ -611,24 +621,22 @@
 
             // Popola gli esami eseguiti
             if (data.examsExecuted) {
-                // Iterazione per i checkbox e i campi di testo
-                for (const key in data.examsExecuted) {
-                    const el = document.getElementById(`executed-exam-${key.replace('_', '-')}`);
-                    if (el) {
-                        if (el.type === 'checkbox') {
-                            el.checked = data.examsExecuted[key];
-                        } else {
-                            el.value = data.examsExecuted[key] || '';
-                        }
-                    }
-                }
-                const otherTextEl = document.getElementById('executed-exam-other-text');
-                if (otherTextEl) {
-                    otherTextEl.value = data.examsExecuted.other_text || '';
-                }
+                document.getElementById('executed-exam-cbc').checked = data.examsExecuted.cbc;
+                document.getElementById('executed-exam-biochem').checked = data.examsExecuted.biochem;
+                document.getElementById('executed-exam-biochem-other').value = data.examsExecuted.biochem_other || '';
+                document.getElementById('executed-exam-snap').checked = data.examsExecuted.snap;
+                document.getElementById('executed-exam-urinalysis').checked = data.examsExecuted.urinalysis;
+                document.getElementById('executed-exam-pucu').checked = data.examsExecuted.pucu;
+                document.getElementById('executed-exam-rx').checked = data.examsExecuted.rx;
+                document.getElementById('executed-exam-ultrasound').checked = data.examsExecuted.ultrasound;
+                document.getElementById('executed-exam-ecofast').checked = data.examsExecuted.ecofast;
+                document.getElementById('executed-exam-emogas').checked = data.examsExecuted.emogas;
+                document.getElementById('executed-exam-surgery').checked = data.examsExecuted.surgery;
+                document.getElementById('executed-exam-lab').checked = data.examsExecuted.lab;
+                document.getElementById('executed-exam-other-text').value = data.examsExecuted.other_text || '';
             }
 
-            // Popola le sezioni dinamiche (monitoraggio, terapia, flebo, farmaci)
+            // Popola le sezioni dinamiche (flebo, monitoraggio, terapia)
             const populateDynamicSection = (containerId, templateId, entries) => {
                 const container = document.getElementById(containerId);
                 container.innerHTML = '';
@@ -646,7 +654,7 @@
                     });
                     container.appendChild(clone);
                 });
-                // Assicura che ci sia sempre almeno un campo di default
+                // Assicura che ci sia sempre almeno un campo di default se la sezione era vuota
                 if (container.children.length === 0 && templateId !== 'custom-exam-template') {
                     const defaultClone = document.getElementById(templateId).cloneNode(true);
                     defaultClone.id = '';
@@ -654,7 +662,7 @@
                     container.appendChild(defaultClone);
                 }
             };
-
+            
             // Flebo
             populateDynamicSection('dynamic-infusion-inputs', 'infusion-row-template', data.infusionTherapy);
             // Farmaci
@@ -679,6 +687,7 @@
             populateDynamicSection('therapy-log-container', 'therapy-log-template', data.therapyLog);
         }
 
+
         function saveData() {
             const getDynamicEntries = (containerId) => {
                 return Array.from(document.querySelectorAll(`#${containerId} > div:not(.hidden)`)).map(entryDiv => {
@@ -701,39 +710,39 @@
 
             const patientData = {
                 id: currentPatientId || `patient_${Date.now()}`,
-                entryDate: document.getElementById('entry-date').value,
-                ownerLastname: document.getElementById('owner-lastname').value.trim(),
+                entryDate: document.getElementById('entryDate').value,
+                ownerLastname: document.getElementById('ownerLastname').value.trim(),
                 phone: document.getElementById('phone').value.trim(),
-                altContact: document.getElementById('alt-contact').value.trim(),
-                patientName: document.getElementById('patient-name').value.trim(),
+                altContact: document.getElementById('altContact').value.trim(),
+                patientName: document.getElementById('patientName').value.trim(),
                 species: document.getElementById('species').value.trim(),
                 sex: document.getElementById('sex').value,
                 age: document.getElementById('age').value.trim(),
                 weight: document.getElementById('weight').value,
                 microchip: document.getElementById('microchip').value.trim(),
-                reasonForHospitalization: document.getElementById('reason-for-hospitalization').value.trim(),
+                reasonForHospitalization: document.getElementById('reasonForHospitalization').value.trim(),
                 vaccinations: document.getElementById('vaccinations').value,
                 vaccinationsOther: document.getElementById('vaccinations-other').value.trim(),
-                parasiteTreatments: document.getElementById('parasite-treatments').value,
+                parasiteTreatments: document.getElementById('parasiteTreatments').value,
                 parasiteTreatmentsOther: document.getElementById('parasite-treatments-other').value.trim(),
-                previousPathologies: document.getElementById('previous-pathologies').value.trim(),
-                mentalState: document.getElementById('mental-state').value,
-                mentalStateOther: document.getElementById('mental-state-other').value.trim(),
+                previousPathologies: document.getElementById('previousPathologies').value.trim(),
+                mentalState: document.getElementById('mentalState').value,
+                mentalStateOther: document.getElementById('mentalStateOther').value.trim(),
                 gait: document.getElementById('gait').value,
-                gaitOther: document.getElementById('gait-other').value.trim(),
+                gaitOther: document.getElementById('gaitOther').value.trim(),
                 temperature: document.getElementById('temperature').value,
-                capillaryRefillTime: document.getElementById('capillary-refill-time').value,
-                mucousMembranes: document.getElementById('mucous-membranes').value.trim(),
+                capillaryRefillTime: document.getElementById('capillaryRefillTime').value,
+                mucousMembranes: document.getElementById('mucousMembranes').value.trim(),
                 hydration: document.getElementById('hydration').value,
-                lymphNodes: document.getElementById('lymph-nodes').value,
-                lymphNodesOther: document.getElementById('lymph-nodes-other').value.trim(),
-                abdominalPalpation: document.getElementById('abdominal-palpation').value,
-                cardiacAuscultation: document.getElementById('cardiac-auscultation').value,
-                pulmonaryAuscultation: document.getElementById('pulmonary-auscultation').value,
+                lymphNodes: document.getElementById('lymphNodes').value,
+                lymphNodesOther: document.getElementById('lymphNodesOther').value.trim(),
+                abdominalPalpation: document.getElementById('abdominalPalpation').value,
+                cardiacAuscultation: document.getElementById('cardiacAuscultation').value,
+                pulmonaryAuscultation: document.getElementById('pulmonaryAuscultation').value,
                 cns: document.getElementById('cns').value.trim(),
-                otherFindings: document.getElementById('other-findings').value.trim(),
-                homeTreatments: document.getElementById('home-treatments').value.trim(),
-                admissionTherapy: document.getElementById('admission-therapy').value.trim(),
+                otherFindings: document.getElementById('otherFindings').value.trim(),
+                homeTreatments: document.getElementById('homeTreatments').value.trim(),
+                admissionTherapy: document.getElementById('admissionTherapy').value.trim(),
                 examsToPerform: {
                     cbc: document.getElementById('exam-cbc').checked,
                     biochem: document.getElementById('exam-biochem').checked, biochem_other: document.getElementById('exam-biochem-other').value.trim(),
@@ -764,10 +773,10 @@
                 },
                 infusionTherapy: getDynamicEntries('dynamic-infusion-inputs'),
                 drugsToAdminister: Array.from(document.querySelectorAll('#dynamic-drug-inputs input')).map(input => input.value.trim()).filter(Boolean),
-                medicalCourse: document.getElementById('medical-course').value.trim(),
-                dischargeConditions: document.getElementById('discharge-conditions').value.trim(),
-                homeTherapy: document.getElementById('home-therapy').value.trim(),
-                followUp: document.getElementById('follow-up').value.trim(),
+                medicalCourse: document.getElementById('medicalCourse').value.trim(),
+                dischargeConditions: document.getElementById('dischargeConditions').value.trim(),
+                homeTherapy: document.getElementById('homeTherapy').value.trim(),
+                followUp: document.getElementById('followUp').value.trim(),
                 monitoringEntries: getDynamicEntries('monitoring-entries-container'),
                 therapyLog: getDynamicEntries('therapy-log-container'),
                 updatedAt: new Date().toISOString(),
