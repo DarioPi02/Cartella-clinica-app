@@ -482,7 +482,7 @@
     </div>
 
 
-    <script>
+   <script>
     // --- Riferimenti a Firebase Authentication e Firestore ---
     const auth = firebase.auth();
     const db = firebase.firestore();
@@ -678,41 +678,48 @@
     });
 
     // --- GESTIONE STAMPA ---
-    function adjustTextAreaHeights() {
-        const textareas = document.querySelectorAll('textarea.printable-data');
-        textareas.forEach(textarea => {
-            // Un po' di magia per calcolare l'altezza esatta
-            textarea.style.height = 'auto';
-            textarea.style.height = (textarea.scrollHeight) + 'px';
+    let originalTextareas = [];
+
+    window.onbeforeprint = () => {
+        // Nasconde il header solo nella stampa
+        document.getElementById('patient-info-header-print').classList.remove('hidden');
+
+        // Sostituisce le textarea con <div> per la stampa
+        document.querySelectorAll('textarea.printable-data').forEach(textarea => {
+            const replacementDiv = document.createElement('div');
+            replacementDiv.classList.add('printable-data', 'print-only-content');
+            replacementDiv.textContent = textarea.value;
+            textarea.style.display = 'none'; // Nasconde la textarea originale
+            textarea.parentNode.insertBefore(replacementDiv, textarea.nextSibling);
+            originalTextareas.push({ textarea: textarea, replacement: replacementDiv });
         });
-    }
+    };
+
+    window.onafterprint = () => {
+        // Ripristina l'interfaccia rimuovendo i <div> e mostrando le textarea
+        originalTextareas.forEach(item => {
+            item.replacement.remove();
+            item.textarea.style.display = '';
+        });
+        originalTextareas = [];
+
+        // Nasconde il header dopo la stampa
+        document.getElementById('patient-info-header-print').classList.add('hidden');
+    };
 
     document.getElementById('print-button').addEventListener('click', () => {
-        adjustTextAreaHeights();
         document.body.classList.remove('print-evaluation-only');
         document.querySelector('#patient-info-header-print h1').textContent = `Cartella Clinica: ${document.getElementById('patientName').value || 'N/D'} (${document.getElementById('ownerLastname').value || 'N/D'})`;
         document.querySelector('#patient-info-header-print p').textContent = `Data di Stampa: ${new Date().toLocaleDateString('it-IT')}`;
-        document.getElementById('patient-info-header-print').classList.remove('hidden');
         window.print();
     });
 
     document.getElementById('print-evaluation-button').addEventListener('click', () => {
-        adjustTextAreaHeights();
         document.body.classList.add('print-evaluation-only');
         document.querySelector('#patient-info-header-print h1').textContent = `Valutazione Medica: ${document.getElementById('patientName').value || 'N/D'} (${document.getElementById('ownerLastname').value || 'N/D'})`;
         document.querySelector('#patient-info-header-print p').textContent = `Data di Stampa: ${new Date().toLocaleDateString('it-IT')}`;
-        document.getElementById('patient-info-header-print').classList.remove('hidden');
         window.print();
     });
-
-    window.onafterprint = () => {
-        document.body.classList.remove('print-evaluation-only');
-        document.getElementById('patient-info-header-print').classList.add('hidden');
-        // Ripristina l'altezza normale delle textarea dopo la stampa
-        document.querySelectorAll('textarea.printable-data').forEach(textarea => {
-            textarea.style.height = '';
-        });
-    };
 
     // --- GESTIONE AUTHENTICATION E FIREBASE ---
     auth.onAuthStateChanged(user => {
@@ -1093,6 +1100,7 @@
 </script>
 </body>
 </html>
+
 
 
 
