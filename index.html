@@ -154,11 +154,28 @@
         }
     </style>
 </head>
+    
+    <div id="login-screen" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50">
+    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">Accedi al Sistema</h2>
+        <p class="text-sm text-gray-600 mb-6">Inserisci le tue credenziali per continuare.</p>
+        <form id="login-form" class="space-y-4">
+            <input type="email" id="login-email" placeholder="Email" required class="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+            <input type="password" id="login-password" placeholder="Password" required class="w-full px-4 py-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500">
+            <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">Accedi</button>
+        </form>
+        <p id="login-error" class="mt-4 text-red-600 text-sm hidden">Credenziali non valide. Riprova.</p>
+    </div>
+</div>
+    
 <body class="bg-gray-100 text-gray-800">
 
     <div class="container mx-auto p-4 sm:p-6 lg:p-8">
 
         <div class="flex justify-between items-center mb-6 no-print">
+            <button type="button" id="logout-btn" class="px-5 py-2 border border-red-500 text-red-600 font-semibold rounded-lg hover:bg-red-50 transition">
+    Logout
+</button>
             <h1 class="text-3xl font-bold text-gray-800">Cartella Clinica</h1>
             <button type="button" id="new-card-btn" class="px-5 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition">
                 + Crea Nuova Scheda
@@ -1106,11 +1123,73 @@
             }
         });
 
-        window.onload = () => {
-            clearForm();
-            renderPatientsList();
-        };
+        // --- Riferimenti a Firebase Authentication e Firestore ---
+const auth = firebase.auth();
+const db = firebase.firestore();
+const patientsCollection = db.collection('patients'); // Un "cassetto" dove salveremo tutti i pazienti
+
+        
+        // --- ELEMENTI DEL DOM ---
+const patientForm = document.getElementById('patient-form');
+// ... mantieni gli altri elementi DOM come sono ...
+const patientsListDiv = document.getElementById('patients-list');
+const saveButton = document.getElementById('save-button');
+const examsToPerformList = document.getElementById('exams-to-perform-list');
+const infusionContainer = document.getElementById('dynamic-infusion-inputs');
+const drugsContainer = document.getElementById('dynamic-drug-inputs');
+const importantMessageContainer = document.getElementById('important-message-container');
+
+// Elementi di autenticazione
+const loginScreen = document.getElementById('login-screen');
+const loginForm = document.getElementById('login-form');
+const loginEmail = document.getElementById('login-email');
+const loginPassword = document.getElementById('login-password');
+const loginError = document.getElementById('login-error');
+const logoutBtn = document.getElementById('logout-btn');
+
+let currentPatientId = null;
+
+// --- FUNZIONI DI BASE ---
+// ... mantieni tutte le tue funzioni di base (`displayMessage`, `clearForm`, etc.) ...
+
+// --- GESTIONE AUTHENTICATION E FIREBASE ---
+auth.onAuthStateChanged(user => {
+    if (user) {
+        // Utente loggato
+        loginScreen.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+        renderPatientsList();
+    } else {
+        // Utente non loggato
+        loginScreen.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+        patientsListDiv.innerHTML = '<p class="text-gray-500">Effettua l\'accesso per vedere i pazienti.</p>';
+        clearForm();
+    }
+});
+
+loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try {
+        await auth.signInWithEmailAndPassword(loginEmail.value, loginPassword.value);
+        loginError.classList.add('hidden');
+    } catch (error) {
+        console.error("Login fallito:", error);
+        loginError.textContent = "Credenziali non valide. Riprova.";
+        loginError.classList.remove('hidden');
+    }
+});
+
+logoutBtn.addEventListener('click', async () => {
+    await auth.signOut();
+});
+
+// --- CARICAMENTO, POPOLAMENTO E SALVATAGGIO DATI (NUOVE FUNZIONI) ---
+// ... Ora sostituiremo le funzioni `getPatients`, `saveData`, `loadPatientData`, `deletePatientData` con le nuove versioni che usano Firestore ...
+
+        
     </script>
 </body>
 </html>
+
 
