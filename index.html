@@ -56,17 +56,26 @@
             /* Nasconde sezioni vuote e campi non compilati */
             .form-section-content:empty,
             .form-section:has(.form-section-content:empty),
-            .form-section:has(.printable-data:not(:checked):not([value=''])):not(:has(input[type='text'][value!=''], textarea:not(:empty))) {
-                 display: none !important;
-            }
-            input:not([type="checkbox"]):not([type="date"]):not([value]):not([data-field]):not(.has-value),
-            input[value='']:not([data-field]),
-            textarea:not([data-field]):not(.has-value),
-            textarea:empty:not([data-field]) {
+            input[type="text"]:not([value]),
+            input[type="number"]:not([value]),
+            input[type="date"]:not([value]),
+            input[type="tel"]:not([value]),
+            textarea:not([data-field]),
+            select:not([data-field]),
+            input[type="checkbox"]:not(:checked) {
                 display: none !important;
             }
-            input[type="date"]:not([value='']) {
-                border: none;
+            input[type="text"][value=''],
+            input[type="number"][value=''],
+            input[type="date"][value=''],
+            input[type="tel"][value=''],
+            textarea:empty {
+                display: none !important;
+            }
+
+            /* Ripristina la visualizzazione di label e checkbox */
+            input[type="checkbox"] + label {
+                display: inline-block;
             }
 
             /* Aggiusta lo stile per i dati stampati */
@@ -83,14 +92,12 @@
                 resize: none;
                 overflow: hidden;
             }
-
             textarea {
                 display: block;
                 height: auto !important;
                 min-height: unset;
                 white-space: pre-wrap;
             }
-
             label { font-weight: bold; }
             .form-section-title {
                 margin-top: 1.5rem;
@@ -116,33 +123,20 @@
                 padding: 0;
             }
 
-            /* Nasconde i contenitori di dati dinamici se vuoti */
-            #dynamic-infusion-inputs:empty,
-            #dynamic-drug-inputs:empty,
-            #important-message-container:empty,
-            #monitoring-entries-container:empty,
-            #therapy-log-container:empty {
-                display: none;
-            }
-
             .flex.items-center.space-x-2 {
                 display: block;
                 margin-bottom: 0.25rem;
             }
-
             #exams-to-perform-list > div,
             .custom-exam-item {
                 margin-bottom: 0.25rem;
             }
-
             .infusion-row {
                 background-color: #f7f7f7;
             }
-
             .patient-info-print-only {
                 display: block;
             }
-
             h2.form-section-title {
                 page-break-after: avoid;
             }
@@ -723,44 +717,7 @@
         });
 
         // --- GESTIONE STAMPA ---
-        function prepareForPrint() {
-            // Aggiunge la classe a tutti i campi che hanno un valore per la stampa
-            document.querySelectorAll('.printable-data').forEach(el => {
-                if (el.value && el.value.trim() !== '') {
-                    el.classList.add('has-value');
-                } else if (el.type === 'checkbox' && el.checked) {
-                    el.classList.add('has-value');
-                } else if (el.tagName === 'SELECT' && el.value !== '') {
-                    el.classList.add('has-value');
-                } else {
-                    el.classList.remove('has-value');
-                }
-
-                if (el.tagName === 'TEXTAREA' && el.value.trim() !== '') {
-                    el.style.height = 'auto'; // Reset height
-                    el.style.height = (el.scrollHeight) + 'px';
-                }
-            });
-
-            // Gestisce la visibilità delle sezioni
-            document.querySelectorAll('.form-section').forEach(section => {
-                 const hasData = section.querySelector('.printable-data.has-value, textarea:not(:empty)');
-                 if (!hasData) {
-                     section.style.display = 'none';
-                 } else {
-                     section.style.display = '';
-                 }
-            });
-            // Nasconde le sezioni dinamiche se vuote
-            document.querySelectorAll('.dynamic-input-container').forEach(container => {
-                 if (container.children.length === 0 || (container.children.length === 1 && container.children[0].classList.contains('hidden'))) {
-                    container.closest('.form-section').style.display = 'none';
-                 }
-            });
-        }
-
         document.getElementById('print-button').addEventListener('click', () => {
-            prepareForPrint();
             document.body.classList.remove('print-evaluation-only');
             document.querySelector('#patient-info-header-print h1').textContent = `Cartella Clinica: ${document.getElementById('patientName').value || 'N/D'} (${document.getElementById('ownerLastname').value || 'N/D'})`;
             document.querySelector('#patient-info-header-print p').textContent = `Data di Stampa: ${new Date().toLocaleDateString('it-IT')}`;
@@ -769,7 +726,6 @@
         });
 
         document.getElementById('print-evaluation-button').addEventListener('click', () => {
-            prepareForPrint();
             document.body.classList.add('print-evaluation-only');
             document.querySelector('#patient-info-header-print h1').textContent = `Valutazione Medica: ${document.getElementById('patientName').value || 'N/D'} (${document.getElementById('ownerLastname').value || 'N/D'})`;
             document.querySelector('#patient-info-header-print p').textContent = `Data di Stampa: ${new Date().toLocaleDateString('it-IT')}`;
@@ -780,8 +736,6 @@
         window.onafterprint = () => {
             document.body.classList.remove('print-evaluation-only');
             document.getElementById('patient-info-header-print').classList.add('hidden');
-            // Ripristina la visualizzazione di tutte le sezioni
-            document.querySelectorAll('.form-section').forEach(section => section.style.display = '');
         };
 
         // --- GESTIONE AUTHENTICATION E FIREBASE ---
