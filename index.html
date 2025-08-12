@@ -22,7 +22,7 @@
             body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .no-print { display: none !important; }
             .printable-area { box-shadow: none; border: none; }
-            body.print-evaluation-only .form-section:not(#medical-evaluation-section, .patient-info-print-only) { display: none; }
+            body.print-evaluation-only .form-section:not(#medical-evaluation-section, .patient-info-print-only, #important-message-section) { display: none; }
             body.print-evaluation-only .patient-info-print-only { display: block !important; }
             body.print-evaluation-only h1 { display: none; }
             .page-break { page-break-before: always; }
@@ -249,7 +249,10 @@
                             <h2 class="form-section-title">Valutazione Medica</h2>
                             <p class="form-section-subtitle">Valutazione, decorso e dimissioni (Compilazione Medica).</p>
                         </div>
-                        <button type="button" id="print-evaluation-button" class="no-print ml-4 px-4 py-2 border border-blue-500 text-blue-500 font-semibold rounded-lg hover:bg-blue-50 transition duration-200 whitespace-nowrap">Stampa Valutazione</button>
+                        <div class="flex space-x-2 no-print">
+                            <button type="button" id="add-important-message-btn" class="px-4 py-2 border border-yellow-500 text-yellow-600 font-semibold rounded-lg hover:bg-yellow-50 transition duration-200 whitespace-nowrap">+ Messaggio</button>
+                            <button type="button" id="print-evaluation-button" class="px-4 py-2 border border-blue-500 text-blue-500 font-semibold rounded-lg hover:bg-blue-50 transition duration-200 whitespace-nowrap">Stampa Valutazione</button>
+                        </div>
                     </div>
                     <div class="space-y-6">
                         <div><label for="medicalCourse" class="block text-sm font-medium text-gray-700 mb-1">Valutazione e Decorso Medico</label><textarea id="medicalCourse" rows="4" class="w-full px-4 py-2 bg-gray-50 border rounded-lg"></textarea></div>
@@ -258,27 +261,33 @@
                         <div><label for="followUp" class="block text-sm font-medium text-gray-700 mb-1">Follow-up</label><textarea id="followUp" rows="3" class="w-full px-4 py-2 bg-gray-50 border rounded-lg"></textarea></div>
                     </div>
                 </div>
+                
+                <hr class="my-8 border-t-2 border-dashed border-gray-300 page-break">
+                <div id="important-message-section" class="form-section">
+                    <div id="important-message-container">
+                        </div>
+                </div>
+
+                <hr class="my-8 border-t-2 border-dashed border-gray-300 page-break">
+                <div class="form-section">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="form-section-title">Monitoraggio Parametri Vitali</h2>
+                        <button type="button" id="add-monitoring-btn" class="no-print px-4 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition">Aggiungi Monitoraggio</button>
+                    </div>
+                    <div id="monitoring-entries-container" class="space-y-6">
+                        </div>
+                </div>
+
+                <hr class="my-8 border-t-2 border-dashed border-gray-300 page-break">
+                <div class="form-section">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="form-section-title">Terapia (Somministrazioni)</h2>
+                        <button type="button" id="add-therapy-log-btn" class="no-print px-4 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition">Aggiungi Somministrazione</button>
+                    </div>
+                    <div id="therapy-log-container" class="space-y-6">
+                        </div>
+                </div>
             </form>
-
-            <hr class="my-8 border-t-2 border-dashed border-gray-300 page-break">
-            <div class="form-section">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="form-section-title">Monitoraggio Parametri Vitali</h2>
-                    <button type="button" id="add-monitoring-btn" class="no-print px-4 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition">Aggiungi Monitoraggio</button>
-                </div>
-                <div id="monitoring-entries-container" class="space-y-6">
-                    </div>
-            </div>
-
-            <hr class="my-8 border-t-2 border-dashed border-gray-300 page-break">
-            <div class="form-section">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="form-section-title">Terapia (Somministrazioni)</h2>
-                    <button type="button" id="add-therapy-log-btn" class="no-print px-4 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition">Aggiungi Somministrazione</button>
-                </div>
-                <div id="therapy-log-container" class="space-y-6">
-                    </div>
-            </div>
 
             <div class="flex items-center justify-end space-x-4 pt-8 mt-8 border-t no-print">
                 <button type="button" id="print-button" class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-100 transition duration-200">Stampa Scheda Completa</button>
@@ -365,6 +374,19 @@
         </div>
         <div class="mt-4"><label class="block text-sm font-medium text-gray-700 mb-1">Pompa infusione ml/kg/h</label><input type="text" data-field="ivRateOther" class="w-full px-4 py-2 bg-white border rounded-lg"></div>
     </div>
+    
+    <div id="important-message-template" class="hidden p-4 border rounded-lg bg-yellow-100 relative mb-4">
+        <h3 class="font-bold text-lg text-yellow-800 mb-2">Avviso Importante</h3>
+        <button type="button" class="remove-important-message-btn absolute top-2 right-2 text-yellow-800 hover:text-yellow-900 no-print">&times;</button>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div><label class="block text-sm font-medium text-yellow-800 mb-1">Inizio</label><input type="date" data-field="startDate" class="w-full px-4 py-2 bg-yellow-50 border border-yellow-300 rounded-lg"></div>
+            <div><label class="block text-sm font-medium text-yellow-800 mb-1">Scadenza</label><input type="date" data-field="endDate" class="w-full px-4 py-2 bg-yellow-50 border border-yellow-300 rounded-lg"></div>
+        </div>
+        <div class="mt-4">
+            <label class="block text-sm font-medium text-yellow-800 mb-1">Messaggio</label>
+            <textarea data-field="messageText" rows="3" class="w-full px-4 py-2 bg-yellow-50 border border-yellow-300 rounded-lg"></textarea>
+        </div>
+    </div>
 
 
     <script>
@@ -396,6 +418,7 @@
         const examsToPerformList = document.getElementById('exams-to-perform-list');
         const infusionContainer = document.getElementById('dynamic-infusion-inputs');
         const drugsContainer = document.getElementById('dynamic-drug-inputs');
+        const importantMessageContainer = document.getElementById('important-message-container');
 
         let currentPatientId = null;
 
@@ -412,6 +435,7 @@
             document.querySelectorAll('.hidden[id*="-other-container"], .hidden[data-id*="-container"]').forEach(el => el.style.display = 'none');
             document.getElementById('monitoring-entries-container').innerHTML = '';
             document.getElementById('therapy-log-container').innerHTML = '';
+            importantMessageContainer.innerHTML = '';
 
             infusionContainer.innerHTML = '';
             const defaultInfusion = document.getElementById('infusion-row-template').cloneNode(true);
@@ -522,6 +546,48 @@
         examsToPerformList.addEventListener('click', (e) => {
             if(e.target.classList.contains('remove-custom-exam-btn')) {
                 e.target.closest('.custom-exam-item').remove();
+            }
+        });
+
+        // --- GESTIONE MESSAGGIO IMPORTANTE ---
+        function addImportantMessage(messageData = {}) {
+            const template = document.getElementById('important-message-template');
+            const clone = template.cloneNode(true);
+            clone.id = '';
+            clone.classList.remove('hidden');
+
+            const today = new Date().toISOString().split('T')[0];
+            const endDate = new Date(messageData.endDate);
+            const isExpired = endDate < new Date();
+
+            if (!isExpired) {
+                 importantMessageContainer.appendChild(clone);
+
+                 // Popola i campi se i dati sono stati forniti
+                 if (Object.keys(messageData).length > 0) {
+                     clone.querySelector('[data-field="startDate"]').value = messageData.startDate;
+                     clone.querySelector('[data-field="endDate"]').value = messageData.endDate;
+                     clone.querySelector('[data-field="messageText"]').value = messageData.messageText;
+                 } else {
+                    clone.querySelector('[data-field="startDate"]').value = today;
+                 }
+            } else {
+                console.log("Messaggio scaduto, non aggiunto al DOM.");
+            }
+        }
+        
+        document.getElementById('add-important-message-btn').addEventListener('click', () => {
+            // Se esiste già un messaggio, non ne aggiungiamo un altro (per ora)
+            if (importantMessageContainer.children.length === 0) {
+                addImportantMessage({});
+            } else {
+                displayMessage("È già presente un messaggio importante. Rimuovilo per aggiungerne un altro.", "error");
+            }
+        });
+
+        importantMessageContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-important-message-btn')) {
+                e.target.closest('.p-4.border.rounded-lg').remove();
             }
         });
 
@@ -636,7 +702,7 @@
                 document.getElementById('executed-exam-other-text').value = data.examsExecuted.other_text || '';
             }
 
-            // Popola le sezioni dinamiche (flebo, monitoraggio, terapia)
+            // Popola le sezioni dinamiche (flebo, monitoraggio, terapia, messaggio)
             const populateDynamicSection = (containerId, templateId, entries) => {
                 const container = document.getElementById(containerId);
                 container.innerHTML = '';
@@ -655,7 +721,7 @@
                     container.appendChild(clone);
                 });
                 // Assicura che ci sia sempre almeno un campo di default se la sezione era vuota
-                if (container.children.length === 0 && templateId !== 'custom-exam-template') {
+                if (container.children.length === 0 && templateId !== 'custom-exam-template' && templateId !== 'important-message-template') {
                     const defaultClone = document.getElementById(templateId).cloneNode(true);
                     defaultClone.id = '';
                     defaultClone.classList.remove('hidden');
@@ -681,6 +747,12 @@
             emptyInput.placeholder = 'Nome farmaco...';
             emptyInput.className = 'w-full px-4 py-2 bg-gray-50 border rounded-lg';
             drugsContainer.appendChild(emptyInput);
+            
+            // Messaggio importante
+            importantMessageContainer.innerHTML = '';
+            if (data.importantMessage) {
+                 addImportantMessage(data.importantMessage);
+            }
 
             // Monitoraggio e terapia log
             populateDynamicSection('monitoring-entries-container', 'monitoring-entry-template', data.monitoringEntries);
@@ -707,6 +779,14 @@
                     checked: checkbox.checked
                 };
             }).filter(exam => exam.name);
+
+            // Ottiene i dati del messaggio importante
+            const importantMessageElement = importantMessageContainer.querySelector('div:not(.hidden)');
+            const importantMessageData = importantMessageElement ? {
+                 startDate: importantMessageElement.querySelector('[data-field="startDate"]').value,
+                 endDate: importantMessageElement.querySelector('[data-field="endDate"]').value,
+                 messageText: importantMessageElement.querySelector('[data-field="messageText"]').value,
+            } : null;
 
             const patientData = {
                 id: currentPatientId || `patient_${Date.now()}`,
@@ -777,6 +857,7 @@
                 dischargeConditions: document.getElementById('dischargeConditions').value.trim(),
                 homeTherapy: document.getElementById('homeTherapy').value.trim(),
                 followUp: document.getElementById('followUp').value.trim(),
+                importantMessage: importantMessageData,
                 monitoringEntries: getDynamicEntries('monitoring-entries-container'),
                 therapyLog: getDynamicEntries('therapy-log-container'),
                 updatedAt: new Date().toISOString(),
