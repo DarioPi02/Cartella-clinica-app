@@ -53,18 +53,16 @@
             body.print-evaluation-only h1 { display: none; }
             .page-break { page-break-before: always; }
 
-            /* Nasconde sezioni vuote */
+            /* Nasconde sezioni vuote e campi non compilati */
             .form-section-content:empty,
             .form-section:has(.form-section-content:empty),
             .form-section:has(.printable-data:not(:checked):not([value=''])):not(:has(input[type='text'][value!=''], textarea:not(:empty))) {
                  display: none !important;
             }
-
-            /* Nasconde i campi input non compilati */
             input:not([type="checkbox"]):not([type="date"]):not([value]):not([data-field]):not(.has-value),
-            input[value=''],
+            input[value='']:not([data-field]),
             textarea:not([data-field]):not(.has-value),
-            textarea:empty {
+            textarea:empty:not([data-field]) {
                 display: none !important;
             }
             input[type="date"]:not([value='']) {
@@ -271,8 +269,7 @@
                         <div>
                             <label for="cns" class="block text-sm font-medium text-gray-700 mb-1">Sistema Nervoso Centrale</label>
                             <p class="text-xs text-gray-500 mb-1">(riflessi, reazioni posturali, collaborativo o non collaborativo, sedato)</p>
-                            <textarea id="cns" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg printable-data"></textarea>
-                        </div>
+                            <textarea id="cns" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg printable-data"></textarea></div>
                         <div><label for="otherFindings" class="block text-sm font-medium text-gray-700 mb-1">Altri Rilievi Significativi</label><textarea id="otherFindings" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg printable-data"></textarea></div>
                     </div>
                 </div>
@@ -727,9 +724,9 @@
 
         // --- GESTIONE STAMPA ---
         function prepareForPrint() {
-            // Aggiungi la classe a tutti i campi che hanno un valore per la stampa
+            // Aggiunge la classe a tutti i campi che hanno un valore per la stampa
             document.querySelectorAll('.printable-data').forEach(el => {
-                if (el.value && el.value.trim() !== '' && el.tagName !== 'SELECT') {
+                if (el.value && el.value.trim() !== '') {
                     el.classList.add('has-value');
                 } else if (el.type === 'checkbox' && el.checked) {
                     el.classList.add('has-value');
