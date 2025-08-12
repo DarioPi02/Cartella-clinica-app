@@ -458,7 +458,7 @@
             }
         }
         document.body.addEventListener('change', (e) => {
-            if (e.target.matches('.conditional-select')) {
+            if (e.target.matches('.conditional-select') || e.target.matches('.conditional-checkbox')) {
                 handleConditionalVisibility(e.target);
             }
         });
@@ -595,6 +595,8 @@
                 }
             }
             if (data.customExams) {
+                // Rimuove i vecchi esami custom prima di aggiungerli
+                document.querySelectorAll('.custom-exam-item').forEach(el => el.remove());
                 data.customExams.forEach(exam => {
                     const template = document.getElementById('custom-exam-template');
                     const clone = template.cloneNode(true);
@@ -609,6 +611,7 @@
 
             // Popola gli esami eseguiti
             if (data.examsExecuted) {
+                // Iterazione per i checkbox e i campi di testo
                 for (const key in data.examsExecuted) {
                     const el = document.getElementById(`executed-exam-${key.replace('_', '-')}`);
                     if (el) {
@@ -624,7 +627,6 @@
                     otherTextEl.value = data.examsExecuted.other_text || '';
                 }
             }
-
 
             // Popola le sezioni dinamiche (monitoraggio, terapia, flebo, farmaci)
             const populateDynamicSection = (containerId, templateId, entries) => {
@@ -797,6 +799,17 @@
         }
         saveButton.addEventListener('click', saveData);
 
+        function deletePatientData(id) {
+            if (confirm("Sei sicuro di voler eliminare questa scheda paziente? Questa azione è irreversibile.")) {
+                const patients = getPatients();
+                delete patients[id];
+                savePatients(patients);
+                displayMessage("Scheda eliminata con successo.", "success");
+                clearForm();
+                renderPatientsList();
+            }
+        }
+
         // --- FETCH E VISUALIZZAZIONE PAZIENTI ---
         function renderPatientsList() {
             const patients = getPatients();
@@ -820,7 +833,10 @@
                         <p class="text-gray-600">Proprietario: ${patient.ownerLastname || 'N/D'}</p>
                         <p class="text-xs text-gray-400 mt-1">Ultima modifica: ${new Date(patient.updatedAt || patient.createdAt).toLocaleString('it-IT')}</p>
                     </div>
-                    <button data-id="${patient.id}" class="open-patient-btn mt-3 sm:mt-0 px-4 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-100 transition">Apri</button>
+                    <div class="flex space-x-2 mt-3 sm:mt-0">
+                        <button data-id="${patient.id}" class="open-patient-btn px-4 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-100 transition">Apri</button>
+                        <button data-id="${patient.id}" class="delete-patient-btn px-4 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition">Elimina</button>
+                    </div>
                 `;
                 patientsListDiv.appendChild(patientCard);
             });
@@ -828,6 +844,9 @@
         patientsListDiv.addEventListener('click', (e) => {
             if (e.target.classList.contains('open-patient-btn')) {
                 loadPatientData(e.target.dataset.id);
+            }
+            if (e.target.classList.contains('delete-patient-btn')) {
+                deletePatientData(e.target.dataset.id);
             }
         });
 
