@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scheda Degenza Paziente Interattiva</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .form-section-title { font-size: 1.5rem; font-weight: 700; color: #2563eb; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e5e7eb; }
+        .form-section-subtitle { color: #6b7280; margin-bottom: 1.5rem; }
+        .dynamic-input-container input { margin-bottom: 0.5rem; }
+
+        /* Stili per la Stampa */
+        @media print {
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .no-print { display: none !important; }
+            .printable-area { box-shadow: none; border: none; }
+            body.print-evaluation-only .form-section:not(#medical-evaluation-section, .patient-info-print-only) { display: none; }
+            body.print-evaluation-only .patient-info-print-only { display: block !important; }
+            body.print-evaluation-only h1 { display: none; }
+            .page-break { page-break-before: always; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+        
+        <div class="flex justify-between items-center mb-6 no-print">
+            <h1 class="text-3xl font-bold text-gray-800">Cartella Clinica</h1>
+            <button type="button" id="new-card-btn" class="px-5 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition">
+                + Crea Nuova Scheda
+            </button>
+        </div>
+
+        <div id="form-section" class="printable-area bg-white rounded-xl shadow-lg p-6 sm:p-8 mb-8">
+            <div id="patient-info-header-print" class="patient-info-print-only hidden p-4 mb-4 border-b-2 border-black">
+                <h1 class="text-xl font-bold" id="print-header-title"></h1>
+                <p class="text-sm" id="print-header-date"></p>
+            </div>
+
+            <form id="patient-form">
+                <div class="form-section">
+                    <h2 class="form-section-title">Anagrafica Paziente</h2>
+                    <p class="form-section-subtitle">Dati identificativi del paziente e del proprietario.</p>
+                    <div class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div><label for="entry-date" class="block text-sm font-medium text-gray-700 mb-1">Data di Ingresso</label><input type="date" id="entry-date" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
+                            <div><label for="owner-lastname" class="block text-sm font-medium text-gray-700 mb-1">Cognome Proprietario <span class="text-red-500">*</span></label><input type="text" id="owner-lastname" placeholder="Es. Rossi" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div><label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Telefono</label><input type="tel" id="phone" placeholder="Es. 3331234567" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
+                            <div><label for="alt-contact" class="block text-sm font-medium text-gray-700 mb-1">Persona diversa da contattare</label><input type="text" id="alt-contact" placeholder="Nome e telefono" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
+                        </div>
+                        <hr class="my-6 border-t border-gray-200">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div><label for="patient-name" class="block text-sm font-medium text-gray-700 mb-1">Nome Paziente <span class="text-red-500">*</span></label><input type="text" id="patient-name" placeholder="Es. Fido" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required></div>
+                            <div><label for="species" class="block text-sm font-medium text-gray-700 mb-1">Specie</label><input type="text" id="species" placeholder="Es. Cane" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div><label for="sex" class="block text-sm font-medium text-gray-700 mb-1">Sesso</label><select id="sex" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"><option>Maschio</option><option>Femmina</option><option>Castrato</option><option>Sterilizzata</option></select></div>
+                            <div><label for="age" class="block text-sm font-medium text-gray-700 mb-1">Età</label><input type="text" id="age" placeholder="Es. 2 anni" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
+                            <div><label for="weight" class="block text-sm font-medium text-gray-700 mb-1">Peso (kg) <span class="text-red-500">*</span></label><input type="number" step="0.1" id="weight" placeholder="Es. 10.5" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg" required></div>
+                            <div><label for="microchip" class="block text-sm font-medium text-gray-700 mb-1">Microchip</label><input type="text" id="microchip" placeholder="Numero microchip" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-8 border-t-2 border-dashed border-gray-300 page-break">
+                <div class="form-section">
+                    <h2 class="form-section-title">Storico Paziente e Anamnesi</h2>
+                    <div class="space-y-6">
+                        <div><label for="reason-for-hospitalization" class="block text-sm font-medium text-gray-700 mb-1">Motivo di Ricovero</label><textarea id="reason-for-hospitalization" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></textarea></div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="vaccinations" class="block text-sm font-medium text-gray-700 mb-1">Vaccinazioni</label>
+                                <select id="vaccinations" data-other-container="vaccinations-other-container" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg conditional-select"><option>Regolari</option><option>Irregolari</option><option>Non note</option><option>Nessuna</option><option value="Altro">Altro</option></select>
+                                <div id="vaccinations-other-container" class="mt-2 hidden"><label for="vaccinations-other" class="block text-sm font-medium text-gray-700 mb-1">Altro (specificare)</label><input type="text" id="vaccinations-other" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
+                            </div>
+                            <div>
+                                <label for="parasite-treatments" class="block text-sm font-medium text-gray-700 mb-1">Antiparassitari</label>
+                                <select id="parasite-treatments" data-other-container="parasite-treatments-other-container" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg conditional-select"><option>Regolari</option><option>Irregolari</option><option>Non note</option><option>Nessuna</option><option value="Altro">Altro</option></select>
+                                <div id="parasite-treatments-other-container" class="mt-2 hidden"><label for="parasite-treatments-other" class="block text-sm font-medium text-gray-700 mb-1">Altro (specificare)</label><input type="text" id="parasite-treatments-other" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
+                            </div>
+                        </div>
+                        <div><label for="previous-pathologies" class="block text-sm font-medium text-gray-700 mb-1">Patologie Pregresse</label><textarea id="previous-pathologies" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></textarea></div>
+                    </div>
+                </div>
+
+                <hr class="my-8 border-t-2 border-dashed border-gray-300 page-break">
+                <div class="form-section">
+                    <h2 class="form-section-title">Esame Clinico Obbiettivo d'Ingresso</h2>
+                    <div class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="mental-state" class="block text-sm font-medium text-gray-700 mb-1">Stato mentale/Reattività</label>
+                                <select id="mental-state" data-other-container="mental-state-other-container" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg conditional-select"><option>Normale</option><option>Depresso</option><option>Optunded</option><option>Stuporoso</option><option>Coma</option><option>Iperestesia</option><option value="Altro">Altro</option></select>
+                                <div id="mental-state-other-container" class="mt-2 hidden"><label for="mental-state-other" class="block text-sm font-medium text-gray-700 mb-1">Altro cosa?</label><input type="text" id="mental-state-other" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
+                            </div>
+                            <div>
+                                <label for="gait" class="block text-sm font-medium text-gray-700 mb-1">Andatura</label>
+                                <select id="gait" data-other-container="gait-other-container" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg conditional-select" data-condition-value="Zoppia"><option>Normale</option><option>Atassia</option><option>Paresi</option><option>Paralisi</option><option value="Zoppia">Zoppia</option></select>
+                                <div id="gait-other-container" class="mt-2 hidden"><label for="gait-other" class="block text-sm font-medium text-gray-700 mb-1">Zoppia quale arto?</label><input type="text" id="gait-other" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div><label for="temperature" class="block text-sm font-medium text-gray-700 mb-1">Temperatura (°C)</label><input type="number" step="0.1" id="temperature" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
+                            <div><label for="capillary-refill-time" class="block text-sm font-medium text-gray-700 mb-1">Tempo Riempimento Capillare (s)</label><input type="number" step="0.1" id="capillary-refill-time" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
+                            <div><label for="mucous-membranes" class="block text-sm font-medium text-gray-700 mb-1">Colore Mucose</label><input type="text" id="mucous-membranes" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
+                            <div><label for="hydration" class="block text-sm font-medium text-gray-700 mb-1">Idratazione</label><select id="hydration" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"><option>Normale</option><option>Lieve</option><option>Moderata</option><option>Grave</option></select></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="lymph-nodes" class="block text-sm font-medium text-gray-700 mb-1">Linfonodi Periferici</label>
+                                <select id="lymph-nodes" data-other-container="lymph-nodes-other-container" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg conditional-select" data-condition-value="Aumentati"><option>Normali</option><option value="Aumentati">Aumentati</option></select>
+                                <div id="lymph-nodes-other-container" class="mt-2 hidden"><label for="lymph-nodes-other" class="block text-sm font-medium text-gray-700 mb-1">Aumentati quali?</label><input type="text" id="lymph-nodes-other" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></div>
+                            </div>
+                            <div><label for="abdominal-palpation" class="block text-sm font-medium text-gray-700 mb-1">Palpazione Addominale</label><select id="abdominal-palpation" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"><option>Normale</option><option>Dolente</option><option>Tesa</option><option>Masse/Organomegalia</option></select></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div><label for="cardiac-auscultation" class="block text-sm font-medium text-gray-700 mb-1">Auscultazione Cardiaca</label><select id="cardiac-auscultation" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"><option>Normale</option><option>Soffio</option><option>Battito doppio</option><option>Battito alternato</option><option>Accelerato</option><option>Bradicardico</option><option>Soffocato</option></select></div>
+                            <div><label for="pulmonary-auscultation" class="block text-sm font-medium text-gray-700 mb-1">Auscultazione Polmonare</label><select id="pulmonary-auscultation" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"><option>Normale</option><option>Ronchi</option><option>Crepitii</option><option>Fischi</option></select></div>
+                        </div>
+                        <div>
+                            <label for="cns" class="block text-sm font-medium text-gray-700 mb-1">Sistema Nervoso Centrale</label>
+                            <p class="text-xs text-gray-500 mb-1">(riflessi, reazioni posturali, collaborativo o non collaborativo, sedato)</p>
+                            <textarea id="cns" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></textarea>
+                        </div>
+                        <div><label for="other-findings" class="block text-sm font-medium text-gray-700 mb-1">Altri Rilievi Significativi</label><textarea id="other-findings" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></textarea></div>
+                    </div>
+                </div>
+
+                <hr class="my-8 border-t-2 border-dashed border-gray-300 page-break">
+                <div class="form-section">
+                    <h2 class="form-section-title">Trattamento in Atto (a casa) e Terapie all'Ingresso</h2>
+                    <p class="form-section-subtitle">Trattamenti a casa e terapie segnate al ricovero (non necessariamente da eseguire).</p>
+                    <div class="space-y-6">
+                        <div><label for="home-treatments" class="block text-sm font-medium text-gray-700 mb-1">Fluidi o farmaci A CASA (dosaggio, via e frequenza)</label><textarea id="home-treatments" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></textarea></div>
+                        <div><label for="admission-therapy" class="block text-sm font-medium text-gray-700 mb-1">Terapia medica ALL'ATTO DEL RICOVERO</label><textarea id="admission-therapy" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg"></textarea></div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Esami da Eseguire (mettere una spunta)</label>
+                            <div class="space-y-3">
+                                <div class="flex items-center"><input id="exam-cbc" type="checkbox" class="h-4 w-4 rounded"><label for="exam-cbc" class="ml-2">Emocromo</label></div>
+                                <div class="flex items-center"><input id="exam-biochem" type="checkbox" class="h-4 w-4 rounded conditional-checkbox" data-other-container="exam-biochem-other-container"><label for="exam-biochem" class="ml-2">Biochimico</label></div>
+                                <div id="exam-biochem-other-container" class="ml-6 hidden"><label for="exam-biochem-other" class="text-sm">Che tipo di biochimico?</label><input type="text" id="exam-biochem-other" class="w-full mt-1 px-2 py-1 bg-gray-50 border rounded-md"></div>
+                                <div class="flex items-center"><input id="exam-snap" type="checkbox" class="h-4 w-4 rounded conditional-checkbox" data-other-container="exam-snap-other-container"><label for="exam-snap" class="ml-2">Snap Test</label></div>
+                                <div id="exam-snap-other-container" class="ml-6 hidden"><label for="exam-snap-other" class="text-sm">Quale snap test?</label><input type="text" id="exam-snap-other" class="w-full mt-1 px-2 py-1 bg-gray-50 border rounded-md"></div>
+                                <div class="flex items-center"><input id="exam-urinalysis" type="checkbox" class="h-4 w-4 rounded"><label for="exam-urinalysis" class="ml-2">Esame Urine (chimico e fisico)</label></div>
+                                <div class="flex items-center"><input id="exam-pucu" type="checkbox" class="h-4 w-4 rounded"><label for="exam-pucu" class="ml-2">Pu/Cu</label></div>
+                                <div class="flex items-center"><input id="exam-rx" type="checkbox" class="h-4 w-4 rounded conditional-checkbox" data-other-container="exam-rx-other-container"><label for="exam-rx" class="ml-2">Rx</label></div>
+                                <div id="exam-rx-other-container" class="ml-6 hidden"><label for="exam-rx-other" class="text-sm">Quante?</label><input type="number" id="exam-rx-other" class="w-full mt-1 px-2 py-1 bg-gray-50 border rounded-md"></div>
+                                <div class="flex items-center"><input id="exam-ultrasound" type="checkbox" class="h-4 w-4 rounded"><label for="exam-ultrasound" class="ml-2">Ecografia specialistica</label></div>
+                                <div class="flex items-center"><input id="exam-ecofast" type="checkbox" class="h-4 w-4 rounded"><label for="exam-ecofast" class="ml-2">Ecofast</label></div>
+                                <div class="flex items-center"><input id="exam-emogas" type="checkbox" class="h-4 w-4 rounded"><label for="exam-emogas" class="ml-2">Emogas</label></div>
+                                <div class="flex items-center"><input id="exam-surgery" type="checkbox" class="h-4 w-4 rounded conditional-checkbox" data-other-container="exam-surgery-other-container"><label for="exam-surgery" class="ml-2">Chirurgia</label></div>
+                                <div id="exam-surgery-other-container" class="ml-6 hidden"><label for="exam-surgery-other" class="text-sm">Che intervento?</label><input type="text" id="exam-surgery-other" class="w-full mt-1 px-2 py-1 bg-gray-50 border rounded-md"></div>
+                                <div class="flex items-center"><input id="exam-lab" type="checkbox" class="h-4 w-4 rounded conditional-checkbox" data-other-container="exam-lab-other-container"><label for="exam-lab" class="ml-2">Laboratorio</label></div>
+                                <div id="exam-lab-other-container" class="ml-6 hidden"><label for="exam-lab-other" class="text-sm">Che richiesta?</label><input type="text" id="exam-lab-other" class="w-full mt-1 px-2 py-1 bg-gray-50 border rounded-md"></div>
+                                <div class="flex items-center"><input id="exam-other" type="checkbox" class="h-4 w-4 rounded conditional-checkbox" data-other-container="exam-other-other-container"><label for="exam-other" class="ml-2">Altro</label></div>
+                                <div id="exam-other-other-container" class="ml-6 hidden"><label for="exam-other-other" class="text-sm">Altro cosa?</label><input type="text" id="exam-other-other" class="w-full mt-1 px-2 py-1 bg-gray-50 border rounded-md"></div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 pt-6 border-t border-gray-200">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Esami Effettivamente Eseguiti</label>
+                            <div class="space-y-3">
+                                <div class="flex items-center"><input id="executed-exam-cbc" type="checkbox" class="h-4 w-4 rounded"><label for="executed-exam-cbc" class="ml-2">Emocromo</label></div>
+                                <div>
+                                    <div class="flex items-center"><input id="executed-exam-biochem" type="checkbox" class="h-4 w-4 rounded conditional-checkbox" data-other-container="executed-exam-biochem-other-container"><label for="executed-exam-biochem" class="ml-2">Biochimico</label></div>
+                                    <div id="executed-exam-biochem-other-container" class="ml-6 mt-1 hidden"><label for="executed-exam-biochem-other" class="text-sm">Quale?</label><input type="text" id="executed-exam-biochem-other" class="w-full mt-1 px-2 py-1 bg-gray-50 border rounded-md"></div>
+                                </div>
+                                <div class="flex items-center"><input id="executed-exam-snap" type="checkbox" class="h-4 w-4 rounded"><label for="executed-exam-snap" class="ml-2">Snap Test</label></div>
+                                <div class="flex items-center"><input id="executed-exam-urinalysis" type="checkbox" class="h-4 w-4 rounded"><label for="executed-exam-urinalysis" class="ml-2">Esame Urine (chimico e fisico)</label></div>
+                                <div class="flex items-center"><input id="executed-exam-pucu" type="checkbox" class="h-4 w-4 rounded"><label for="executed-exam-pucu" class="ml-2">Pu/Cu</label></div>
+                                <div class="flex items-center"><input id="executed-exam-rx" type="checkbox" class="h-4 w-4 rounded"><label for="executed-exam-rx" class="ml-2">Rx</label></div>
+                                <div class="flex items-center"><input id="executed-exam-ultrasound" type="checkbox" class="h-4 w-4 rounded"><label for="executed-exam-ultrasound" class="ml-2">Ecografia specialistica</label></div>
+                                <div class="flex items-center"><input id="executed-exam-ecofast" type="checkbox" class="h-4 w-4 rounded"><label for="executed-exam-ecofast" class="ml-2">Ecofast</label></div>
+                                <div class="flex items-center"><input id="executed-exam-emogas" type="checkbox" class="h-4 w-4 rounded"><label for="executed-exam-emogas" class="ml-2">Emogas</label></div>
+                                <div class="flex items-center"><input id="executed-exam-surgery" type="checkbox" class="h-4 w-4 rounded"><label for="executed-exam-surgery" class="ml-2">Chirurgia</label></div>
+                                <div class="flex items-center"><input id="executed-exam-lab" type="checkbox" class="h-4 w-4 rounded"><label for="executed-exam-lab" class="ml-2">Laboratorio</label></div>
+                                <div class="pt-2">
+                                    <label for="executed-exam-other-text" class="block text-sm font-medium text-gray-700 mb-1">Altro (eseguito)</label>
+                                    <input type="text" id="executed-exam-other-text" placeholder="Specificare altri esami eseguiti..." class="w-full mt-1 px-2 py-1 bg-gray-50 border rounded-md">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-8 border-t-2 border-dashed border-gray-300 page-break">
+                <div class="form-section">
+                    <h2 class="form-section-title">Terapia Effettiva da Eseguire (Compilazione Medica)</h2>
+                    <div class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div><label for="iv-fluids" class="block text-sm font-medium text-gray-700 mb-1">Tipo di Flebo</label><input type="text" id="iv-fluids" class="w-full px-4 py-2 bg-gray-50 border rounded-lg"></div>
+                            <div><label for="iv-volume" class="block text-sm font-medium text-gray-700 mb-1">Volume</label><input type="text" id="iv-volume" class="w-full px-4 py-2 bg-gray-50 border rounded-lg"></div>
+                            <div><label for="iv-route" class="block text-sm font-medium text-gray-700 mb-1">Via di Somministrazione</label><input type="text" id="iv-route" class="w-full px-4 py-2 bg-gray-50 border rounded-lg"></div>
+                            <div>
+                                <label for="iv-rate" class="block text-sm font-medium text-gray-700 mb-1">Velocità</label>
+                                <select id="iv-rate" data-other-container="iv-rate-other-container" class="w-full px-4 py-2 bg-gray-50 border rounded-lg conditional-select" data-condition-value="Pompa ad infusione"><option>Bolo veloce</option><option>Bolo lento</option><option>Goccia veloce</option><option>Goccia lenta</option><option value="Pompa ad infusione">Pompa ad infusione</option></select>
+                            </div>
+                        </div>
+                        <div id="iv-rate-other-container" class="hidden"><label for="iv-rate-other" class="block text-sm font-medium text-gray-700 mb-1">Quanti ml/kg/h?</label><input type="number" step="0.1" id="iv-rate-other" class="w-full px-4 py-2 bg-gray-50 border rounded-lg"></div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Tipo di Farmaci da Somministrare (premere Invio per aggiungere)</label>
+                            <div id="dynamic-drug-inputs" class="dynamic-input-container">
+                                <input type="text" placeholder="Nome farmaco..." class="w-full px-4 py-2 bg-gray-50 border rounded-lg">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-8 border-t-2 border-dashed border-gray-300 page-break">
+                <div id="medical-evaluation-section" class="form-section">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h2 class="form-section-title">Valutazione Medica</h2>
+                            <p class="form-section-subtitle">Valutazione, decorso e dimissioni (Compilazione Medica).</p>
+                        </div>
+                        <button type="button" id="print-evaluation-button" class="no-print ml-4 px-4 py-2 border border-blue-500 text-blue-500 font-semibold rounded-lg hover:bg-blue-50 transition duration-200 whitespace-nowrap">Stampa Valutazione</button>
+                    </div>
+                    <div class="space-y-6">
+                        <div><label for="medical-course" class="block text-sm font-medium text-gray-700 mb-1">Valutazione e Decorso Medico</label><textarea id="medical-course" rows="4" class="w-full px-4 py-2 bg-gray-50 border rounded-lg"></textarea></div>
+                        <div><label for="discharge-conditions" class="block text-sm font-medium text-gray-700 mb-1">Condizioni all'Atto delle Dimissioni (con eventuale diagnosi)</label><textarea id="discharge-conditions" rows="4" class="w-full px-4 py-2 bg-gray-50 border rounded-lg"></textarea></div>
+                        <div><label for="home-therapy" class="block text-sm font-medium text-gray-700 mb-1">Terapie da Continuare a Casa</label><textarea id="home-therapy" rows="4" class="w-full px-4 py-2 bg-gray-50 border rounded-lg"></textarea></div>
+                        <div><label for="follow-up" class="block text-sm font-medium text-gray-700 mb-1">Follow-up</label><textarea id="follow-up" rows="3" class="w-full px-4 py-2 bg-gray-50 border rounded-lg"></textarea></div>
+                    </div>
+                </div>
+            </form>
+            
+            <hr class="my-8 border-t-2 border-dashed border-gray-300 page-break">
+            <div class="form-section">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="form-section-title">Monitoraggio Parametri Vitali</h2>
+                    <button type="button" id="add-monitoring-btn" class="no-print px-4 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition">Aggiungi Monitoraggio</button>
+                </div>
+                <div id="monitoring-entries-container" class="space-y-6">
+                    </div>
+            </div>
+
+            <hr class="my-8 border-t-2 border-dashed border-gray-300 page-break">
+            <div class="form-section">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="form-section-title">Terapia (Somministrazioni)</h2>
+                    <button type="button" id="add-therapy-log-btn" class="no-print px-4 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition">Aggiungi Somministrazione</button>
+                </div>
+                <div id="therapy-log-container" class="space-y-6">
+                    </div>
+            </div>
+
+            <div class="flex items-center justify-end space-x-4 pt-8 mt-8 border-t no-print">
+                <button type="button" id="print-button" class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-100 transition duration-200">Stampa Scheda Completa</button>
+                <button type="button" id="save-button" class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200">Salva Paziente</button>
+            </div>
+            
+            <div id="message-box" class="mt-4 text-center"></div>
+        </div>
+        <div id="patients-list-section" class="bg-white rounded-xl shadow-lg p-6 sm:p-8 no-print mt-8">
+             <h2 class="text-2xl font-bold text-gray-700 mb-4">Pazienti Registrati</h2>
+             <div id="patients-list" class="space-y-4">
+                 <p id="loading-patients" class="text-gray-500">Nessun paziente salvato.</p>
+             </div>
+        </div>
+
+    </div>
+
+    <div id="monitoring-entry-template" class="hidden p-4 border rounded-lg bg-gray-50 relative">
+        <button type="button" class="remove-entry-btn absolute top-2 right-2 text-red-500 hover:text-red-700 no-print">&times;</button>
+        <h3 class="font-bold text-lg mb-4 text-gray-600">Nuova Rilevazione</h3>
+        <div class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div><label class="block text-sm font-medium">Giorno</label><input type="date" data-field="day" class="w-full mt-1 p-2 border rounded-md"></div>
+                <div><label class="block text-sm font-medium">Ora</label><input type="time" data-field="time" class="w-full mt-1 p-2 border rounded-md"></div>
+                <div><label class="block text-sm font-medium">Temperatura</label><input type="number" step="0.1" data-field="temp" class="w-full mt-1 p-2 border rounded-md"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div><label class="block text-sm font-medium">Glicemia</label><input type="number" data-field="glucose" class="w-full mt-1 p-2 border rounded-md"></div>
+                <div><label class="block text-sm font-medium">FC (bpm)</label><input type="number" data-field="hr" class="w-full mt-1 p-2 border rounded-md"></div>
+                <div><label class="block text-sm font-medium">FR (rpm)</label><input type="number" data-field="rr" class="w-full mt-1 p-2 border rounded-md"></div>
+                <div><label class="block text-sm font-medium">Pressione Sanguigna</label><input type="text" data-field="bp" class="w-full mt-1 p-2 border rounded-md"></div>
+            </div>
+            <div><label class="block text-sm font-medium">Note Aggiuntive</label><textarea data-field="notes" rows="2" class="w-full mt-1 p-2 border rounded-md"></textarea></div>
+            <hr>
+            <h4 class="font-semibold text-md text-gray-600">Alimentazione</h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div><label class="block text-sm font-medium">Tipo di Dieta</label><input type="text" data-field="dietType" class="w-full mt-1 p-2 border rounded-md"></div>
+                <div><label class="block text-sm font-medium">Assunzione Spontanea</label><select data-field="spontaneousEating" class="w-full mt-1 p-2 border rounded-md"><option>Sì</option><option>No</option></select></div>
+                <div><label class="block text-sm font-medium">Alimentazione Assistita</label><select data-field="assistedEating" class="w-full mt-1 p-2 border rounded-md"><option>Nessuna</option><option>Mani</option><option>Cucchiaio</option><option>Siringa</option><option>Sonda</option></select></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+                <div>
+                    <label class="block text-sm font-medium">Vomito</label>
+                    <select data-field="vomit" class="w-full mt-1 p-2 border rounded-md conditional-select" data-condition-value="Sì" data-other-container="vomit-desc-container">
+                        <option>No</option><option value="Sì">Sì</option>
+                    </select>
+                </div>
+                <div data-id="vomit-desc-container" class="hidden md:col-span-2"><label class="block text-sm font-medium">Descrizione Vomito</label><input type="text" data-field="vomitDesc" class="w-full mt-1 p-2 border rounded-md"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div><label class="block text-sm font-medium">Urine (Sì/No, Condizioni)</label><input type="text" data-field="urine" class="w-full mt-1 p-2 border rounded-md"></div>
+                <div><label class="block text-sm font-medium">Feci (Sì/No, Condizioni)</label><input type="text" data-field="feces" class="w-full mt-1 p-2 border rounded-md"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="therapy-log-template" class="hidden p-4 border rounded-lg bg-gray-50 relative">
+        <button type="button" class="remove-entry-btn absolute top-2 right-2 text-red-500 hover:text-red-700 no-print">&times;</button>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <div><label class="block text-sm font-medium">Data</label><input type="date" data-field="date" class="w-full mt-1 p-2 border rounded-md"></div>
+            <div><label class="block text-sm font-medium">Ora</label><input type="time" data-field="time" class="w-full mt-1 p-2 border rounded-md"></div>
+            <div><label class="block text-sm font-medium">Operatore</label><input type="text" data-field="operator" class="w-full mt-1 p-2 border rounded-md"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="md:col-span-2"><label class="block text-sm font-medium">Nome Farmaco e Frequenza</label><input type="text" data-field="drugName" class="w-full mt-1 p-2 border rounded-md"></div>
+            <div><label class="block text-sm font-medium">Posologia</label><input type="text" data-field="dosage" class="w-full mt-1 p-2 border rounded-md"></div>
+        </div>
+         <div class="mt-4"><label class="block text-sm font-medium">Note</label><textarea data-field="notes" rows="2" class="w-full mt-1 p-2 border rounded-md"></textarea></div>
+    </div>
+
+    <script>
+        // --- GESTIONE DEL DATABASE LOCALE (Web Storage) ---
+        const DB_KEY = 'patient_records';
+
+        function getPatients() {
+            try {
+                return JSON.parse(localStorage.getItem(DB_KEY)) || {};
+            } catch (e) {
+                console.error("Errore nel recupero dati da localStorage:", e);
+                return {};
+            }
+        }
+
+        function savePatients(patients) {
+            try {
+                localStorage.setItem(DB_KEY, JSON.stringify(patients));
+            } catch (e) {
+                console.error("Errore nel salvataggio dati su localStorage:", e);
+            }
+        }
+
+        // --- ELEMENTI DEL DOM ---
+        const patientForm = document.getElementById('patient-form');
+        const messageBox = document.getElementById('message-box');
+        const patientsListDiv = document.getElementById('patients-list');
+        const saveButton = document.getElementById('save-button');
+
+        let currentPatientId = null;
+
+        // --- FUNZIONI DI BASE ---
+        function displayMessage(text, type) {
+            messageBox.textContent = text;
+            messageBox.className = `mt-4 text-center p-3 rounded-lg ${type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
+            setTimeout(() => { messageBox.textContent = ''; messageBox.className = 'mt-4 text-center'; }, 5000);
+        }
+
+        function clearForm() {
+            patientForm.reset();
+            currentPatientId = null;
+            document.querySelectorAll('.hidden[id*="-other-container"], .hidden[data-id*="-container"]').forEach(el => el.style.display = 'none');
+            document.getElementById('monitoring-entries-container').innerHTML = '';
+            document.getElementById('therapy-log-container').innerHTML = '';
+            const drugContainer = document.getElementById('dynamic-drug-inputs');
+            drugContainer.innerHTML = '<input type="text" placeholder="Nome farmaco..." class="w-full px-4 py-2 bg-gray-50 border rounded-lg">';
+            saveButton.textContent = 'Salva Paziente';
+            document.getElementById('entry-date').valueAsDate = new Date();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        document.getElementById('new-card-btn').addEventListener('click', clearForm);
+
+        // --- GESTIONE CAMPI CONDIZIONALI (FIXED) ---
+        function handleConditionalVisibility(element) {
+            const containerId = element.dataset.otherContainer;
+            if (!containerId) return;
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            const isCheckbox = element.type === 'checkbox';
+            let shouldShow;
+
+            if (isCheckbox) {
+                shouldShow = element.checked;
+            } else { // È un select
+                const conditionValue = element.dataset.conditionValue || 'Altro';
+                shouldShow = element.value === conditionValue;
+            }
+            
+            container.style.display = shouldShow ? '' : 'none';
+            if (!shouldShow) {
+                container.querySelectorAll('input, textarea').forEach(input => input.value = '');
+            }
+        }
+        document.body.addEventListener('change', (e) => {
+            if (e.target.matches('.conditional-select, .conditional-checkbox')) {
+                handleConditionalVisibility(e.target);
+            }
+        });
+
+        // --- GESTIONE SEZIONI DINAMICHE (MONITORAGGIO/TERAPIA) ---
+        function setupDynamicSection(buttonId, containerId, templateId) {
+            document.getElementById(buttonId).addEventListener('click', () => {
+                const template = document.getElementById(templateId);
+                const clone = template.cloneNode(true);
+                clone.id = '';
+                clone.classList.remove('hidden');
+                document.getElementById(containerId).appendChild(clone);
+            });
+            document.getElementById(containerId).addEventListener('click', (e) => {
+                if (e.target.classList.contains('remove-entry-btn')) {
+                    e.target.closest('.p-4.border.rounded-lg').remove();
+                }
+            });
+        }
+        setupDynamicSection('add-monitoring-btn', 'monitoring-entries-container', 'monitoring-entry-template');
+        setupDynamicSection('add-therapy-log-btn', 'therapy-log-container', 'therapy-log-template');
+
+        // --- GESTIONE STAMPA ---
+        document.getElementById('print-button').addEventListener('click', () => {
+            document.body.classList.remove('print-evaluation-only');
+            document.querySelector('#patient-info-header-print h1').textContent = `Cartella Clinica: ${document.getElementById('patient-name').value || 'N/D'} (${document.getElementById('owner-lastname').value || 'N/D'})`;
+            document.querySelector('#patient-info-header-print p').textContent = `Data di Stampa: ${new Date().toLocaleDateString('it-IT')}`;
+            document.getElementById('patient-info-header-print').classList.remove('hidden');
+            window.print();
+        });
+        document.getElementById('print-evaluation-button').addEventListener('click', () => {
+            document.body.classList.add('print-evaluation-only');
+            document.querySelector('#patient-info-header-print h1').textContent = `Valutazione Medica: ${document.getElementById('patient-name').value || 'N/D'} (${document.getElementById('owner-lastname').value || 'N/D'})`;
+            document.querySelector('#patient-info-header-print p').textContent = `Data di Stampa: ${new Date().toLocaleDateString('it-IT')}`;
+            document.getElementById('patient-info-header-print').classList.remove('hidden');
+            window.print();
+        });
+        window.onafterprint = () => {
+            document.body.classList.remove('print-evaluation-only');
+            document.getElementById('patient-info-header-print').classList.add('hidden');
+        };
+
+        // --- CARICAMENTO, POPOLAMENTO E SALVATAGGIO DATI ---
+        function loadPatientData(id) {
+            const patients = getPatients();
+            const data = patients[id];
+            if (data) {
+                clearForm();
+                populateForm(data);
+                currentPatientId = id;
+                saveButton.textContent = 'Aggiorna Scheda';
+                displayMessage(`Scheda di ${data.patientName} caricata.`, 'success');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                displayMessage("Paziente non trovato.", "error");
+            }
+        }
+
+        function populateForm(data) {
+            for (const key in data) {
+                const el = document.getElementById(key);
+                if (el) {
+                    if (el.type === 'checkbox') el.checked = data[key];
+                    else el.value = data[key] || '';
+                }
+            }
+            if (data.examsToPerform) {
+                for (const key in data.examsToPerform) {
+                    let elId = `exam-${key.replace('_type', '-other').replace('_desc', '-other').replace('_count', '-other').replace('_request', '-other')}`;
+                    const el = document.getElementById(elId);
+                    if(el) {
+                        if (el.type === 'checkbox') el.checked = data.examsToPerform[key];
+                        else el.value = data.examsToPerform[key] || '';
+                    }
+                }
+            }
+             if (data.examsExecuted) {
+                for (const key in data.examsExecuted) {
+                    let elId = `executed-exam-${key.replace('_text', '-text').replace('_type', '-other')}`;
+                    const el = document.getElementById(elId);
+                    if(el) {
+                        if (el.type === 'checkbox') el.checked = data.examsExecuted[key];
+                        else el.value = data.examsExecuted[key] || '';
+                    }
+                }
+            }
+            document.querySelectorAll('.conditional-select, .conditional-checkbox').forEach(el => el.dispatchEvent(new Event('change')));
+
+            const drugContainer = document.getElementById('dynamic-drug-inputs');
+            drugContainer.innerHTML = '';
+            (data.drugsToAdminister || []).forEach(drug => {
+                const newInput = document.createElement('input');
+                newInput.type = 'text';
+                newInput.value = drug;
+                newInput.className = 'w-full px-4 py-2 bg-gray-50 border rounded-lg';
+                drugContainer.appendChild(newInput);
+            });
+            const emptyInput = document.createElement('input');
+            emptyInput.type = 'text';
+            emptyInput.placeholder = 'Nome farmaco...';
+            emptyInput.className = 'w-full px-4 py-2 bg-gray-50 border rounded-lg';
+            drugContainer.appendChild(emptyInput);
+
+            const populateDynamicSection = (containerId, templateId, entries) => {
+                const container = document.getElementById(containerId);
+                container.innerHTML = '';
+                (entries || []).forEach(entryData => {
+                    const template = document.getElementById(templateId);
+                    const clone = template.cloneNode(true);
+                    clone.id = '';
+                    clone.classList.remove('hidden');
+                    clone.querySelectorAll('[data-field]').forEach(input => {
+                        input.value = entryData[input.dataset.field] || '';
+                    });
+                    container.appendChild(clone);
+                    clone.querySelectorAll('.conditional-select').forEach(sel => sel.dispatchEvent(new Event('change')));
+                });
+            };
+            populateDynamicSection('monitoring-entries-container', 'monitoring-entry-template', data.monitoringEntries);
+            populateDynamicSection('therapy-log-container', 'therapy-log-template', data.therapyLog);
+        }
+
+        function saveData() {
+            const getDynamicEntries = (containerId) => {
+                return Array.from(document.querySelectorAll(`#${containerId} > div`)).map(entryDiv => {
+                    const entryData = {};
+                    entryDiv.querySelectorAll('[data-field]').forEach(input => { entryData[input.dataset.field] = input.value; });
+                    return entryData;
+                });
+            };
+
+            const patientData = {
+                id: currentPatientId || Date.now().toString(),
+                entryDate: document.getElementById('entry-date').value,
+                ownerLastname: document.getElementById('owner-lastname').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                altContact: document.getElementById('alt-contact').value.trim(),
+                patientName: document.getElementById('patient-name').value.trim(),
+                species: document.getElementById('species').value.trim(),
+                sex: document.getElementById('sex').value,
+                age: document.getElementById('age').value.trim(),
+                weight: document.getElementById('weight').value,
+                microchip: document.getElementById('microchip').value.trim(),
+                reasonForHospitalization: document.getElementById('reason-for-hospitalization').value.trim(),
+                vaccinations: document.getElementById('vaccinations').value,
+                vaccinationsOther: document.getElementById('vaccinations-other').value.trim(),
+                parasiteTreatments: document.getElementById('parasite-treatments').value,
+                parasiteTreatmentsOther: document.getElementById('parasite-treatments-other').value.trim(),
+                previousPathologies: document.getElementById('previous-pathologies').value.trim(),
+                mentalState: document.getElementById('mental-state').value,
+                mentalStateOther: document.getElementById('mental-state-other').value.trim(),
+                gait: document.getElementById('gait').value,
+                gaitOther: document.getElementById('gait-other').value.trim(),
+                temperature: document.getElementById('temperature').value,
+                capillaryRefillTime: document.getElementById('capillary-refill-time').value,
+                mucousMembranes: document.getElementById('mucous-membranes').value.trim(),
+                hydration: document.getElementById('hydration').value,
+                lymphNodes: document.getElementById('lymph-nodes').value,
+                lymphNodesOther: document.getElementById('lymph-nodes-other').value.trim(),
+                abdominalPalpation: document.getElementById('abdominal-palpation').value,
+                cardiacAuscultation: document.getElementById('cardiac-auscultation').value,
+                pulmonaryAuscultation: document.getElementById('pulmonary-auscultation').value,
+                cns: document.getElementById('cns').value.trim(),
+                otherFindings: document.getElementById('other-findings').value.trim(),
+                homeTreatments: document.getElementById('home-treatments').value.trim(),
+                admissionTherapy: document.getElementById('admission-therapy').value.trim(),
+                examsToPerform: {
+                    cbc: document.getElementById('exam-cbc').checked,
+                    biochem: document.getElementById('exam-biochem').checked, biochem_type: document.getElementById('exam-biochem-other').value.trim(),
+                    snap: document.getElementById('exam-snap').checked, snap_type: document.getElementById('exam-snap-other').value.trim(),
+                    urinalysis: document.getElementById('exam-urinalysis').checked, pucu: document.getElementById('exam-pucu').checked,
+                    rx: document.getElementById('exam-rx').checked, rx_count: document.getElementById('exam-rx-other').value,
+                    ultrasound: document.getElementById('exam-ultrasound').checked, ecofast: document.getElementById('exam-ecofast').checked,
+                    emogas: document.getElementById('exam-emogas').checked,
+                    surgery: document.getElementById('exam-surgery').checked, surgery_type: document.getElementById('exam-surgery-other').value.trim(),
+                    lab: document.getElementById('exam-lab').checked, lab_request: document.getElementById('exam-lab-other').value.trim(),
+                    other: document.getElementById('exam-other').checked, other_desc: document.getElementById('exam-other-other').value.trim(),
+                },
+                examsExecuted: {
+                    cbc: document.getElementById('executed-exam-cbc').checked,
+                    biochem: document.getElementById('executed-exam-biochem').checked,
+                    biochem_type: document.getElementById('executed-exam-biochem-other').value.trim(),
+                    snap: document.getElementById('executed-exam-snap').checked,
+                    urinalysis: document.getElementById('executed-exam-urinalysis').checked,
+                    pucu: document.getElementById('executed-exam-pucu').checked,
+                    rx: document.getElementById('executed-exam-rx').checked,
+                    ultrasound: document.getElementById('executed-exam-ultrasound').checked,
+                    ecofast: document.getElementById('executed-exam-ecofast').checked,
+                    emogas: document.getElementById('executed-exam-emogas').checked,
+                    surgery: document.getElementById('executed-exam-surgery').checked,
+                    lab: document.getElementById('executed-exam-lab').checked,
+                    other_text: document.getElementById('executed-exam-other-text').value.trim(),
+                },
+                ivFluids: document.getElementById('iv-fluids').value.trim(),
+                ivVolume: document.getElementById('iv-volume').value.trim(),
+                ivRoute: document.getElementById('iv-route').value.trim(),
+                ivRate: document.getElementById('iv-rate').value,
+                ivRateOther: document.getElementById('iv-rate-other').value,
+                drugsToAdminister: Array.from(document.querySelectorAll('#dynamic-drug-inputs input')).map(input => input.value.trim()).filter(Boolean),
+                medicalCourse: document.getElementById('medical-course').value.trim(),
+                dischargeConditions: document.getElementById('discharge-conditions').value.trim(),
+                homeTherapy: document.getElementById('home-therapy').value.trim(),
+                followUp: document.getElementById('follow-up').value.trim(),
+                monitoringEntries: getDynamicEntries('monitoring-entries-container'),
+                therapyLog: getDynamicEntries('therapy-log-container'),
+                updatedAt: new Date().toISOString(),
+                createdAt: currentPatientId ? getPatients()[currentPatientId].createdAt : new Date().toISOString(),
+            };
+
+            if (!patientData.ownerLastname || !patientData.patientName || !patientData.weight) {
+                displayMessage("Compila tutti i campi anagrafici obbligatori (*).", "error");
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+
+            const patients = getPatients();
+            if (currentPatientId) {
+                patients[currentPatientId] = patientData;
+                savePatients(patients);
+                displayMessage("Scheda aggiornata con successo!", "success");
+            } else {
+                const newId = `patient_${Date.now()}`;
+                patientData.id = newId;
+                patients[newId] = patientData;
+                savePatients(patients);
+                currentPatientId = newId;
+                saveButton.textContent = 'Aggiorna Scheda';
+                displayMessage("Scheda salvata con successo!", "success");
+            }
+
+            renderPatientsList();
+        }
+        saveButton.addEventListener('click', saveData);
+
+        // --- FETCH E VISUALIZZAZIONE PAZIENTI ---
+        function renderPatientsList() {
+            const patients = getPatients();
+            const patientsArray = Object.values(patients);
+            const patientsListDiv = document.getElementById('patients-list');
+            patientsListDiv.innerHTML = '';
+            
+            if (patientsArray.length === 0) {
+                patientsListDiv.innerHTML = '<p class="text-gray-500">Nessun paziente salvato.</p>';
+                return;
+            }
+
+            patientsArray.sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt));
+
+            patientsArray.forEach(patient => {
+                const patientCard = document.createElement('div');
+                patientCard.className = 'p-4 border rounded-lg bg-gray-50 flex flex-col sm:flex-row justify-between sm:items-center';
+                patientCard.innerHTML = `
+                    <div>
+                        <p class="font-bold text-lg text-blue-700">${patient.patientName || 'N/D'} <span class="text-sm font-normal text-gray-500">(${patient.species || 'N/D'})</span></p>
+                        <p class="text-gray-600">Proprietario: ${patient.ownerLastname || 'N/D'}</p>
+                        <p class="text-xs text-gray-400 mt-1">Ultima modifica: ${new Date(patient.updatedAt || patient.createdAt).toLocaleString('it-IT')}</p>
+                    </div>
+                    <button data-id="${patient.id}" class="open-patient-btn mt-3 sm:mt-0 px-4 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-100 transition">Apri</button>
+                `;
+                patientsListDiv.appendChild(patientCard);
+            });
+        }
+        patientsListDiv.addEventListener('click', (e) => {
+            if (e.target.classList.contains('open-patient-btn')) {
+                loadPatientData(e.target.dataset.id);
+            }
+        });
+        
+        window.onload = () => { 
+            clearForm();
+            renderPatientsList();
+        };
+    </script>
+</body>
+</html>
