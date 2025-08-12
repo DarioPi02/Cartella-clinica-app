@@ -28,80 +28,81 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .form-section-title { font-size: 1.5rem; font-weight: 700; color: #2563eb; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e5e7eb; }
-        .form-section-subtitle { color: #6b7280; margin-bottom: 1.5rem; }
-        .dynamic-input-container input { margin-bottom: 0.5rem; }
+    body { font-family: 'Inter', sans-serif; }
+    .form-section-title { font-size: 1.5rem; font-weight: 700; color: #2563eb; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e5e7eb; }
+    .form-section-subtitle { color: #6b7280; margin-bottom: 1.5rem; }
+    .dynamic-input-container input { margin-bottom: 0.5rem; }
 
-        /* Stili per la Stampa */
-        @media print {
-            body {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-                margin: 0;
-                padding: 0;
-            }
-            .no-print { display: none !important; }
-            .printable-area {
-                box-shadow: none !important;
-                border: none !important;
-                margin: 0 !important;
-                padding: 1cm !important;
-            }
-            body.print-evaluation-only .form-section:not(#medical-evaluation-section, .patient-info-print-only, #important-message-section) { display: none !important; }
-            body.print-evaluation-only .patient-info-print-only { display: block !important; }
-            body.print-evaluation-only h1 { display: none !important; }
-            .page-break { page-break-before: always; }
-
-            /* Mostra tutti gli elementi stampabili, inclusi quelli con contenuto vuoto */
-            .printable-data {
-                display: block !important;
-                background: none !important;
-                border: none !important;
-                padding: 0 !important;
-                font-size: inherit !important;
-                line-height: inherit !important;
-                color: black !important;
-                width: 100% !important;
-                resize: none !important;
-                overflow: hidden !important;
-                -webkit-box-shadow: none !important;
-                box-shadow: none !important;
-                -webkit-text-fill-color: black !important;
-                text-fill-color: black !important;
-            }
-
-            /* Assicura che i checkbox e le loro etichette vengano visualizzati */
-            input[type="checkbox"] + label {
-                display: inline-block !important;
-            }
-            
-            /* Stili specifici per le textarea */
-            textarea.printable-data {
-                height: auto !important;
-                min-height: unset !important;
-                white-space: pre-wrap !important;
-            }
-
-            /* Stili per i contenitori */
-            .p-4.border.rounded-lg, .p-4.border.rounded-lg.bg-gray-50 {
-                border: 1px solid #ddd !important;
-                padding: 0.5rem !important;
-                margin-bottom: 0.5rem !important;
-            }
-
-            .form-section-title {
-                margin-top: 1.5rem !important;
-                margin-bottom: 0.5rem !important;
-                padding-bottom: 0.25rem !important;
-                border-bottom: 1px solid black !important;
-                color: black !important;
-                font-size: 1.2rem !important;
-                page-break-after: avoid;
-            }
-            .form-section-subtitle { display: none !important; }
+    /* Stili per la Stampa */
+    @media print {
+        body {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            margin: 0;
+            padding: 0;
         }
-    </style>
+        .no-print { display: none !important; }
+        .printable-area {
+            box-shadow: none !important;
+            border: none !important;
+            margin: 0 !important;
+            padding: 1cm !important;
+        }
+        body.print-evaluation-only .form-section:not(#medical-evaluation-section, .patient-info-print-only, #important-message-section) { display: none !important; }
+        body.print-evaluation-only .patient-info-print-only { display: block !important; }
+        body.print-evaluation-only h1 { display: none !important; }
+        .page-break { page-break-before: always; }
+
+        /* Mostra tutti gli elementi stampabili, inclusi quelli con contenuto vuoto */
+        .printable-data {
+            display: block !important;
+            background: none !important;
+            border: none !important;
+            padding: 0 !important;
+            font-size: inherit !important;
+            line-height: inherit !important;
+            color: black !important;
+            width: 100% !important;
+            resize: none !important;
+            overflow: hidden !important;
+            -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+            -webkit-text-fill-color: black !important;
+            text-fill-color: black !important;
+        }
+
+        /* Assicura che i checkbox e le loro etichette vengano visualizzati */
+        input[type="checkbox"] + label {
+            display: inline-block !important;
+        }
+        
+        /* Stili specifici per le textarea */
+        textarea.printable-data {
+            height: auto !important;
+            min-height: unset !important;
+            white-space: pre-wrap !important;
+            /* La parte più importante: il JavaScript gestirà l'altezza. */
+        }
+
+        /* Stili per i contenitori */
+        .p-4.border.rounded-lg, .p-4.border.rounded-lg.bg-gray-50 {
+            border: 1px solid #ddd !important;
+            padding: 0.5rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+
+        .form-section-title {
+            margin-top: 1.5rem !important;
+            margin-bottom: 0.5rem !important;
+            padding-bottom: 0.25rem !important;
+            border-bottom: 1px solid black !important;
+            color: black !important;
+            font-size: 1.2rem !important;
+            page-break-after: avoid;
+        }
+        .form-section-subtitle { display: none !important; }
+    }
+</style>
 </head>
 <body class="bg-gray-100 text-gray-800">
 
@@ -482,599 +483,615 @@
 
 
     <script>
-        // --- Riferimenti a Firebase Authentication e Firestore ---
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        const patientsCollection = db.collection('patients'); // Una "collezione" dove salveremo i pazienti
+    // --- Riferimenti a Firebase Authentication e Firestore ---
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const patientsCollection = db.collection('patients'); // Una "collezione" dove salveremo i pazienti
 
-        // --- ELEMENTI DEL DOM ---
-        const patientForm = document.getElementById('patient-form');
-        const messageBox = document.getElementById('message-box');
+    // --- ELEMENTI DEL DOM ---
+    const patientForm = document.getElementById('patient-form');
+    const messageBox = document.getElementById('message-box');
+    const patientsListDiv = document.getElementById('patients-list');
+    const saveButton = document.getElementById('save-button');
+    const examsToPerformList = document.getElementById('exams-to-perform-list');
+    const infusionContainer = document.getElementById('dynamic-infusion-inputs');
+    const drugsContainer = document.getElementById('dynamic-drug-inputs');
+    const importantMessageContainer = document.getElementById('important-message-container');
+
+    // Elementi di autenticazione
+    const loginScreen = document.getElementById('login-screen');
+    const loginForm = document.getElementById('login-form');
+    const loginEmail = document.getElementById('login-email');
+    const loginPassword = document.getElementById('login-password');
+    const loginError = document.getElementById('login-error');
+    const logoutBtn = document.getElementById('logout-btn');
+
+
+    let currentPatientId = null;
+
+    // --- FUNZIONI DI BASE ---
+    function displayMessage(text, type) {
+        messageBox.textContent = text;
+        messageBox.className = `mt-4 text-center p-3 rounded-lg ${type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
+        setTimeout(() => { messageBox.textContent = ''; messageBox.className = 'mt-4 text-center'; }, 5000);
+    }
+
+    function clearForm() {
+        patientForm.reset();
+        currentPatientId = null;
+        document.querySelectorAll('.hidden[id*="-other-container"], .hidden[data-id*="-container"]').forEach(el => el.style.display = 'none');
+        document.getElementById('monitoring-entries-container').innerHTML = '';
+        document.getElementById('therapy-log-container').innerHTML = '';
+        importantMessageContainer.innerHTML = '';
+
+        infusionContainer.innerHTML = '';
+        const defaultInfusion = document.getElementById('infusion-row-template').cloneNode(true);
+        defaultInfusion.id = '';
+        defaultInfusion.classList.remove('hidden');
+        infusionContainer.appendChild(defaultInfusion);
+
+        drugsContainer.innerHTML = '';
+        const defaultDrug = document.createElement('input');
+        defaultDrug.type = 'text';
+        defaultDrug.placeholder = 'Nome farmaco...';
+        defaultDrug.className = 'w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data';
+        drugsContainer.appendChild(defaultDrug);
+
+        // Rimuove gli esami personalizzati
+        document.querySelectorAll('.custom-exam-item').forEach(el => el.remove());
+
+        saveButton.textContent = 'Salva Paziente';
+        document.getElementById('entryDate').valueAsDate = new Date();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    document.getElementById('new-card-btn').addEventListener('click', clearForm);
+
+    // --- GESTIONE CAMPI CONDIZIONALI ---
+    function handleConditionalVisibility(element) {
+        const containerId = element.dataset.otherContainer;
+        if (!containerId) return;
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        const isCheckbox = element.type === 'checkbox';
+        let shouldShow;
+
+        if (isCheckbox) {
+            shouldShow = element.checked;
+        } else {
+            const conditionValue = element.dataset.conditionValue || 'Altro';
+            shouldShow = element.value === conditionValue;
+        }
+
+        container.style.display = shouldShow ? '' : 'none';
+        if (!shouldShow) {
+            container.querySelectorAll('input, textarea').forEach(input => input.value = '');
+        }
+    }
+    document.body.addEventListener('change', (e) => {
+        if (e.target.matches('.conditional-select') || e.target.matches('.conditional-checkbox')) {
+            handleConditionalVisibility(e.target);
+        }
+    });
+
+    // --- GESTIONE SEZIONI DINAMICHE (MONITORAGGIO/TERAPIA) ---
+    function setupDynamicSection(buttonId, containerId, templateId) {
+        document.getElementById(buttonId).addEventListener('click', () => {
+            const template = document.getElementById(templateId);
+            const clone = template.cloneNode(true);
+            clone.id = '';
+            clone.classList.remove('hidden');
+            document.getElementById(containerId).appendChild(clone);
+        });
+        document.getElementById(containerId).addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-entry-btn') || e.target.classList.contains('remove-infusion-btn')) {
+                const parent = e.target.closest('.p-4.border.rounded-lg');
+                if (parent) {
+                    parent.remove();
+                }
+            }
+        });
+    }
+    setupDynamicSection('add-monitoring-btn', 'monitoring-entries-container', 'monitoring-entry-template');
+    setupDynamicSection('add-therapy-log-btn', 'therapy-log-container', 'therapy-log-template');
+
+    // --- GESTIONE AGGIUNTA FLEBO ---
+    document.getElementById('add-infusion-btn').addEventListener('click', () => {
+        const template = document.getElementById('infusion-row-template');
+        const clone = template.cloneNode(true);
+        clone.id = '';
+        clone.classList.remove('hidden');
+        infusionContainer.appendChild(clone);
+    });
+
+    // --- GESTIONE AGGIUNTA FARMACI ---
+    document.getElementById('add-drug-btn').addEventListener('click', () => {
+        const newInput = document.createElement('input');
+        newInput.type = 'text';
+        newInput.placeholder = 'Nome farmaco...';
+        newInput.className = 'w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data';
+        drugsContainer.appendChild(newInput);
+        newInput.focus();
+    });
+
+    drugsContainer.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('add-drug-btn').click();
+        }
+    });
+
+    // --- GESTIONE AGGIUNTA ESAMI PERSONALIZZATI ---
+    document.getElementById('add-custom-exam-btn').addEventListener('click', () => {
+        const customExamTemplate = document.getElementById('custom-exam-template');
+        const clone = customExamTemplate.cloneNode(true);
+        clone.classList.add('custom-exam-item');
+        clone.classList.remove('hidden');
+        examsToPerformList.appendChild(clone);
+    });
+
+    examsToPerformList.addEventListener('click', (e) => {
+        if(e.target.classList.contains('remove-custom-exam-btn')) {
+            e.target.closest('.custom-exam-item').remove();
+        }
+    });
+
+    // --- GESTIONE MESSAGGIO IMPORTANTE ---
+    function addImportantMessage(messageData = {}) {
+        const template = document.getElementById('important-message-template');
+        const clone = template.cloneNode(true);
+        clone.id = '';
+        clone.classList.remove('hidden');
+
+        const today = new Date().toISOString().split('T')[0];
+        const endDate = new Date(messageData.endDate);
+        const isExpired = endDate < new Date();
+
+        if (!isExpired) {
+             importantMessageContainer.appendChild(clone);
+
+             // Popola i campi se i dati sono stati forniti
+             if (Object.keys(messageData).length > 0) {
+                 clone.querySelector('[data-field="startDate"]').value = messageData.startDate;
+                 clone.querySelector('[data-field="endDate"]').value = messageData.endDate;
+                 clone.querySelector('[data-field="messageText"]').value = messageData.messageText;
+             } else {
+                clone.querySelector('[data-field="startDate"]').value = today;
+             }
+        } else {
+            console.log("Messaggio scaduto, non aggiunto al DOM.");
+        }
+    }
+
+    document.getElementById('add-important-message-btn').addEventListener('click', () => {
+        if (importantMessageContainer.children.length === 0) {
+            addImportantMessage({});
+        } else {
+            displayMessage("È già presente un messaggio importante. Rimuovilo per aggiungerne un altro.", "error");
+        }
+    });
+
+    importantMessageContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-important-message-btn')) {
+            e.target.closest('.p-4.border.rounded-lg').remove();
+        }
+    });
+
+    // --- GESTIONE STAMPA ---
+    function adjustTextAreaHeights() {
+        const textareas = document.querySelectorAll('textarea.printable-data');
+        textareas.forEach(textarea => {
+            // Un po' di magia per calcolare l'altezza esatta
+            textarea.style.height = 'auto';
+            textarea.style.height = (textarea.scrollHeight) + 'px';
+        });
+    }
+
+    document.getElementById('print-button').addEventListener('click', () => {
+        adjustTextAreaHeights();
+        document.body.classList.remove('print-evaluation-only');
+        document.querySelector('#patient-info-header-print h1').textContent = `Cartella Clinica: ${document.getElementById('patientName').value || 'N/D'} (${document.getElementById('ownerLastname').value || 'N/D'})`;
+        document.querySelector('#patient-info-header-print p').textContent = `Data di Stampa: ${new Date().toLocaleDateString('it-IT')}`;
+        document.getElementById('patient-info-header-print').classList.remove('hidden');
+        window.print();
+    });
+
+    document.getElementById('print-evaluation-button').addEventListener('click', () => {
+        adjustTextAreaHeights();
+        document.body.classList.add('print-evaluation-only');
+        document.querySelector('#patient-info-header-print h1').textContent = `Valutazione Medica: ${document.getElementById('patientName').value || 'N/D'} (${document.getElementById('ownerLastname').value || 'N/D'})`;
+        document.querySelector('#patient-info-header-print p').textContent = `Data di Stampa: ${new Date().toLocaleDateString('it-IT')}`;
+        document.getElementById('patient-info-header-print').classList.remove('hidden');
+        window.print();
+    });
+
+    window.onafterprint = () => {
+        document.body.classList.remove('print-evaluation-only');
+        document.getElementById('patient-info-header-print').classList.add('hidden');
+        // Ripristina l'altezza normale delle textarea dopo la stampa
+        document.querySelectorAll('textarea.printable-data').forEach(textarea => {
+            textarea.style.height = '';
+        });
+    };
+
+    // --- GESTIONE AUTHENTICATION E FIREBASE ---
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            // L'utente è loggato
+            loginScreen.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+            renderPatientsList();
+        } else {
+            // L'utente non è loggato
+            loginScreen.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+            patientsListDiv.innerHTML = '<p class="text-gray-500">Effettua l\'accesso per vedere i pazienti.</p>';
+            clearForm();
+        }
+    });
+
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+            await auth.signInWithEmailAndPassword(loginEmail.value, loginPassword.value);
+            loginError.classList.add('hidden');
+        } catch (error) {
+            console.error("Login fallito:", error);
+            loginError.textContent = "Credenziali non valide. Riprova.";
+            loginError.classList.remove('hidden');
+        }
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+        await auth.signOut();
+    });
+
+    // --- CARICAMENTO, POPOLAMENTO E SALVATAGGIO DATI (FIREBASE) ---
+    async function renderPatientsList() {
         const patientsListDiv = document.getElementById('patients-list');
-        const saveButton = document.getElementById('save-button');
-        const examsToPerformList = document.getElementById('exams-to-perform-list');
-        const infusionContainer = document.getElementById('dynamic-infusion-inputs');
-        const drugsContainer = document.getElementById('dynamic-drug-inputs');
-        const importantMessageContainer = document.getElementById('important-message-container');
+        patientsListDiv.innerHTML = '<p id="loading-patients" class="text-gray-500">Caricamento pazienti...</p>';
 
-        // Elementi di autenticazione
-        const loginScreen = document.getElementById('login-screen');
-        const loginForm = document.getElementById('login-form');
-        const loginEmail = document.getElementById('login-email');
-        const loginPassword = document.getElementById('login-password');
-        const loginError = document.getElementById('login-error');
-        const logoutBtn = document.getElementById('logout-btn');
+        try {
+            const snapshot = await patientsCollection.orderBy('updatedAt', 'desc').get();
+            const patientsArray = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
+            patientsListDiv.innerHTML = '';
+            if (patientsArray.length === 0) {
+                patientsListDiv.innerHTML = '<p class="text-gray-500">Nessun paziente salvato.</p>';
+                return;
+            }
 
-        let currentPatientId = null;
-
-        // --- FUNZIONI DI BASE ---
-        function displayMessage(text, type) {
-            messageBox.textContent = text;
-            messageBox.className = `mt-4 text-center p-3 rounded-lg ${type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
-            setTimeout(() => { messageBox.textContent = ''; messageBox.className = 'mt-4 text-center'; }, 5000);
+            patientsArray.forEach(patient => {
+                const patientCard = document.createElement('div');
+                patientCard.className = 'p-4 border rounded-lg bg-gray-50 flex flex-col sm:flex-row justify-between sm:items-center';
+                patientCard.innerHTML = `
+                    <div>
+                        <p class="font-bold text-lg text-blue-700">${patient.patientName || 'N/D'} <span class="text-sm font-normal text-gray-500">(${patient.species || 'N/D'})</span></p>
+                        <p class="text-gray-600">Proprietario: ${patient.ownerLastname || 'N/D'}</p>
+                        <p class="text-xs text-gray-400 mt-1">Ultima modifica: ${new Date(patient.updatedAt.toDate()).toLocaleString('it-IT')}</p>
+                    </div>
+                    <div class="flex space-x-2 mt-3 sm:mt-0">
+                        <button data-id="${patient.id}" class="open-patient-btn px-4 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-100 transition">Apri</button>
+                        <button data-id="${patient.id}" class="delete-patient-btn px-4 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition">Elimina</button>
+                    </div>
+                `;
+                patientsListDiv.appendChild(patientCard);
+            });
+        } catch (error) {
+            console.error("Errore nel caricamento dei pazienti:", error);
+            patientsListDiv.innerHTML = '<p class="text-red-500">Errore nel caricamento dei dati.</p>';
         }
+    }
 
-        function clearForm() {
-            patientForm.reset();
-            currentPatientId = null;
-            document.querySelectorAll('.hidden[id*="-other-container"], .hidden[data-id*="-container"]').forEach(el => el.style.display = 'none');
-            document.getElementById('monitoring-entries-container').innerHTML = '';
-            document.getElementById('therapy-log-container').innerHTML = '';
-            importantMessageContainer.innerHTML = '';
-
-            infusionContainer.innerHTML = '';
-            const defaultInfusion = document.getElementById('infusion-row-template').cloneNode(true);
-            defaultInfusion.id = '';
-            defaultInfusion.classList.remove('hidden');
-            infusionContainer.appendChild(defaultInfusion);
-
-            drugsContainer.innerHTML = '';
-            const defaultDrug = document.createElement('input');
-            defaultDrug.type = 'text';
-            defaultDrug.placeholder = 'Nome farmaco...';
-            defaultDrug.className = 'w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data';
-            drugsContainer.appendChild(defaultDrug);
-
-            // Rimuove gli esami personalizzati
-            document.querySelectorAll('.custom-exam-item').forEach(el => el.remove());
-
-            saveButton.textContent = 'Salva Paziente';
-            document.getElementById('entryDate').valueAsDate = new Date();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+    patientsListDiv.addEventListener('click', (e) => {
+        if (e.target.classList.contains('open-patient-btn')) {
+            loadPatientData(e.target.dataset.id);
         }
-        document.getElementById('new-card-btn').addEventListener('click', clearForm);
+        if (e.target.classList.contains('delete-patient-btn')) {
+            deletePatientData(e.target.dataset.id);
+        }
+    });
 
-        // --- GESTIONE CAMPI CONDIZIONALI ---
-        function handleConditionalVisibility(element) {
-            const containerId = element.dataset.otherContainer;
-            if (!containerId) return;
-            const container = document.getElementById(containerId);
-            if (!container) return;
-
-            const isCheckbox = element.type === 'checkbox';
-            let shouldShow;
-
-            if (isCheckbox) {
-                shouldShow = element.checked;
+    async function loadPatientData(id) {
+        try {
+            const doc = await patientsCollection.doc(id).get();
+            if (doc.exists) {
+                clearForm();
+                populateForm(doc.data());
+                currentPatientId = doc.id;
+                saveButton.textContent = 'Aggiorna Scheda';
+                displayMessage(`Scheda di ${doc.data().patientName} caricata.`, 'success');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
-                const conditionValue = element.dataset.conditionValue || 'Altro';
-                shouldShow = element.value === conditionValue;
+                displayMessage("Paziente non trovato.", "error");
             }
-
-            container.style.display = shouldShow ? '' : 'none';
-            if (!shouldShow) {
-                container.querySelectorAll('input, textarea').forEach(input => input.value = '');
-            }
+        } catch (error) {
+            console.error("Errore nel caricamento del paziente:", error);
+            displayMessage("Errore nel caricamento dei dati.", "error");
         }
-        document.body.addEventListener('change', (e) => {
-            if (e.target.matches('.conditional-select') || e.target.matches('.conditional-checkbox')) {
-                handleConditionalVisibility(e.target);
+    }
+
+
+    function populateForm(data) {
+        // Popola i campi statici
+        const formElements = document.querySelectorAll('#patient-form [id]');
+        formElements.forEach(el => {
+            const key = el.id;
+            if (data.hasOwnProperty(key)) {
+                if (el.type === 'checkbox') {
+                    el.checked = data[key];
+                } else if (el.tagName === 'SELECT') {
+                    el.value = data[key] || el.options[0].value;
+                } else {
+                    el.value = data[key] || '';
+                }
             }
         });
 
-        // --- GESTIONE SEZIONI DINAMICHE (MONITORAGGIO/TERAPIA) ---
-        function setupDynamicSection(buttonId, containerId, templateId) {
-            document.getElementById(buttonId).addEventListener('click', () => {
+        // Gestisce i campi "other"
+        document.querySelectorAll('.conditional-select').forEach(el => {
+            el.dispatchEvent(new Event('change'));
+        });
+
+        // Popola gli esami da eseguire
+        if (data.examsToPerform) {
+            document.getElementById('exam-cbc').checked = data.examsToPerform.cbc;
+            document.getElementById('exam-biochem').checked = data.examsToPerform.biochem;
+            document.getElementById('exam-biochem-other').value = data.examsToPerform.biochem_other || '';
+            document.getElementById('exam-snap').checked = data.examsToPerform.snap;
+            document.getElementById('exam-snap-other').value = data.examsToPerform.snap_other || '';
+            document.getElementById('exam-urinalysis').checked = data.examsToPerform.urinalysis;
+            document.getElementById('exam-pucu').checked = data.examsToPerform.pucu;
+            document.getElementById('exam-rx').checked = data.examsToPerform.rx;
+            document.getElementById('exam-rx-other').value = data.examsToPerform.rx_other || '';
+            document.getElementById('exam-ultrasound').checked = data.examsToPerform.ultrasound;
+            document.getElementById('exam-ecofast').checked = data.examsToPerform.ecofast;
+            document.getElementById('exam-emogas').checked = data.examsToPerform.emogas;
+            document.getElementById('exam-surgery').checked = data.examsToPerform.surgery;
+            document.getElementById('exam-surgery-other').value = data.examsToPerform.surgery_other || '';
+            document.getElementById('exam-lab').checked = data.examsToPerform.lab;
+            document.getElementById('exam-lab-other').value = data.examsToPerform.lab_other || '';
+            document.getElementById('exam-other').checked = data.examsToPerform.other;
+            document.getElementById('exam-other-other').value = data.examsToPerform.other_other || '';
+        }
+
+        if (data.customExams) {
+            // Rimuove i vecchi esami custom prima di aggiungerli
+            document.querySelectorAll('.custom-exam-item').forEach(el => el.remove());
+            data.customExams.forEach(exam => {
+                const template = document.getElementById('custom-exam-template');
+                const clone = template.cloneNode(true);
+                clone.classList.remove('hidden');
+                const checkbox = clone.querySelector('.exam-checkbox');
+                const nameInput = clone.querySelector('.custom-exam-name');
+                checkbox.checked = exam.checked;
+                nameInput.value = exam.name || '';
+                examsToPerformList.appendChild(clone);
+            });
+        }
+
+        // Popola gli esami eseguiti
+        if (data.examsExecuted) {
+            document.getElementById('executed-exam-cbc').checked = data.examsExecuted.cbc;
+            document.getElementById('executed-exam-biochem').checked = data.examsExecuted.biochem;
+            document.getElementById('executed-exam-biochem-other').value = data.examsExecuted.biochem_other || '';
+            document.getElementById('executed-exam-snap').checked = data.examsExecuted.snap;
+            document.getElementById('executed-exam-urinalysis').checked = data.examsExecuted.urinalysis;
+            document.getElementById('executed-exam-pucu').checked = data.examsExecuted.pucu;
+            document.getElementById('executed-exam-rx').checked = data.examsExecuted.rx;
+            document.getElementById('executed-exam-ultrasound').checked = data.examsExecuted.ultrasound;
+            document.getElementById('executed-exam-ecofast').checked = data.examsExecuted.ecofast;
+            document.getElementById('executed-exam-emogas').checked = data.examsExecuted.emogas;
+            document.getElementById('executed-exam-surgery').checked = data.examsExecuted.surgery;
+            document.getElementById('executed-exam-lab').checked = data.examsExecuted.lab;
+            document.getElementById('executed-exam-other-text').value = data.examsExecuted.other_text || '';
+        }
+
+        // Popola le sezioni dinamiche (flebo, monitoraggio, terapia, messaggio)
+        const populateDynamicSection = (containerId, templateId, entries) => {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            (entries || []).forEach(entryData => {
                 const template = document.getElementById(templateId);
                 const clone = template.cloneNode(true);
                 clone.id = '';
                 clone.classList.remove('hidden');
-                document.getElementById(containerId).appendChild(clone);
-            });
-            document.getElementById(containerId).addEventListener('click', (e) => {
-                if (e.target.classList.contains('remove-entry-btn') || e.target.classList.contains('remove-infusion-btn')) {
-                    const parent = e.target.closest('.p-4.border.rounded-lg');
-                    if (parent) {
-                        parent.remove();
+                clone.querySelectorAll('[data-field]').forEach(input => {
+                    if (input.type === 'checkbox') {
+                        input.checked = entryData[input.dataset.field];
+                    } else {
+                        input.value = entryData[input.dataset.field] || '';
                     }
-                }
+                });
+                container.appendChild(clone);
             });
-        }
-        setupDynamicSection('add-monitoring-btn', 'monitoring-entries-container', 'monitoring-entry-template');
-        setupDynamicSection('add-therapy-log-btn', 'therapy-log-container', 'therapy-log-template');
-
-        // --- GESTIONE AGGIUNTA FLEBO ---
-        document.getElementById('add-infusion-btn').addEventListener('click', () => {
-            const template = document.getElementById('infusion-row-template');
-            const clone = template.cloneNode(true);
-            clone.id = '';
-            clone.classList.remove('hidden');
-            infusionContainer.appendChild(clone);
-        });
-
-        // --- GESTIONE AGGIUNTA FARMACI ---
-        document.getElementById('add-drug-btn').addEventListener('click', () => {
-            const newInput = document.createElement('input');
-            newInput.type = 'text';
-            newInput.placeholder = 'Nome farmaco...';
-            newInput.className = 'w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data';
-            drugsContainer.appendChild(newInput);
-            newInput.focus();
-        });
-
-        drugsContainer.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                document.getElementById('add-drug-btn').click();
+            // Assicura che ci sia sempre almeno un campo di default se la sezione era vuota
+            if (container.children.length === 0 && templateId !== 'custom-exam-template' && templateId !== 'important-message-template') {
+                const defaultClone = document.getElementById(templateId).cloneNode(true);
+                defaultClone.id = '';
+                defaultClone.classList.remove('hidden');
+                container.appendChild(defaultClone);
             }
-        });
-
-        // --- GESTIONE AGGIUNTA ESAMI PERSONALIZZATI ---
-        document.getElementById('add-custom-exam-btn').addEventListener('click', () => {
-            const customExamTemplate = document.getElementById('custom-exam-template');
-            const clone = customExamTemplate.cloneNode(true);
-            clone.classList.add('custom-exam-item');
-            clone.classList.remove('hidden');
-            examsToPerformList.appendChild(clone);
-        });
-
-        examsToPerformList.addEventListener('click', (e) => {
-            if(e.target.classList.contains('remove-custom-exam-btn')) {
-                e.target.closest('.custom-exam-item').remove();
-            }
-        });
-
-        // --- GESTIONE MESSAGGIO IMPORTANTE ---
-        function addImportantMessage(messageData = {}) {
-            const template = document.getElementById('important-message-template');
-            const clone = template.cloneNode(true);
-            clone.id = '';
-            clone.classList.remove('hidden');
-
-            const today = new Date().toISOString().split('T')[0];
-            const endDate = new Date(messageData.endDate);
-            const isExpired = endDate < new Date();
-
-            if (!isExpired) {
-                 importantMessageContainer.appendChild(clone);
-
-                 // Popola i campi se i dati sono stati forniti
-                 if (Object.keys(messageData).length > 0) {
-                     clone.querySelector('[data-field="startDate"]').value = messageData.startDate;
-                     clone.querySelector('[data-field="endDate"]').value = messageData.endDate;
-                     clone.querySelector('[data-field="messageText"]').value = messageData.messageText;
-                 } else {
-                    clone.querySelector('[data-field="startDate"]').value = today;
-                 }
-            } else {
-                console.log("Messaggio scaduto, non aggiunto al DOM.");
-            }
-        }
-
-        document.getElementById('add-important-message-btn').addEventListener('click', () => {
-            if (importantMessageContainer.children.length === 0) {
-                addImportantMessage({});
-            } else {
-                displayMessage("È già presente un messaggio importante. Rimuovilo per aggiungerne un altro.", "error");
-            }
-        });
-
-        importantMessageContainer.addEventListener('click', (e) => {
-            if (e.target.classList.contains('remove-important-message-btn')) {
-                e.target.closest('.p-4.border.rounded-lg').remove();
-            }
-        });
-
-        // --- GESTIONE STAMPA ---
-        document.getElementById('print-button').addEventListener('click', () => {
-            document.body.classList.remove('print-evaluation-only');
-            document.querySelector('#patient-info-header-print h1').textContent = `Cartella Clinica: ${document.getElementById('patientName').value || 'N/D'} (${document.getElementById('ownerLastname').value || 'N/D'})`;
-            document.querySelector('#patient-info-header-print p').textContent = `Data di Stampa: ${new Date().toLocaleDateString('it-IT')}`;
-            document.getElementById('patient-info-header-print').classList.remove('hidden');
-            window.print();
-        });
-
-        document.getElementById('print-evaluation-button').addEventListener('click', () => {
-            document.body.classList.add('print-evaluation-only');
-            document.querySelector('#patient-info-header-print h1').textContent = `Valutazione Medica: ${document.getElementById('patientName').value || 'N/D'} (${document.getElementById('ownerLastname').value || 'N/D'})`;
-            document.querySelector('#patient-info-header-print p').textContent = `Data di Stampa: ${new Date().toLocaleDateString('it-IT')}`;
-            document.getElementById('patient-info-header-print').classList.remove('hidden');
-            window.print();
-        });
-
-        window.onafterprint = () => {
-            document.body.classList.remove('print-evaluation-only');
-            document.getElementById('patient-info-header-print').classList.add('hidden');
         };
 
-        // --- GESTIONE AUTHENTICATION E FIREBASE ---
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                // L'utente è loggato
-                loginScreen.classList.add('hidden');
-                document.body.classList.remove('overflow-hidden');
-                renderPatientsList();
+        // Flebo
+        populateDynamicSection('dynamic-infusion-inputs', 'infusion-row-template', data.infusionTherapy);
+        // Farmaci
+        const drugsContainer = document.getElementById('dynamic-drug-inputs');
+        drugsContainer.innerHTML = '';
+        (data.drugsToAdminister || []).forEach(drug => {
+            const drugInput = document.createElement('input');
+            drugInput.type = 'text';
+            drugInput.placeholder = 'Nome farmaco...';
+            drugInput.className = 'w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data';
+            drugInput.value = drug;
+            drugsContainer.appendChild(drugInput);
+        });
+        const emptyInput = document.createElement('input');
+        emptyInput.type = 'text';
+        emptyInput.placeholder = 'Nome farmaco...';
+        emptyInput.className = 'w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data';
+        drugsContainer.appendChild(emptyInput);
+
+        // Messaggio importante
+        importantMessageContainer.innerHTML = '';
+        if (data.importantMessage) {
+             addImportantMessage(data.importantMessage);
+        }
+
+        // Monitoraggio e terapia log
+        populateDynamicSection('monitoring-entries-container', 'monitoring-entry-template', data.monitoringEntries);
+        populateDynamicSection('therapy-log-container', 'therapy-log-template', data.therapyLog);
+    }
+
+
+    async function saveData() {
+        const getDynamicEntries = (containerId) => {
+            return Array.from(document.querySelectorAll(`#${containerId} > div:not(.hidden)`)).map(entryDiv => {
+                const entryData = {};
+                entryDiv.querySelectorAll('[data-field]').forEach(input => {
+                    entryData[input.dataset.field] = input.type === 'checkbox' ? input.checked : input.value;
+                });
+                return entryData;
+            });
+        };
+
+        const customExams = Array.from(document.querySelectorAll('.custom-exam-item')).map(item => {
+            const checkbox = item.querySelector('.exam-checkbox');
+            const nameInput = item.querySelector('.custom-exam-name');
+            return {
+                name: nameInput.value.trim(),
+                checked: checkbox.checked
+            };
+        }).filter(exam => exam.name);
+
+        // Ottiene i dati del messaggio importante
+        const importantMessageElement = importantMessageContainer.querySelector('div:not(.hidden)');
+        const importantMessageData = importantMessageElement ? {
+             startDate: importantMessageElement.querySelector('[data-field="startDate"]').value,
+             endDate: importantMessageElement.querySelector('[data-field="endDate"]').value,
+             messageText: importantMessageElement.querySelector('[data-field="messageText"]').value,
+        } : null;
+
+        const patientData = {
+            entryDate: document.getElementById('entryDate').value,
+            ownerLastname: document.getElementById('ownerLastname').value.trim(),
+            phone: document.getElementById('phone').value.trim(),
+            altContact: document.getElementById('altContact').value.trim(),
+            patientName: document.getElementById('patientName').value.trim(),
+            species: document.getElementById('species').value.trim(),
+            sex: document.getElementById('sex').value,
+            age: document.getElementById('age').value.trim(),
+            weight: document.getElementById('weight').value,
+            microchip: document.getElementById('microchip').value.trim(),
+            reasonForHospitalization: document.getElementById('reasonForHospitalization').value.trim(),
+            vaccinations: document.getElementById('vaccinations').value,
+            vaccinationsOther: document.getElementById('vaccinations-other').value.trim(),
+            parasiteTreatments: document.getElementById('parasiteTreatments').value,
+            parasiteTreatmentsOther: document.getElementById('parasite-treatments-other').value.trim(),
+            previousPathologies: document.getElementById('previousPathologies').value.trim(),
+            mentalState: document.getElementById('mentalState').value,
+            mentalStateOther: document.getElementById('mentalStateOther').value.trim(),
+            gait: document.getElementById('gait').value,
+            gaitOther: document.getElementById('gaitOther').value.trim(),
+            temperature: document.getElementById('temperature').value,
+            capillaryRefillTime: document.getElementById('capillaryRefillTime').value,
+            mucousMembranes: document.getElementById('mucousMembranes').value.trim(),
+            hydration: document.getElementById('hydration').value,
+            lymphNodes: document.getElementById('lymphNodes').value,
+            lymphNodesOther: document.getElementById('lymphNodesOther').value.trim(),
+            abdominalPalpation: document.getElementById('abdominalPalpation').value,
+            cardiacAuscultation: document.getElementById('cardiacAuscultation').value,
+            pulmonaryAuscultation: document.getElementById('pulmonaryAuscultation').value,
+            cns: document.getElementById('cns').value.trim(),
+            otherFindings: document.getElementById('otherFindings').value.trim(),
+            homeTreatments: document.getElementById('homeTreatments').value.trim(),
+            admissionTherapy: document.getElementById('admissionTherapy').value.trim(),
+            examsToPerform: {
+                cbc: document.getElementById('exam-cbc').checked,
+                biochem: document.getElementById('exam-biochem').checked, biochem_other: document.getElementById('exam-biochem-other').value.trim(),
+                snap: document.getElementById('exam-snap').checked, snap_other: document.getElementById('exam-snap-other').value.trim(),
+                urinalysis: document.getElementById('exam-urinalysis').checked, pucu: document.getElementById('exam-pucu').checked,
+                rx: document.getElementById('exam-rx').checked, rx_other: document.getElementById('exam-rx-other').value,
+                ultrasound: document.getElementById('exam-ultrasound').checked, ecofast: document.getElementById('exam-ecofast').checked,
+                emogas: document.getElementById('exam-emogas').checked,
+                surgery: document.getElementById('exam-surgery').checked, surgery_other: document.getElementById('exam-surgery-other').value.trim(),
+                lab: document.getElementById('exam-lab').checked, lab_other: document.getElementById('exam-lab-other').value.trim(),
+                other: document.getElementById('exam-other').checked, other_other: document.getElementById('exam-other-other').value.trim(),
+            },
+            customExams: customExams,
+            examsExecuted: {
+                cbc: document.getElementById('executed-exam-cbc').checked,
+                biochem: document.getElementById('executed-exam-biochem').checked,
+                biochem_other: document.getElementById('executed-exam-biochem-other').value.trim(),
+                snap: document.getElementById('executed-exam-snap').checked,
+                urinalysis: document.getElementById('executed-exam-urinalysis').checked,
+                pucu: document.getElementById('executed-exam-pucu').checked,
+                rx: document.getElementById('executed-exam-rx').checked,
+                ultrasound: document.getElementById('executed-exam-ultrasound').checked,
+                ecofast: document.getElementById('executed-exam-ecofast').checked,
+                emogas: document.getElementById('executed-exam-emogas').checked,
+                surgery: document.getElementById('executed-exam-surgery').checked,
+                lab: document.getElementById('executed-exam-lab').checked,
+                other_text: document.getElementById('executed-exam-other-text').value.trim(),
+            },
+            infusionTherapy: getDynamicEntries('dynamic-infusion-inputs'),
+            drugsToAdminister: Array.from(document.querySelectorAll('#dynamic-drug-inputs input')).map(input => input.value.trim()).filter(Boolean),
+            medicalCourse: document.getElementById('medicalCourse').value.trim(),
+            dischargeConditions: document.getElementById('dischargeConditions').value.trim(),
+            homeTherapy: document.getElementById('homeTherapy').value.trim(),
+            followUp: document.getElementById('followUp').value.trim(),
+            importantMessage: importantMessageData,
+            monitoringEntries: getDynamicEntries('monitoring-entries-container'),
+            therapyLog: getDynamicEntries('therapy-log-container'),
+            updatedAt: new Date(),
+        };
+
+        if (!patientData.ownerLastname || !patientData.patientName || !patientData.weight) {
+            displayMessage("Compila tutti i campi anagrafici obbligatori (*).", "error");
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+
+        try {
+            if (currentPatientId) {
+                await patientsCollection.doc(currentPatientId).update(patientData);
+                displayMessage("Scheda aggiornata con successo!", "success");
             } else {
-                // L'utente non è loggato
-                loginScreen.classList.remove('hidden');
-                document.body.classList.add('overflow-hidden');
-                patientsListDiv.innerHTML = '<p class="text-gray-500">Effettua l\'accesso per vedere i pazienti.</p>';
+                await patientsCollection.add({
+                    ...patientData,
+                    createdAt: new Date()
+                });
+                displayMessage("Scheda salvata con successo!", "success");
                 clearForm();
             }
-        });
-
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            try {
-                await auth.signInWithEmailAndPassword(loginEmail.value, loginPassword.value);
-                loginError.classList.add('hidden');
-            } catch (error) {
-                console.error("Login fallito:", error);
-                loginError.textContent = "Credenziali non valide. Riprova.";
-                loginError.classList.remove('hidden');
-            }
-        });
-
-        logoutBtn.addEventListener('click', async () => {
-            await auth.signOut();
-        });
-
-        // --- CARICAMENTO, POPOLAMENTO E SALVATAGGIO DATI (FIREBASE) ---
-        async function renderPatientsList() {
-            const patientsListDiv = document.getElementById('patients-list');
-            patientsListDiv.innerHTML = '<p id="loading-patients" class="text-gray-500">Caricamento pazienti...</p>';
-
-            try {
-                const snapshot = await patientsCollection.orderBy('updatedAt', 'desc').get();
-                const patientsArray = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-                patientsListDiv.innerHTML = '';
-                if (patientsArray.length === 0) {
-                    patientsListDiv.innerHTML = '<p class="text-gray-500">Nessun paziente salvato.</p>';
-                    return;
-                }
-
-                patientsArray.forEach(patient => {
-                    const patientCard = document.createElement('div');
-                    patientCard.className = 'p-4 border rounded-lg bg-gray-50 flex flex-col sm:flex-row justify-between sm:items-center';
-                    patientCard.innerHTML = `
-                        <div>
-                            <p class="font-bold text-lg text-blue-700">${patient.patientName || 'N/D'} <span class="text-sm font-normal text-gray-500">(${patient.species || 'N/D'})</span></p>
-                            <p class="text-gray-600">Proprietario: ${patient.ownerLastname || 'N/D'}</p>
-                            <p class="text-xs text-gray-400 mt-1">Ultima modifica: ${new Date(patient.updatedAt.toDate()).toLocaleString('it-IT')}</p>
-                        </div>
-                        <div class="flex space-x-2 mt-3 sm:mt-0">
-                            <button data-id="${patient.id}" class="open-patient-btn px-4 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-100 transition">Apri</button>
-                            <button data-id="${patient.id}" class="delete-patient-btn px-4 py-2 bg-red-500 text-white font-semibold rounded-lg hover:bg-red-600 transition">Elimina</button>
-                        </div>
-                    `;
-                    patientsListDiv.appendChild(patientCard);
-                });
-            } catch (error) {
-                console.error("Errore nel caricamento dei pazienti:", error);
-                patientsListDiv.innerHTML = '<p class="text-red-500">Errore nel caricamento dei dati.</p>';
-            }
+            renderPatientsList();
+        } catch (error) {
+            console.error("Errore nel salvataggio dei dati:", error);
+            displayMessage("Errore nel salvataggio dei dati.", "error");
         }
+    }
+    saveButton.addEventListener('click', saveData);
 
-        patientsListDiv.addEventListener('click', (e) => {
-            if (e.target.classList.contains('open-patient-btn')) {
-                loadPatientData(e.target.dataset.id);
-            }
-            if (e.target.classList.contains('delete-patient-btn')) {
-                deletePatientData(e.target.dataset.id);
-            }
-        });
-
-        async function loadPatientData(id) {
+    async function deletePatientData(id) {
+        if (confirm("Sei sicuro di voler eliminare questa scheda paziente? Questa azione è irreversibile.")) {
             try {
-                const doc = await patientsCollection.doc(id).get();
-                if (doc.exists) {
-                    clearForm();
-                    populateForm(doc.data());
-                    currentPatientId = doc.id;
-                    saveButton.textContent = 'Aggiorna Scheda';
-                    displayMessage(`Scheda di ${doc.data().patientName} caricata.`, 'success');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                } else {
-                    displayMessage("Paziente non trovato.", "error");
-                }
-            } catch (error) {
-                console.error("Errore nel caricamento del paziente:", error);
-                displayMessage("Errore nel caricamento dei dati.", "error");
-            }
-        }
-
-
-        function populateForm(data) {
-            // Popola i campi statici
-            const formElements = document.querySelectorAll('#patient-form [id]');
-            formElements.forEach(el => {
-                const key = el.id;
-                if (data.hasOwnProperty(key)) {
-                    if (el.type === 'checkbox') {
-                        el.checked = data[key];
-                    } else if (el.tagName === 'SELECT') {
-                        el.value = data[key] || el.options[0].value;
-                    } else {
-                        el.value = data[key] || '';
-                    }
-                }
-            });
-
-            // Gestisce i campi "other"
-            document.querySelectorAll('.conditional-select').forEach(el => {
-                el.dispatchEvent(new Event('change'));
-            });
-
-            // Popola gli esami da eseguire
-            if (data.examsToPerform) {
-                document.getElementById('exam-cbc').checked = data.examsToPerform.cbc;
-                document.getElementById('exam-biochem').checked = data.examsToPerform.biochem;
-                document.getElementById('exam-biochem-other').value = data.examsToPerform.biochem_other || '';
-                document.getElementById('exam-snap').checked = data.examsToPerform.snap;
-                document.getElementById('exam-snap-other').value = data.examsToPerform.snap_other || '';
-                document.getElementById('exam-urinalysis').checked = data.examsToPerform.urinalysis;
-                document.getElementById('exam-pucu').checked = data.examsToPerform.pucu;
-                document.getElementById('exam-rx').checked = data.examsToPerform.rx;
-                document.getElementById('exam-rx-other').value = data.examsToPerform.rx_other || '';
-                document.getElementById('exam-ultrasound').checked = data.examsToPerform.ultrasound;
-                document.getElementById('exam-ecofast').checked = data.examsToPerform.ecofast;
-                document.getElementById('exam-emogas').checked = data.examsToPerform.emogas;
-                document.getElementById('exam-surgery').checked = data.examsToPerform.surgery;
-                document.getElementById('exam-surgery-other').value = data.examsToPerform.surgery_other || '';
-                document.getElementById('exam-lab').checked = data.examsToPerform.lab;
-                document.getElementById('exam-lab-other').value = data.examsToPerform.lab_other || '';
-                document.getElementById('exam-other').checked = data.examsToPerform.other;
-                document.getElementById('exam-other-other').value = data.examsToPerform.other_other || '';
-            }
-
-            if (data.customExams) {
-                // Rimuove i vecchi esami custom prima di aggiungerli
-                document.querySelectorAll('.custom-exam-item').forEach(el => el.remove());
-                data.customExams.forEach(exam => {
-                    const template = document.getElementById('custom-exam-template');
-                    const clone = template.cloneNode(true);
-                    clone.classList.remove('hidden');
-                    const checkbox = clone.querySelector('.exam-checkbox');
-                    const nameInput = clone.querySelector('.custom-exam-name');
-                    checkbox.checked = exam.checked;
-                    nameInput.value = exam.name || '';
-                    examsToPerformList.appendChild(clone);
-                });
-            }
-
-            // Popola gli esami eseguiti
-            if (data.examsExecuted) {
-                document.getElementById('executed-exam-cbc').checked = data.examsExecuted.cbc;
-                document.getElementById('executed-exam-biochem').checked = data.examsExecuted.biochem;
-                document.getElementById('executed-exam-biochem-other').value = data.examsExecuted.biochem_other || '';
-                document.getElementById('executed-exam-snap').checked = data.examsExecuted.snap;
-                document.getElementById('executed-exam-urinalysis').checked = data.examsExecuted.urinalysis;
-                document.getElementById('executed-exam-pucu').checked = data.examsExecuted.pucu;
-                document.getElementById('executed-exam-rx').checked = data.examsExecuted.rx;
-                document.getElementById('executed-exam-ultrasound').checked = data.examsExecuted.ultrasound;
-                document.getElementById('executed-exam-ecofast').checked = data.examsExecuted.ecofast;
-                document.getElementById('executed-exam-emogas').checked = data.examsExecuted.emogas;
-                document.getElementById('executed-exam-surgery').checked = data.examsExecuted.surgery;
-                document.getElementById('executed-exam-lab').checked = data.examsExecuted.lab;
-                document.getElementById('executed-exam-other-text').value = data.examsExecuted.other_text || '';
-            }
-
-            // Popola le sezioni dinamiche (flebo, monitoraggio, terapia, messaggio)
-            const populateDynamicSection = (containerId, templateId, entries) => {
-                const container = document.getElementById(containerId);
-                container.innerHTML = '';
-                (entries || []).forEach(entryData => {
-                    const template = document.getElementById(templateId);
-                    const clone = template.cloneNode(true);
-                    clone.id = '';
-                    clone.classList.remove('hidden');
-                    clone.querySelectorAll('[data-field]').forEach(input => {
-                        if (input.type === 'checkbox') {
-                            input.checked = entryData[input.dataset.field];
-                        } else {
-                            input.value = entryData[input.dataset.field] || '';
-                        }
-                    });
-                    container.appendChild(clone);
-                });
-                // Assicura che ci sia sempre almeno un campo di default se la sezione era vuota
-                if (container.children.length === 0 && templateId !== 'custom-exam-template' && templateId !== 'important-message-template') {
-                    const defaultClone = document.getElementById(templateId).cloneNode(true);
-                    defaultClone.id = '';
-                    defaultClone.classList.remove('hidden');
-                    container.appendChild(defaultClone);
-                }
-            };
-
-            // Flebo
-            populateDynamicSection('dynamic-infusion-inputs', 'infusion-row-template', data.infusionTherapy);
-            // Farmaci
-            const drugsContainer = document.getElementById('dynamic-drug-inputs');
-            drugsContainer.innerHTML = '';
-            (data.drugsToAdminister || []).forEach(drug => {
-                const drugInput = document.createElement('input');
-                drugInput.type = 'text';
-                drugInput.placeholder = 'Nome farmaco...';
-                drugInput.className = 'w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data';
-                drugInput.value = drug;
-                drugsContainer.appendChild(drugInput);
-            });
-            const emptyInput = document.createElement('input');
-            emptyInput.type = 'text';
-            emptyInput.placeholder = 'Nome farmaco...';
-            emptyInput.className = 'w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data';
-            drugsContainer.appendChild(emptyInput);
-
-            // Messaggio importante
-            importantMessageContainer.innerHTML = '';
-            if (data.importantMessage) {
-                 addImportantMessage(data.importantMessage);
-            }
-
-            // Monitoraggio e terapia log
-            populateDynamicSection('monitoring-entries-container', 'monitoring-entry-template', data.monitoringEntries);
-            populateDynamicSection('therapy-log-container', 'therapy-log-template', data.therapyLog);
-        }
-
-
-        async function saveData() {
-            const getDynamicEntries = (containerId) => {
-                return Array.from(document.querySelectorAll(`#${containerId} > div:not(.hidden)`)).map(entryDiv => {
-                    const entryData = {};
-                    entryDiv.querySelectorAll('[data-field]').forEach(input => {
-                        entryData[input.dataset.field] = input.type === 'checkbox' ? input.checked : input.value;
-                    });
-                    return entryData;
-                });
-            };
-
-            const customExams = Array.from(document.querySelectorAll('.custom-exam-item')).map(item => {
-                const checkbox = item.querySelector('.exam-checkbox');
-                const nameInput = item.querySelector('.custom-exam-name');
-                return {
-                    name: nameInput.value.trim(),
-                    checked: checkbox.checked
-                };
-            }).filter(exam => exam.name);
-
-            // Ottiene i dati del messaggio importante
-            const importantMessageElement = importantMessageContainer.querySelector('div:not(.hidden)');
-            const importantMessageData = importantMessageElement ? {
-                 startDate: importantMessageElement.querySelector('[data-field="startDate"]').value,
-                 endDate: importantMessageElement.querySelector('[data-field="endDate"]').value,
-                 messageText: importantMessageElement.querySelector('[data-field="messageText"]').value,
-            } : null;
-
-            const patientData = {
-                entryDate: document.getElementById('entryDate').value,
-                ownerLastname: document.getElementById('ownerLastname').value.trim(),
-                phone: document.getElementById('phone').value.trim(),
-                altContact: document.getElementById('altContact').value.trim(),
-                patientName: document.getElementById('patientName').value.trim(),
-                species: document.getElementById('species').value.trim(),
-                sex: document.getElementById('sex').value,
-                age: document.getElementById('age').value.trim(),
-                weight: document.getElementById('weight').value,
-                microchip: document.getElementById('microchip').value.trim(),
-                reasonForHospitalization: document.getElementById('reasonForHospitalization').value.trim(),
-                vaccinations: document.getElementById('vaccinations').value,
-                vaccinationsOther: document.getElementById('vaccinations-other').value.trim(),
-                parasiteTreatments: document.getElementById('parasiteTreatments').value,
-                parasiteTreatmentsOther: document.getElementById('parasite-treatments-other').value.trim(),
-                previousPathologies: document.getElementById('previousPathologies').value.trim(),
-                mentalState: document.getElementById('mentalState').value,
-                mentalStateOther: document.getElementById('mentalStateOther').value.trim(),
-                gait: document.getElementById('gait').value,
-                gaitOther: document.getElementById('gaitOther').value.trim(),
-                temperature: document.getElementById('temperature').value,
-                capillaryRefillTime: document.getElementById('capillaryRefillTime').value,
-                mucousMembranes: document.getElementById('mucousMembranes').value.trim(),
-                hydration: document.getElementById('hydration').value,
-                lymphNodes: document.getElementById('lymphNodes').value,
-                lymphNodesOther: document.getElementById('lymphNodesOther').value.trim(),
-                abdominalPalpation: document.getElementById('abdominalPalpation').value,
-                cardiacAuscultation: document.getElementById('cardiacAuscultation').value,
-                pulmonaryAuscultation: document.getElementById('pulmonaryAuscultation').value,
-                cns: document.getElementById('cns').value.trim(),
-                otherFindings: document.getElementById('otherFindings').value.trim(),
-                homeTreatments: document.getElementById('homeTreatments').value.trim(),
-                admissionTherapy: document.getElementById('admissionTherapy').value.trim(),
-                examsToPerform: {
-                    cbc: document.getElementById('exam-cbc').checked,
-                    biochem: document.getElementById('exam-biochem').checked, biochem_other: document.getElementById('exam-biochem-other').value.trim(),
-                    snap: document.getElementById('exam-snap').checked, snap_other: document.getElementById('exam-snap-other').value.trim(),
-                    urinalysis: document.getElementById('exam-urinalysis').checked, pucu: document.getElementById('exam-pucu').checked,
-                    rx: document.getElementById('exam-rx').checked, rx_other: document.getElementById('exam-rx-other').value,
-                    ultrasound: document.getElementById('exam-ultrasound').checked, ecofast: document.getElementById('exam-ecofast').checked,
-                    emogas: document.getElementById('exam-emogas').checked,
-                    surgery: document.getElementById('exam-surgery').checked, surgery_other: document.getElementById('exam-surgery-other').value.trim(),
-                    lab: document.getElementById('exam-lab').checked, lab_other: document.getElementById('exam-lab-other').value.trim(),
-                    other: document.getElementById('exam-other').checked, other_other: document.getElementById('exam-other-other').value.trim(),
-                },
-                customExams: customExams,
-                examsExecuted: {
-                    cbc: document.getElementById('executed-exam-cbc').checked,
-                    biochem: document.getElementById('executed-exam-biochem').checked,
-                    biochem_other: document.getElementById('executed-exam-biochem-other').value.trim(),
-                    snap: document.getElementById('executed-exam-snap').checked,
-                    urinalysis: document.getElementById('executed-exam-urinalysis').checked,
-                    pucu: document.getElementById('executed-exam-pucu').checked,
-                    rx: document.getElementById('executed-exam-rx').checked,
-                    ultrasound: document.getElementById('executed-exam-ultrasound').checked,
-                    ecofast: document.getElementById('executed-exam-ecofast').checked,
-                    emogas: document.getElementById('executed-exam-emogas').checked,
-                    surgery: document.getElementById('executed-exam-surgery').checked,
-                    lab: document.getElementById('executed-exam-lab').checked,
-                    other_text: document.getElementById('executed-exam-other-text').value.trim(),
-                },
-                infusionTherapy: getDynamicEntries('dynamic-infusion-inputs'),
-                drugsToAdminister: Array.from(document.querySelectorAll('#dynamic-drug-inputs input')).map(input => input.value.trim()).filter(Boolean),
-                medicalCourse: document.getElementById('medicalCourse').value.trim(),
-                dischargeConditions: document.getElementById('dischargeConditions').value.trim(),
-                homeTherapy: document.getElementById('homeTherapy').value.trim(),
-                followUp: document.getElementById('followUp').value.trim(),
-                importantMessage: importantMessageData,
-                monitoringEntries: getDynamicEntries('monitoring-entries-container'),
-                therapyLog: getDynamicEntries('therapy-log-container'),
-                updatedAt: new Date(),
-            };
-
-            if (!patientData.ownerLastname || !patientData.patientName || !patientData.weight) {
-                displayMessage("Compila tutti i campi anagrafici obbligatori (*).", "error");
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                return;
-            }
-
-            try {
-                if (currentPatientId) {
-                    await patientsCollection.doc(currentPatientId).update(patientData);
-                    displayMessage("Scheda aggiornata con successo!", "success");
-                } else {
-                    await patientsCollection.add({
-                        ...patientData,
-                        createdAt: new Date()
-                    });
-                    displayMessage("Scheda salvata con successo!", "success");
-                    clearForm();
-                }
+                await patientsCollection.doc(id).delete();
+                displayMessage("Scheda eliminata con successo.", "success");
+                clearForm();
                 renderPatientsList();
             } catch (error) {
-                console.error("Errore nel salvataggio dei dati:", error);
-                displayMessage("Errore nel salvataggio dei dati.", "error");
+                console.error("Errore nell'eliminazione della scheda:", error);
+                displayMessage("Errore nell'eliminazione della scheda.", "error");
             }
         }
-        saveButton.addEventListener('click', saveData);
+    }
 
-        async function deletePatientData(id) {
-            if (confirm("Sei sicuro di voler eliminare questa scheda paziente? Questa azione è irreversibile.")) {
-                try {
-                    await patientsCollection.doc(id).delete();
-                    displayMessage("Scheda eliminata con successo.", "success");
-                    clearForm();
-                    renderPatientsList();
-                } catch (error) {
-                    console.error("Errore nell'eliminazione della scheda:", error);
-                    displayMessage("Errore nell'eliminazione della scheda.", "error");
-                }
-            }
-        }
-
-        window.onload = () => {
-            clearForm();
-        };
-    </script>
+    window.onload = () => {
+        clearForm();
+    };
+</script>
 </body>
 </html>
+
 
