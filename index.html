@@ -36,110 +36,70 @@
         /* Stili per la Stampa */
         @media print {
             body {
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
                 margin: 0;
                 padding: 0;
             }
             .no-print { display: none !important; }
             .printable-area {
-                box-shadow: none;
-                border: none;
-                margin: 0;
-                padding: 1cm;
+                box-shadow: none !important;
+                border: none !important;
+                margin: 0 !important;
+                padding: 1cm !important;
             }
-            body.print-evaluation-only .form-section:not(#medical-evaluation-section, .patient-info-print-only, #important-message-section) { display: none; }
+            body.print-evaluation-only .form-section:not(#medical-evaluation-section, .patient-info-print-only, #important-message-section) { display: none !important; }
             body.print-evaluation-only .patient-info-print-only { display: block !important; }
-            body.print-evaluation-only h1 { display: none; }
+            body.print-evaluation-only h1 { display: none !important; }
             .page-break { page-break-before: always; }
 
-            /* Nasconde sezioni vuote e campi non compilati */
-            .form-section-content:empty,
-            .form-section:has(.form-section-content:empty),
-            input[type="text"]:not([value]),
-            input[type="number"]:not([value]),
-            input[type="date"]:not([value]),
-            input[type="tel"]:not([value]),
-            textarea:not([data-field]),
-            select:not([data-field]),
-            input[type="checkbox"]:not(:checked) {
-                display: none !important;
-            }
-            input[type="text"][value=''],
-            input[type="number"][value=''],
-            input[type="date"][value=''],
-            input[type="tel"][value=''],
-            textarea:empty {
-                display: none !important;
-            }
-
-            /* Ripristina la visualizzazione di label e checkbox */
-            input[type="checkbox"] + label {
-                display: inline-block;
-            }
-
-            /* Aggiusta lo stile per i dati stampati */
-            input:not([type="checkbox"]):not([type="date"]),
-            textarea,
-            select {
-                background: none;
-                border: none;
-                padding: 0;
-                font-size: inherit;
-                line-height: inherit;
-                color: black;
-                width: auto !important;
-                resize: none;
-                overflow: hidden;
-            }
-            textarea {
-                display: block;
-                height: auto !important;
-                min-height: unset;
-                white-space: pre-wrap;
-            }
-            label { font-weight: bold; }
-            .form-section-title {
-                margin-top: 1.5rem;
-                margin-bottom: 0.5rem;
-                padding-bottom: 0.25rem;
-                border-bottom: 1px solid black;
-                color: black;
-                font-size: 1.2rem;
-            }
-            .form-section-subtitle { display: none; }
-            .p-4.border.rounded-lg,
-            .p-4.border.rounded-lg.bg-gray-50 {
-                border: 1px solid #ddd;
-                padding: 0.5rem;
-                margin-bottom: 0.5rem;
-            }
-            .space-y-6 > div, .space-y-4 > div { margin-top: 0.5rem !important; }
-
-            /* Stili specifici per i campi di testo per la stampa */
+            /* Mostra tutti gli elementi stampabili, inclusi quelli con contenuto vuoto */
             .printable-data {
-                margin-top: 0;
-                margin-bottom: 0;
-                padding: 0;
+                display: block !important;
+                background: none !important;
+                border: none !important;
+                padding: 0 !important;
+                font-size: inherit !important;
+                line-height: inherit !important;
+                color: black !important;
+                width: 100% !important;
+                resize: none !important;
+                overflow: hidden !important;
+                -webkit-box-shadow: none !important;
+                box-shadow: none !important;
+                -webkit-text-fill-color: black !important;
+                text-fill-color: black !important;
             }
 
-            .flex.items-center.space-x-2 {
-                display: block;
-                margin-bottom: 0.25rem;
+            /* Assicura che i checkbox e le loro etichette vengano visualizzati */
+            input[type="checkbox"] + label {
+                display: inline-block !important;
             }
-            #exams-to-perform-list > div,
-            .custom-exam-item {
-                margin-bottom: 0.25rem;
+            
+            /* Stili specifici per le textarea */
+            textarea.printable-data {
+                height: auto !important;
+                min-height: unset !important;
+                white-space: pre-wrap !important;
             }
-            .infusion-row {
-                background-color: #f7f7f7;
+
+            /* Stili per i contenitori */
+            .p-4.border.rounded-lg, .p-4.border.rounded-lg.bg-gray-50 {
+                border: 1px solid #ddd !important;
+                padding: 0.5rem !important;
+                margin-bottom: 0.5rem !important;
             }
-            .patient-info-print-only {
-                display: block;
-            }
-            h2.form-section-title {
+
+            .form-section-title {
+                margin-top: 1.5rem !important;
+                margin-bottom: 0.5rem !important;
+                padding-bottom: 0.25rem !important;
+                border-bottom: 1px solid black !important;
+                color: black !important;
+                font-size: 1.2rem !important;
                 page-break-after: avoid;
             }
+            .form-section-subtitle { display: none !important; }
         }
     </style>
 </head>
@@ -1117,3 +1077,4 @@
     </script>
 </body>
 </html>
+
