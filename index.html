@@ -19,54 +19,118 @@
 
         /* Stili per la Stampa */
         @media print {
-            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            body { 
+                -webkit-print-color-adjust: exact; 
+                print-color-adjust: exact; 
+                margin: 0; 
+                padding: 0;
+            }
             .no-print { display: none !important; }
-            .printable-area { box-shadow: none; border: none; }
+            .printable-area { 
+                box-shadow: none; 
+                border: none; 
+                margin: 0; 
+                padding: 1cm;
+            }
             body.print-evaluation-only .form-section:not(#medical-evaluation-section, .patient-info-print-only, #important-message-section) { display: none; }
             body.print-evaluation-only .patient-info-print-only { display: block !important; }
             body.print-evaluation-only h1 { display: none; }
             .page-break { page-break-before: always; }
 
-            /* Nasconde sezioni vuote e campi input */
+            /* Nasconde sezioni vuote */
             .form-section-content:empty,
-            .form-section:has(.form-section-content:empty) {
+            .form-section:has(.form-section-content:empty),
+            .form-section:has(.printable-data:not(:checked):not([value=''])):not(:has(input[type='text'][value!=''], textarea:not(:empty))) {
+                 display: none !important;
+            }
+
+            /* Nasconde i campi input non compilati */
+            input:not([type="checkbox"]):not([type="date"]):not([value]):not([data-field]):not(.has-value), 
+            input[value=''],
+            textarea:not([data-field]):not(.has-value), 
+            textarea:empty {
                 display: none !important;
             }
-            .form-section:not(:has(.printable-data:not(:empty))) {
-                display: none !important;
+            input[type="date"]:not([value='']) {
+                border: none;
             }
-            input:not([type="checkbox"]), textarea, select {
+            
+            /* Aggiusta lo stile per i dati stampati */
+            input:not([type="checkbox"]):not([type="date"]), 
+            textarea, 
+            select {
                 background: none;
                 border: none;
                 padding: 0;
                 font-size: inherit;
                 line-height: inherit;
-                color: inherit;
+                color: black;
+                width: auto !important;
+                resize: none;
+                overflow: hidden;
             }
-            input[type="date"]::-webkit-calendar-picker-indicator {
-                display: none;
+
+            textarea {
+                display: block;
+                height: auto !important;
+                min-height: unset;
+                white-space: pre-wrap;
             }
-            input[type="date"] {
-                width: auto;
-            }
-            label {
-                font-weight: bold;
-            }
+
+            label { font-weight: bold; }
             .form-section-title {
                 margin-top: 1.5rem;
+                margin-bottom: 0.5rem;
+                padding-bottom: 0.25rem;
                 border-bottom: 1px solid black;
                 color: black;
+                font-size: 1.2rem;
             }
-            .p-4.border.rounded-lg {
+            .form-section-subtitle { display: none; }
+            .p-4.border.rounded-lg,
+            .p-4.border.rounded-lg.bg-gray-50 {
                 border: 1px solid #ddd;
                 padding: 0.5rem;
                 margin-bottom: 0.5rem;
             }
+            .space-y-6 > div, .space-y-4 > div { margin-top: 0.5rem !important; }
+            
+            /* Stili specifici per i campi di testo per la stampa */
+            .printable-data { 
+                margin-top: 0;
+                margin-bottom: 0;
+                padding: 0;
+            }
+
+            /* Nasconde i contenitori di dati dinamici se vuoti */
+            #dynamic-infusion-inputs:empty,
+            #dynamic-drug-inputs:empty,
+            #important-message-container:empty,
+            #monitoring-entries-container:empty,
+            #therapy-log-container:empty {
+                display: none;
+            }
+
             .flex.items-center.space-x-2 {
                 display: block;
+                margin-bottom: 0.25rem;
             }
-            .space-y-6 > div, .space-y-4 > div {
-                margin-top: 0.5rem !important;
+            
+            #exams-to-perform-list > div,
+            .custom-exam-item {
+                margin-bottom: 0.25rem;
+            }
+
+            .infusion-row {
+                background-color: #f7f7f7;
+            }
+
+            .patient-info-print-only {
+                display: block;
+            }
+
+            h2.form-section-title {
+                page-break-after: avoid;
             }
         }
     </style>
@@ -365,7 +429,7 @@
             <div><label class="block text-sm font-medium">Note Aggiuntive</label><textarea data-field="notes" rows="2" class="w-full mt-1 p-2 border rounded-md printable-data"></textarea></div>
             <hr>
             <h4 class="font-semibold text-md text-gray-600">Alimentazione</h4>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
                 <div><label class="block text-sm font-medium">Tipo di Dieta</label><input type="text" data-field="dietType" class="w-full mt-1 p-2 border rounded-md printable-data"></div>
                 <div><label class="block text-sm font-medium">Assunzione Spontanea</label><select data-field="spontaneousEating" class="w-full mt-1 p-2 border rounded-md printable-data"><option>Sì</option><option>No</option></select></div>
                 <div><label class="block text-sm font-medium">Alimentazione Assistita</label><select data-field="assistedEating" class="w-full mt-1 p-2 border rounded-md printable-data"><option>Nessuna</option><option>Mani</option><option>Cucchiaio</option><option>Siringa</option><option>Sonda</option></select></div>
@@ -619,7 +683,6 @@
         }
 
         document.getElementById('add-important-message-btn').addEventListener('click', () => {
-            // Se esiste già un messaggio, non ne aggiungiamo un altro (per ora)
             if (importantMessageContainer.children.length === 0) {
                 addImportantMessage({});
             } else {
@@ -637,22 +700,35 @@
         function prepareForPrint() {
             // Aggiungi la classe a tutti i campi che hanno un valore per la stampa
             document.querySelectorAll('.printable-data').forEach(el => {
-                if (el.value && el.value.trim() !== '') {
+                if (el.value && el.value.trim() !== '' && el.tagName !== 'SELECT') {
                     el.classList.add('has-value');
                 } else if (el.type === 'checkbox' && el.checked) {
+                    el.classList.add('has-value');
+                } else if (el.tagName === 'SELECT' && el.value !== '') {
                     el.classList.add('has-value');
                 } else {
                     el.classList.remove('has-value');
                 }
+
+                if (el.tagName === 'TEXTAREA' && el.value.trim() !== '') {
+                    el.style.height = 'auto'; // Reset height
+                    el.style.height = (el.scrollHeight) + 'px';
+                }
             });
 
-            // Rimuovi gli elementi non necessari alla stampa
-            document.querySelectorAll('.form-section-content').forEach(section => {
-                 const hasData = section.querySelector('.printable-data.has-value');
+            // Gestisce la visibilità delle sezioni
+            document.querySelectorAll('.form-section').forEach(section => {
+                 const hasData = section.querySelector('.printable-data.has-value, textarea:not(:empty)');
                  if (!hasData) {
-                     section.closest('.form-section').style.display = 'none';
+                     section.style.display = 'none';
                  } else {
-                     section.closest('.form-section').style.display = '';
+                     section.style.display = '';
+                 }
+            });
+            // Nasconde le sezioni dinamiche se vuote
+            document.querySelectorAll('.dynamic-input-container').forEach(container => {
+                 if (container.children.length === 0 || (container.children.length === 1 && container.children[0].classList.contains('hidden'))) {
+                    container.closest('.form-section').style.display = 'none';
                  }
             });
         }
