@@ -52,15 +52,14 @@
         body.print-evaluation-only .form-section:not(#medical-evaluation-section, .patient-info-print-only, #important-message-section) { display: none !important; }
         body.print-evaluation-only .patient-info-print-only { display: block !important; }
         body.print-evaluation-only h1 { display: none !important; }
-        .page-break { page-break-before: always; }
-
+        
         .printable-data {
             display: block !important;
             background: none !important;
             border: none !important;
             padding: 0 !important;
-            font-size: inherit !important;
-            line-height: inherit !important;
+            font-size: 10pt !important;
+            line-height: 1.4 !important;
             color: black !important;
             width: 100% !important;
             resize: none !important;
@@ -69,6 +68,10 @@
             box-shadow: none !important;
             -webkit-text-fill-color: black !important;
             text-fill-color: black !important;
+        }
+
+        input, select, textarea {
+            font-size: 10pt !important;
         }
 
         input[type="checkbox"] + label {
@@ -88,19 +91,41 @@
         }
 
         .form-section-title {
-            margin-top: 1.5rem !important;
-            margin-bottom: 0.5rem !important;
+            margin-top: 1.2rem !important;
+            margin-bottom: 0.4rem !important;
             padding-bottom: 0.25rem !important;
             border-bottom: 1px solid black !important;
             color: black !important;
-            font-size: 1.2rem !important;
-            page-break-after: avoid;
+            font-size: 1.1rem !important;
         }
         .form-section-subtitle { display: none !important; }
 
-        /* Espandi tutti i gruppi per la stampa */
         .group-content { display: block !important; }
         .group-header .toggle-icon { display: none !important; }
+
+        /* NUOVE REGOLE PER OTTIMIZZAZIONE */
+        .print-hide {
+            display: none !important;
+        }
+
+        .form-section {
+            padding: 0.5rem 0 !important;
+            margin: 0 !important;
+            border: none !important;
+        }
+        hr.border-dashed {
+            display: none !important;
+        }
+
+        .form-section, .monitoring-group, .therapy-group {
+            page-break-inside: avoid;
+        }
+
+        #medical-evaluation-section,
+        #monitoring-entries-container,
+        #therapy-log-container {
+            page-break-before: auto;
+        }
     }
 </style>
 </head>
@@ -166,7 +191,7 @@
                     </div>
                 </div>
 
-                <hr class="my-8 border-t-2 border-dashed border-gray-300 page-break">
+                <hr class="my-8 border-t-2 border-dashed border-gray-300">
                 <div class="form-section">
                     <h2 class="form-section-title">Storico Paziente e Anamnesi</h2>
                     <div class="space-y-6 form-section-content">
@@ -187,7 +212,7 @@
                     </div>
                 </div>
 
-                <hr class="my-8 border-t-2 border-dashed border-gray-300 page-break">
+                <hr class="my-8 border-t-2 border-dashed border-gray-300">
                 <div class="form-section">
                     <h2 class="form-section-title">Esame Clinico Obbiettivo d'Ingresso</h2>
                     <div class="space-y-6 form-section-content">
@@ -229,10 +254,9 @@
                     </div>
                 </div>
 
-                <hr class="my-8 border-t-2 border-dashed border-gray-300 page-break">
+                <hr class="my-8 border-t-2 border-dashed border-gray-300">
                 <div class="form-section">
                     <h2 class="form-section-title">Trattamento in Atto (a casa) e Terapie all'Ingresso</h2>
-                    <p class="form-section-subtitle">Trattamenti a casa e terapie segnate al ricovero (non necessariamente da eseguire).</p>
                     <div class="space-y-6 form-section-content">
                         <div><label for="homeTreatments" class="block text-sm font-medium text-gray-700 mb-1">Fluidi o farmaci A CASA (dosaggio, via e frequenza)</label><textarea id="homeTreatments" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg printable-data"></textarea></div>
                         <div><label for="admissionTherapy" class="block text-sm font-medium text-gray-700 mb-1">Terapia medica ALL'ATTO DEL RICOVERO</label><textarea id="admissionTherapy" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg printable-data"></textarea></div>
@@ -302,7 +326,7 @@
                     </div>
                 </div>
 
-                <hr class="my-8 border-t-2 border-dashed border-gray-300 page-break">
+                <hr class="my-8 border-t-2 border-dashed border-gray-300">
                 <div class="form-section">
                     <h2 class="form-section-title">Terapia Effettiva da Eseguire (Compilazione Medica)</h2>
                     <div class="space-y-6 form-section-content">
@@ -335,7 +359,7 @@
                     </div>
                 </div>
 
-                <hr class="my-8 border-t-2 border-dashed border-gray-300 page-break">
+                <hr class="my-8 border-t-2 border-dashed border-gray-300">
                 <div id="medical-evaluation-section" class="form-section">
                     <div class="flex justify-between items-start">
                         <div>
@@ -356,13 +380,13 @@
                     </div>
                 </div>
 
-                <hr class="my-8 border-t-2 border-dashed border-gray-300 page-break">
+                <hr class="my-8 border-t-2 border-dashed border-gray-300">
                 <div id="important-message-section" class="form-section">
                     <div id="important-message-container" class="form-section-content">
                         </div>
                 </div>
 
-                <hr class="my-8 border-t-2 border-dashed border-gray-300 page-break">
+                <hr class="my-8 border-t-2 border-dashed border-gray-300">
                 <div class="form-section">
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="form-section-title">Monitoraggio Parametri Vitali</h2>
@@ -372,7 +396,7 @@
                         </div>
                 </div>
 
-                <hr class="my-8 border-t-2 border-dashed border-gray-300 page-break">
+                <hr class="my-8 border-t-2 border-dashed border-gray-300">
                 <div class="form-section">
                     <div class="flex justify-between items-center mb-4">
                         <h2 class="form-section-title">Terapia (Somministrazioni)</h2>
@@ -528,6 +552,8 @@
     const importantMessageContainer = document.getElementById('important-message-container');
     const monitoringContainer = document.getElementById('monitoring-entries-container');
     const therapyContainer = document.getElementById('therapy-log-container');
+    let originalTextareas = [];
+
 
     // Elementi di autenticazione
     const loginScreen = document.getElementById('login-screen');
@@ -768,20 +794,56 @@
         }
     });
 
-    // --- GESTIONE STAMPA ---
+    // --- GESTIONE STAMPA OTTIMIZZATA ---
     window.onbeforeprint = () => {
+        // 1. Reset e funzione di controllo
+        document.querySelectorAll('.print-hide').forEach(el => el.classList.remove('print-hide'));
+        const hasValue = (el) => {
+            if (!el || (el.offsetParent === null && el.type !== 'hidden')) return false;
+            if (el.tagName === 'INPUT' && (el.type === 'checkbox' || el.type === 'radio')) return el.checked;
+            if (el.tagName === 'SELECT') return el.selectedIndex > 0;
+            return el.value && el.value.trim() !== '';
+        };
+
+        // 2. Nascondi sezioni intere se sono completamente vuote
+        document.querySelectorAll('.form-section').forEach(section => {
+            let sectionHasContent = false;
+            section.querySelectorAll('input, textarea, select').forEach(input => {
+                if (hasValue(input)) sectionHasContent = true;
+            });
+            if (!sectionHasContent) {
+                section.classList.add('print-hide');
+            }
+        });
+
+        // 3. Logica di sostituzione Textarea (solo per quelle visibili)
+        originalTextareas = [];
         document.querySelectorAll('textarea.printable-data').forEach(textarea => {
+            if (textarea.closest('.print-hide')) return;
             const replacementDiv = document.createElement('div');
             replacementDiv.classList.add('printable-data', 'print-only-content');
+            replacementDiv.style.whiteSpace = 'pre-wrap';
             replacementDiv.textContent = textarea.value;
             textarea.style.display = 'none';
             textarea.parentNode.insertBefore(replacementDiv, textarea.nextSibling);
+            originalTextareas.push({ textarea: textarea, replacement: replacementDiv });
         });
+
+        // 4. Apri tutti gli accordion e prepara l'intestazione
+        document.querySelectorAll('.group-content').forEach(el => el.classList.remove('hidden'));
+        document.getElementById('patient-info-header-print').classList.remove('hidden');
     };
+
     window.onafterprint = () => {
-        document.querySelectorAll('.print-only-content').forEach(el => el.remove());
-        document.querySelectorAll('textarea.printable-data').forEach(textarea => textarea.style.display = '');
+        document.querySelectorAll('.print-hide').forEach(el => el.classList.remove('print-hide'));
+        originalTextareas.forEach(item => {
+            if(item.replacement.parentNode) item.replacement.remove();
+            item.textarea.style.display = '';
+        });
+        originalTextareas = [];
+        document.getElementById('patient-info-header-print').classList.add('hidden');
     };
+
     document.getElementById('print-button').addEventListener('click', () => {
         document.body.classList.remove('print-evaluation-only');
         document.querySelector('#patient-info-header-print h1').textContent = `Cartella Clinica: ${document.getElementById('patientName').value || 'N/D'} (${document.getElementById('ownerLastname').value || 'N/D'})`;
