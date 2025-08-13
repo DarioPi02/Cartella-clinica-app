@@ -128,8 +128,11 @@
         }
 
         /* NUOVE REGOLE SPECIFICHE PER STAMPA VALUTAZIONE */
-        body.print-evaluation-only .form-section:not(#medical-evaluation-section) {
+        body.print-evaluation-only .form-section {
             display: none !important;
+        }
+        body.print-evaluation-only #medical-evaluation-section {
+            display: block !important;
         }
         body.print-evaluation-only #medical-evaluation-section > .flex.justify-between.items-start {
             display: none !important;
