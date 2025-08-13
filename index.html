@@ -440,6 +440,9 @@
 
     <div id="therapy-log-template" class="hidden p-4 border rounded-lg bg-gray-50 relative">
         <button type="button" class="remove-entry-btn absolute top-2 right-2 text-red-500 hover:text-red-700 no-print">&times;</button>
+        
+        <!-- Sezione Farmaci -->
+        <h4 class="font-semibold text-md text-gray-700 mb-2">Farmaci</h4>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div><label class="block text-sm font-medium">Data</label><input type="date" data-field="date" class="w-full mt-1 p-2 border rounded-md printable-data"></div>
             <div><label class="block text-sm font-medium">Ora</label><input type="time" data-field="time" class="w-full mt-1 p-2 border rounded-md printable-data"></div>
@@ -450,7 +453,31 @@
             <div class="md:col-span-1"><label class="block text-sm font-medium">Posologia</label><input type="text" data-field="dosage" class="w-full mt-1 p-2 border rounded-md printable-data"></div>
             <div class="md:col-span-2"><label class="block text-sm font-medium">Via di Somministrazione</label><input type="text" data-field="administrationRoute" class="w-full mt-1 p-2 border rounded-md printable-data"></div>
         </div>
-         <div class="mt-4"><label class="block text-sm font-medium">Note</label><textarea data-field="notes" rows="2" class="w-full mt-1 p-2 border rounded-md printable-data"></textarea></div>
+        <div class="mt-4"><label class="block text-sm font-medium">Note Farmaci</label><textarea data-field="drugNotes" rows="2" class="w-full mt-1 p-2 border rounded-md printable-data"></textarea></div>
+
+        <hr class="my-6 border-gray-300">
+
+        <!-- Sezione Fluidoterapia -->
+        <h4 class="font-semibold text-md text-gray-700 mb-2">Fluidoterapia</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div><label class="block text-sm font-medium">Tipo di Flebo</label><input type="text" data-field="fluidType" class="w-full mt-1 p-2 border rounded-md printable-data"></div>
+            <div><label class="block text-sm font-medium">Volume</label><input type="text" data-field="fluidVolume" class="w-full mt-1 p-2 border rounded-md printable-data"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+            <div><label class="block text-sm font-medium">Via di somministrazione</label><input type="text" data-field="fluidRoute" class="w-full mt-1 p-2 border rounded-md printable-data"></div>
+            <div>
+                <label class="block text-sm font-medium">Velocità</label>
+                <select data-field="fluidRate" class="w-full mt-1 p-2 border rounded-md printable-data">
+                    <option>Bolo lento</option>
+                    <option>Bolo veloce</option>
+                    <option>Goccia lenta</option>
+                    <option>Goccia veloce</option>
+                    <option>Pompa ad infusione</option>
+                </select>
+            </div>
+            <div><label class="block text-sm font-medium">Pompa infusionale ml/h</label><input type="text" data-field="fluidPumpRate" class="w-full mt-1 p-2 border rounded-md printable-data"></div>
+        </div>
+        <div class="mt-4"><label class="block text-sm font-medium">Note Fluidoterapia</label><textarea data-field="fluidNotes" rows="2" class="w-full mt-1 p-2 border rounded-md printable-data"></textarea></div>
     </div>
 
     <div id="custom-exam-template" class="hidden flex items-center space-x-2 mt-3 custom-exam-item printable-data">
