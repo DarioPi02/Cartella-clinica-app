@@ -458,6 +458,17 @@
 
 
     <script>
+        // --- CONFIGURAZIONE FIREBASE (POSIZIONATA CORRETTAMENTE) ---
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        firebase.initializeApp(firebaseConfig);
+
         // --- Riferimenti a Firebase Authentication e Firestore ---
         const auth = firebase.auth();
         const db = firebase.firestore();
@@ -497,7 +508,7 @@
             document.querySelectorAll('.hidden[id*="-other-container"], .hidden[data-id*="-container"]').forEach(el => el.style.display = 'none');
             document.getElementById('monitoring-entries-container').innerHTML = '';
             document.getElementById('therapy-log-container').innerHTML = '';
-            fluidLogContainer.innerHTML = ''; // Pulisce il nuovo contenitore
+            fluidLogContainer.innerHTML = '';
             importantMessageContainer.innerHTML = '';
 
             infusionContainer.innerHTML = '';
@@ -569,7 +580,6 @@
         }
         setupDynamicSection('add-monitoring-btn', 'monitoring-entries-container', 'monitoring-entry-template');
         setupDynamicSection('add-therapy-log-btn', 'therapy-log-container', 'therapy-log-template');
-        // Aggiunto il setup per la fluidoterapia
         setupDynamicSection('add-fluid-log-btn', 'fluid-log-container', 'fluid-log-template');
 
         // --- GESTIONE AGGIUNTA FLEBO ---
@@ -1013,7 +1023,6 @@
                 importantMessage: importantMessageData,
                 monitoringEntries: getDynamicEntries('monitoring-entries-container'),
                 therapyLog: getDynamicEntries('therapy-log-container'),
-                // Aggiunto il nuovo campo per la fluidoterapia
                 fluidLog: getDynamicEntries('fluid-log-container'),
                 updatedAt: new Date(),
             };
@@ -1061,16 +1070,6 @@
         window.onload = () => {
             clearForm();
         };
-
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-        firebase.initializeApp(firebaseConfig);
     </script>
 </body>
 </html>
