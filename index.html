@@ -126,6 +126,14 @@
         #therapy-log-container {
             page-break-before: auto;
         }
+
+        /* NUOVE REGOLE SPECIFICHE PER STAMPA VALUTAZIONE */
+        body.print-evaluation-only .form-section:not(#medical-evaluation-section) {
+            display: none !important;
+        }
+        body.print-evaluation-only #medical-evaluation-section > .flex.justify-between.items-start {
+            display: none !important;
+        }
     }
 </style>
 </head>
@@ -810,15 +818,9 @@
         // 2. Conditional print logic
         if (document.body.classList.contains('print-evaluation-only')) {
             // --- PRINT EVALUATION ONLY ---
-            document.querySelectorAll('.form-section').forEach(section => {
-                section.classList.add('print-hide');
-            });
+            // The hiding is now done via CSS, this part just cleans up empty fields inside the section
             const evalSection = document.getElementById('medical-evaluation-section');
             if (evalSection) {
-                evalSection.classList.remove('print-hide');
-                const titleBlock = evalSection.querySelector('.flex.justify-between.items-start');
-                if(titleBlock) titleBlock.classList.add('print-hide');
-
                 evalSection.querySelectorAll('textarea').forEach(textarea => {
                     if (!hasValue(textarea)) {
                         if(textarea.parentElement) textarea.parentElement.classList.add('print-hide');
@@ -841,7 +843,7 @@
         // 3. Textarea replacement logic (for visible textareas only)
         originalTextareas = [];
         document.querySelectorAll('textarea.printable-data').forEach(textarea => {
-            if (textarea.closest('.print-hide') || textarea.classList.contains('print-hidden-original')) return;
+            if (textarea.closest('.print-hide')) return;
 
             const replacementDiv = document.createElement('div');
             replacementDiv.classList.add('printable-data', 'print-only-content');
