@@ -196,6 +196,38 @@
                             <div><label for="weight" class="block text-sm font-medium text-gray-700 mb-1">Peso (kg) <span class="text-red-500">*</span></label><input type="number" step="0.1" id="weight" placeholder="Es. 10.5" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg printable-data" required></div>
                             <div><label for="microchip" class="block text-sm font-medium text-gray-700 mb-1">Microchip</label><input type="text" id="microchip" placeholder="Numero microchip" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg printable-data"></div>
                         </div>
+
+                        <!-- Buttons for Discharge/Deceased -->
+                        <div class="flex space-x-4 pt-4 border-t border-gray-200">
+                            <button type="button" id="discharge-btn" class="w-full px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition no-print">Dimissioni</button>
+                            <button type="button" id="deceased-btn" class="w-full px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition no-print">Decesso</button>
+                        </div>
+
+                        <!-- Discharge Section (Hidden by default) -->
+                        <div id="discharge-section" class="hidden space-y-4 pt-4 border-t border-blue-200">
+                            <h3 class="text-lg font-semibold text-blue-700">Dati Dimissioni</h3>
+                            <div>
+                                <label for="dischargeDate" class="block text-sm font-medium text-gray-700 mb-1">Data di Dimissioni</label>
+                                <input type="date" id="dischargeDate" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg printable-data">
+                            </div>
+                            <div>
+                                <label for="dischargeNotes" class="block text-sm font-medium text-gray-700 mb-1">Note Dimissioni</label>
+                                <textarea id="dischargeNotes" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg printable-data"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Deceased Section (Hidden by default) -->
+                        <div id="deceased-section" class="hidden space-y-4 pt-4 border-t border-red-200">
+                            <h3 class="text-lg font-semibold text-red-700">Dati Decesso</h3>
+                            <div>
+                                <label for="deceasedDateTime" class="block text-sm font-medium text-gray-700 mb-1">Data e Ora del Decesso</label>
+                                <input type="datetime-local" id="deceasedDateTime" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg printable-data">
+                            </div>
+                            <div>
+                                <label for="deceasedNotes" class="block text-sm font-medium text-gray-700 mb-1">Note Decesso</label>
+                                <textarea id="deceasedNotes" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg printable-data"></textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -583,7 +615,7 @@
     function clearForm() {
         patientForm.reset();
         currentPatientId = null;
-        document.querySelectorAll('.hidden[id*="-other-container"], .hidden[data-id*="-container"]').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.hidden').forEach(el => el.classList.add('hidden'));
         monitoringContainer.innerHTML = '';
         therapyContainer.innerHTML = '';
         importantMessageContainer.innerHTML = '';
@@ -843,7 +875,7 @@
         // 3. Textarea replacement logic (for visible textareas only)
         originalTextareas = [];
         document.querySelectorAll('textarea.printable-data').forEach(textarea => {
-            if (textarea.closest('.print-hide')) return;
+            if (textarea.closest('.print-hide') || textarea.classList.contains('print-hidden-original')) return;
 
             const replacementDiv = document.createElement('div');
             replacementDiv.classList.add('printable-data', 'print-only-content');
@@ -975,10 +1007,19 @@
         };
 
         // Popola tutti i campi statici
-        const allStaticIds = ['entryDate', 'ownerLastname', 'phone', 'altContact', 'patientName', 'species', 'sex', 'age', 'weight', 'microchip', 'reasonForHospitalization', 'vaccinations', 'vaccinationsOther', 'parasiteTreatments', 'parasiteTreatmentsOther', 'previousPathologies', 'mentalState', 'mentalStateOther', 'gait', 'gaitOther', 'temperature', 'capillaryRefillTime', 'mucousMembranes', 'hydration', 'lymphNodes', 'lymphNodesOther', 'abdominalPalpation', 'cardiacAuscultation', 'pulmonaryAuscultation', 'cns', 'otherFindings', 'homeTreatments', 'admissionTherapy', 'medicalCourse', 'dischargeConditions', 'homeTherapy', 'followUp'];
+        const allStaticIds = ['entryDate', 'ownerLastname', 'phone', 'altContact', 'patientName', 'species', 'sex', 'age', 'weight', 'microchip', 'reasonForHospitalization', 'vaccinations', 'vaccinationsOther', 'parasiteTreatments', 'parasiteTreatmentsOther', 'previousPathologies', 'mentalState', 'mentalStateOther', 'gait', 'gaitOther', 'temperature', 'capillaryRefillTime', 'mucousMembranes', 'hydration', 'lymphNodes', 'lymphNodesOther', 'abdominalPalpation', 'cardiacAuscultation', 'pulmonaryAuscultation', 'cns', 'otherFindings', 'homeTreatments', 'admissionTherapy', 'medicalCourse', 'dischargeConditions', 'homeTherapy', 'followUp', 'dischargeDate', 'dischargeNotes', 'deceasedDateTime', 'deceasedNotes'];
         allStaticIds.forEach(id => setData(id));
         
         document.querySelectorAll('.conditional-select').forEach(el => el.dispatchEvent(new Event('change')));
+
+        // Gestisce la visibilità delle sezioni dimissioni/decesso
+        if (data.dischargeDate || data.dischargeNotes) {
+            document.getElementById('discharge-section').classList.remove('hidden');
+        }
+        if (data.deceasedDateTime || data.deceasedNotes) {
+            document.getElementById('deceased-section').classList.remove('hidden');
+        }
+
 
         // Popola esami (standard, custom, eseguiti)
         if (data.examsToPerform) {
@@ -1069,6 +1110,10 @@
             age: document.getElementById('age').value.trim(),
             weight: document.getElementById('weight').value,
             microchip: document.getElementById('microchip').value.trim(),
+            dischargeDate: document.getElementById('dischargeDate').value,
+            dischargeNotes: document.getElementById('dischargeNotes').value.trim(),
+            deceasedDateTime: document.getElementById('deceasedDateTime').value,
+            deceasedNotes: document.getElementById('deceasedNotes').value.trim(),
             reasonForHospitalization: document.getElementById('reasonForHospitalization').value.trim(),
             vaccinations: document.getElementById('vaccinations').value,
             vaccinationsOther: document.getElementById('vaccinations-other').value.trim(),
@@ -1168,6 +1213,23 @@
             }
         }
     }
+
+    // --- NEW EVENT LISTENERS FOR DISCHARGE/DECEASED ---
+    const dischargeBtn = document.getElementById('discharge-btn');
+    const deceasedBtn = document.getElementById('deceased-btn');
+    const dischargeSection = document.getElementById('discharge-section');
+    const deceasedSection = document.getElementById('deceased-section');
+
+    dischargeBtn.addEventListener('click', () => {
+        dischargeSection.classList.toggle('hidden');
+        deceasedSection.classList.add('hidden'); // Hide the other section
+    });
+
+    deceasedBtn.addEventListener('click', () => {
+        deceasedSection.classList.toggle('hidden');
+        dischargeSection.classList.add('hidden'); // Hide the other section
+    });
+
 
     window.onload = () => {
         clearForm();
