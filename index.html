@@ -49,9 +49,6 @@
             margin: 0 !important;
             padding: 1cm !important;
         }
-        body.print-evaluation-only .form-section:not(#medical-evaluation-section, .patient-info-print-only, #important-message-section) { display: none !important; }
-        body.print-evaluation-only .patient-info-print-only { display: block !important; }
-        body.print-evaluation-only h1 { display: none !important; }
         
         .printable-data {
             display: block !important;
@@ -103,7 +100,7 @@
         .group-content { display: block !important; }
         .group-header .toggle-icon { display: none !important; }
 
-        /* NUOVE REGOLE PER OTTIMIZZAZIONE */
+        /* REGOLE PER OTTIMIZZAZIONE STAMPA */
         .print-hide {
             display: none !important;
         }
@@ -799,30 +796,53 @@
 
     // --- GESTIONE STAMPA OTTIMIZZATA ---
     window.onbeforeprint = () => {
-        // 1. Reset e funzione di controllo
-        document.querySelectorAll('.print-hide').forEach(el => el.classList.remove('print-hide'));
+        // 1. Reset classes and define helper function
+        document.querySelectorAll('.print-hide, .print-hidden-original').forEach(el => {
+            el.classList.remove('print-hide', 'print-hidden-original');
+        });
         const hasValue = (el) => {
-            if (!el || (el.offsetParent === null && el.type !== 'hidden')) return false;
-            if (el.tagName === 'INPUT' && (el.type === 'checkbox' || el.type === 'radio')) return el.checked;
-            if (el.tagName === 'SELECT') return el.selectedIndex > 0;
+            if (!el) return false;
+            if (el.type === 'checkbox' || el.type === 'radio') return el.checked;
+            if (el.tagName === 'SELECT') return el.selectedIndex > 0 && el.value !== '';
             return el.value && el.value.trim() !== '';
         };
 
-        // 2. Nascondi sezioni intere se sono completamente vuote
-        document.querySelectorAll('.form-section').forEach(section => {
-            let sectionHasContent = false;
-            section.querySelectorAll('input, textarea, select').forEach(input => {
-                if (hasValue(input)) sectionHasContent = true;
-            });
-            if (!sectionHasContent) {
+        // 2. Conditional print logic
+        if (document.body.classList.contains('print-evaluation-only')) {
+            // --- PRINT EVALUATION ONLY ---
+            document.querySelectorAll('.form-section').forEach(section => {
                 section.classList.add('print-hide');
-            }
-        });
+            });
+            const evalSection = document.getElementById('medical-evaluation-section');
+            if (evalSection) {
+                evalSection.classList.remove('print-hide');
+                const titleBlock = evalSection.querySelector('.flex.justify-between.items-start');
+                if(titleBlock) titleBlock.classList.add('print-hide');
 
-        // 3. Logica di sostituzione Textarea (solo per quelle visibili)
+                evalSection.querySelectorAll('textarea').forEach(textarea => {
+                    if (!hasValue(textarea)) {
+                        if(textarea.parentElement) textarea.parentElement.classList.add('print-hide');
+                    }
+                });
+            }
+        } else {
+            // --- PRINT FULL DOCUMENT (Optimized) ---
+            document.querySelectorAll('.form-section').forEach(section => {
+                let sectionHasContent = false;
+                section.querySelectorAll('input, textarea, select').forEach(input => {
+                    if (hasValue(input)) sectionHasContent = true;
+                });
+                if (!sectionHasContent) {
+                    section.classList.add('print-hide');
+                }
+            });
+        }
+
+        // 3. Textarea replacement logic (for visible textareas only)
         originalTextareas = [];
         document.querySelectorAll('textarea.printable-data').forEach(textarea => {
-            if (textarea.closest('.print-hide')) return;
+            if (textarea.closest('.print-hide') || textarea.classList.contains('print-hidden-original')) return;
+
             const replacementDiv = document.createElement('div');
             replacementDiv.classList.add('printable-data', 'print-only-content');
             replacementDiv.style.whiteSpace = 'pre-wrap';
@@ -832,19 +852,21 @@
             originalTextareas.push({ textarea: textarea, replacement: replacementDiv });
         });
 
-        // 4. Apri tutti gli accordion e prepara l'intestazione
+        // 4. Final preparations
         document.querySelectorAll('.group-content').forEach(el => el.classList.remove('hidden'));
         document.getElementById('patient-info-header-print').classList.remove('hidden');
     };
 
     window.onafterprint = () => {
-        document.querySelectorAll('.print-hide').forEach(el => el.classList.remove('print-hide'));
+        document.querySelectorAll('.print-hide, .print-hidden-original').forEach(el => {
+            el.classList.remove('print-hide', 'print-hidden-original');
+        });
         originalTextareas.forEach(item => {
             if(item.replacement.parentNode) item.replacement.remove();
-            item.textarea.classList.remove('print-hidden-original');
         });
         originalTextareas = [];
         document.getElementById('patient-info-header-print').classList.add('hidden');
+        document.body.classList.remove('print-evaluation-only');
     };
 
     document.getElementById('print-button').addEventListener('click', () => {
