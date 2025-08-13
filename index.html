@@ -107,6 +107,9 @@
         .print-hide {
             display: none !important;
         }
+        .print-hidden-original {
+            display: none !important;
+        }
 
         .form-section {
             padding: 0.5rem 0 !important;
@@ -824,7 +827,7 @@
             replacementDiv.classList.add('printable-data', 'print-only-content');
             replacementDiv.style.whiteSpace = 'pre-wrap';
             replacementDiv.textContent = textarea.value;
-            textarea.style.display = 'none';
+            textarea.classList.add('print-hidden-original');
             textarea.parentNode.insertBefore(replacementDiv, textarea.nextSibling);
             originalTextareas.push({ textarea: textarea, replacement: replacementDiv });
         });
@@ -838,7 +841,7 @@
         document.querySelectorAll('.print-hide').forEach(el => el.classList.remove('print-hide'));
         originalTextareas.forEach(item => {
             if(item.replacement.parentNode) item.replacement.remove();
-            item.textarea.style.display = '';
+            item.textarea.classList.remove('print-hidden-original');
         });
         originalTextareas = [];
         document.getElementById('patient-info-header-print').classList.add('hidden');
