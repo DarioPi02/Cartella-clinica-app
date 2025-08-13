@@ -32,6 +32,7 @@
     .form-section-title { font-size: 1.5rem; font-weight: 700; color: #2563eb; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e5e7eb; }
     .form-section-subtitle { color: #6b7280; margin-bottom: 1.5rem; }
     .dynamic-input-container input { margin-bottom: 0.5rem; }
+    .group-header { cursor: pointer; user-select: none; }
 
     /* Stili per la Stampa */
     @media print {
@@ -53,7 +54,6 @@
         body.print-evaluation-only h1 { display: none !important; }
         .page-break { page-break-before: always; }
 
-        /* Mostra tutti gli elementi stampabili, inclusi quelli con contenuto vuoto */
         .printable-data {
             display: block !important;
             background: none !important;
@@ -71,20 +71,16 @@
             text-fill-color: black !important;
         }
 
-        /* Assicura che i checkbox e le loro etichette vengano visualizzati */
         input[type="checkbox"] + label {
             display: inline-block !important;
         }
         
-        /* Stili specifici per le textarea */
         textarea.printable-data {
             height: auto !important;
             min-height: unset !important;
             white-space: pre-wrap !important;
-            /* La parte più importante: il JavaScript gestirà l'altezza. */
         }
 
-        /* Stili per i contenitori */
         .p-4.border.rounded-lg, .p-4.border.rounded-lg.bg-gray-50 {
             border: 1px solid #ddd !important;
             padding: 0.5rem !important;
@@ -101,6 +97,10 @@
             page-break-after: avoid;
         }
         .form-section-subtitle { display: none !important; }
+
+        /* Espandi tutti i gruppi per la stampa */
+        .group-content { display: block !important; }
+        .group-header .toggle-icon { display: none !important; }
     }
 </style>
 </head>
@@ -368,7 +368,7 @@
                         <h2 class="form-section-title">Monitoraggio Parametri Vitali</h2>
                         <button type="button" id="add-monitoring-btn" class="no-print px-4 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition">Aggiungi Monitoraggio</button>
                     </div>
-                    <div id="monitoring-entries-container" class="space-y-6 form-section-content printable-data">
+                    <div id="monitoring-entries-container" class="space-y-4 form-section-content printable-data">
                         </div>
                 </div>
 
@@ -378,7 +378,7 @@
                         <h2 class="form-section-title">Terapia (Somministrazioni)</h2>
                         <button type="button" id="add-therapy-log-btn" class="no-print px-4 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition">Aggiungi Somministrazione</button>
                     </div>
-                    <div id="therapy-log-container" class="space-y-6 form-section-content printable-data">
+                    <div id="therapy-log-container" class="space-y-4 form-section-content printable-data">
                         </div>
                 </div>
             </form>
@@ -488,7 +488,7 @@
     // --- Riferimenti a Firebase Authentication e Firestore ---
     const auth = firebase.auth();
     const db = firebase.firestore();
-    const patientsCollection = db.collection('patients'); // Una "collezione" dove salveremo i pazienti
+    const patientsCollection = db.collection('patients');
 
     // --- ELEMENTI DEL DOM ---
     const patientForm = document.getElementById('patient-form');
@@ -499,6 +499,8 @@
     const infusionContainer = document.getElementById('dynamic-infusion-inputs');
     const drugsContainer = document.getElementById('dynamic-drug-inputs');
     const importantMessageContainer = document.getElementById('important-message-container');
+    const monitoringContainer = document.getElementById('monitoring-entries-container');
+    const therapyContainer = document.getElementById('therapy-log-container');
 
     // Elementi di autenticazione
     const loginScreen = document.getElementById('login-screen');
@@ -507,7 +509,6 @@
     const loginPassword = document.getElementById('login-password');
     const loginError = document.getElementById('login-error');
     const logoutBtn = document.getElementById('logout-btn');
-
 
     let currentPatientId = null;
 
@@ -522,8 +523,8 @@
         patientForm.reset();
         currentPatientId = null;
         document.querySelectorAll('.hidden[id*="-other-container"], .hidden[data-id*="-container"]').forEach(el => el.style.display = 'none');
-        document.getElementById('monitoring-entries-container').innerHTML = '';
-        document.getElementById('therapy-log-container').innerHTML = '';
+        monitoringContainer.innerHTML = '';
+        therapyContainer.innerHTML = '';
         importantMessageContainer.innerHTML = '';
 
         infusionContainer.innerHTML = '';
@@ -539,7 +540,6 @@
         defaultDrug.className = 'w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data';
         drugsContainer.appendChild(defaultDrug);
 
-        // Rimuove gli esami personalizzati
         document.querySelectorAll('.custom-exam-item').forEach(el => el.remove());
 
         saveButton.textContent = 'Salva Paziente';
@@ -554,74 +554,139 @@
         if (!containerId) return;
         const container = document.getElementById(containerId);
         if (!container) return;
-
-        const isCheckbox = element.type === 'checkbox';
-        let shouldShow;
-
-        if (isCheckbox) {
-            shouldShow = element.checked;
-        } else {
-            const conditionValue = element.dataset.conditionValue || 'Altro';
-            shouldShow = element.value === conditionValue;
-        }
-
+        const conditionValue = element.dataset.conditionValue || 'Altro';
+        const shouldShow = element.value === conditionValue;
         container.style.display = shouldShow ? '' : 'none';
         if (!shouldShow) {
             container.querySelectorAll('input, textarea').forEach(input => input.value = '');
         }
     }
     document.body.addEventListener('change', (e) => {
-        if (e.target.matches('.conditional-select') || e.target.matches('.conditional-checkbox')) {
+        if (e.target.matches('.conditional-select')) {
             handleConditionalVisibility(e.target);
         }
     });
 
-    // --- GESTIONE SEZIONI DINAMICHE (MONITORAGGIO/TERAPIA) ---
-    function setupDynamicSection(buttonId, containerId, templateId) {
-        document.getElementById(buttonId).addEventListener('click', () => {
-            const template = document.getElementById(templateId);
-            const clone = template.cloneNode(true);
-            clone.id = '';
-            clone.classList.remove('hidden');
-            document.getElementById(containerId).appendChild(clone);
-        });
-        document.getElementById(containerId).addEventListener('click', (e) => {
-            if (e.target.classList.contains('remove-entry-btn')) {
-                const parent = e.target.closest('.p-4.border.rounded-lg');
-                if (parent) {
-                    parent.remove();
-                }
+    // --- GESTIONE GRUPPI A SCOMPARSA (ACCORDION) ---
+    document.body.addEventListener('click', (e) => {
+        const header = e.target.closest('.group-header');
+        if (header) {
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('.toggle-icon');
+            content.classList.toggle('hidden');
+            if (icon) {
+                icon.textContent = content.classList.contains('hidden') ? '▼' : '▲';
             }
+        }
+        // Listener per rimuovere le entry singole
+        if (e.target.classList.contains('remove-entry-btn')) {
+            const parentEntry = e.target.closest('.p-4.border.rounded-lg');
+            const parentGroup = parentEntry.closest('[data-date]');
+            parentEntry.remove();
+            // Se il gruppo diventa vuoto, rimuovilo
+            if (parentGroup && parentGroup.querySelectorAll('.p-4.border.rounded-lg').length === 0) {
+                parentGroup.remove();
+            }
+        }
+    });
+
+    // --- LOGICA PER SEZIONI DINAMICHE RAGGRUPPATE ---
+
+    function findOrCreateDateGroup(container, date, sectionTitle, sectionClassPrefix) {
+        if (!date) date = "Senza Data";
+        let groupWrapper = container.querySelector(`[data-date="${date}"]`);
+        if (!groupWrapper) {
+            groupWrapper = document.createElement('div');
+            groupWrapper.className = `${sectionClassPrefix}-group mb-4`;
+            groupWrapper.dataset.date = date;
+            const displayDate = date === "Senza Data" ? "Senza Data" : new Date(date + 'T00:00:00').toLocaleDateString('it-IT', { year: 'numeric', month: 'long', day: 'numeric' });
+
+            groupWrapper.innerHTML = `
+                <div class="group-header ${sectionClassPrefix}-group-header flex justify-between items-center p-3 bg-gray-100 hover:bg-gray-200 rounded-lg cursor-pointer">
+                    <h4 class="font-bold text-gray-800">${sectionTitle} del ${displayDate}</h4>
+                    <span class="toggle-icon text-gray-600 text-xl">▼</span>
+                </div>
+                <div class="${sectionClassPrefix}-group-content hidden space-y-4 mt-2 p-2 pl-4 border-l-4 border-gray-200"></div>
+            `;
+            container.appendChild(groupWrapper);
+        }
+        return groupWrapper.querySelector(`.${sectionClassPrefix}-group-content`);
+    }
+    
+    function addGroupedEntry(containerId, templateId, sectionTitle, sectionClassPrefix) {
+        const container = document.getElementById(containerId);
+        const template = document.getElementById(templateId);
+        const clone = template.cloneNode(true);
+        clone.id = '';
+        clone.classList.remove('hidden');
+
+        const dateInput = clone.querySelector('input[type="date"]');
+        const today = new Date().toISOString().split('T')[0];
+        if (dateInput) dateInput.value = today;
+
+        const groupContent = findOrCreateDateGroup(container, today, sectionTitle, sectionClassPrefix);
+        groupContent.appendChild(clone);
+        
+        groupContent.classList.remove('hidden');
+        const icon = groupContent.previousElementSibling.querySelector('.toggle-icon');
+        if (icon) icon.textContent = '▲';
+    }
+
+    document.getElementById('add-monitoring-btn').addEventListener('click', () => {
+        addGroupedEntry('monitoring-entries-container', 'monitoring-entry-template', 'Monitoraggio', 'monitoring');
+    });
+    document.getElementById('add-therapy-log-btn').addEventListener('click', () => {
+        addGroupedEntry('therapy-log-container', 'therapy-log-template', 'Somministrazione', 'therapy');
+    });
+
+    function renderGroupedEntries(containerId, entries, templateId, sectionTitle, sectionClassPrefix) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+        if (!entries || entries.length === 0) return;
+
+        const grouped = entries.reduce((acc, entry) => {
+            const date = entry.day || entry.date || 'Senza Data';
+            if (!acc[date]) acc[date] = [];
+            acc[date].push(entry);
+            return acc;
+        }, {});
+
+        const sortedDates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
+
+        sortedDates.forEach(date => {
+            const groupContent = findOrCreateDateGroup(container, date, sectionTitle, sectionClassPrefix);
+            grouped[date].forEach(entryData => {
+                const template = document.getElementById(templateId);
+                const clone = template.cloneNode(true);
+                clone.id = '';
+                clone.classList.remove('hidden');
+                clone.querySelectorAll('[data-field]').forEach(input => {
+                    const fieldName = input.dataset.field;
+                    if (entryData.hasOwnProperty(fieldName)) {
+                        input.type === 'checkbox' ? input.checked = entryData[fieldName] : input.value = entryData[fieldName] || '';
+                    }
+                });
+                groupContent.appendChild(clone);
+            });
         });
     }
-    setupDynamicSection('add-monitoring-btn', 'monitoring-entries-container', 'monitoring-entry-template');
-    setupDynamicSection('add-therapy-log-btn', 'therapy-log-container', 'therapy-log-template');
 
-    // --- GESTIONE RIMOZIONE FLEBO (FIX) ---
+    // --- GESTIONE FLEBO, FARMACI, ESAMI (NON RAGGRUPPATI) ---
     infusionContainer.addEventListener('click', (e) => {
         if (e.target.classList.contains('remove-infusion-btn')) {
-            const rowToRemove = e.target.closest('.infusion-row');
-            // Impedisce la rimozione dell'ultima riga per non lasciare la sezione vuota.
             if (infusionContainer.querySelectorAll('.infusion-row').length > 1) {
-                if (rowToRemove) {
-                    rowToRemove.remove();
-                }
+                e.target.closest('.infusion-row').remove();
             } else {
                 displayMessage("Devi lasciare almeno una riga per la terapia con flebo.", "error");
             }
         }
     });
-
-    // --- GESTIONE AGGIUNTA FLEBO ---
     document.getElementById('add-infusion-btn').addEventListener('click', () => {
-        const template = document.getElementById('infusion-row-template');
-        const clone = template.cloneNode(true);
+        const clone = document.getElementById('infusion-row-template').cloneNode(true);
         clone.id = '';
         clone.classList.remove('hidden');
         infusionContainer.appendChild(clone);
     });
-
-    // --- GESTIONE AGGIUNTA FARMACI ---
     document.getElementById('add-drug-btn').addEventListener('click', () => {
         const newInput = document.createElement('input');
         newInput.type = 'text';
@@ -630,23 +695,12 @@
         drugsContainer.appendChild(newInput);
         newInput.focus();
     });
-
-    drugsContainer.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            document.getElementById('add-drug-btn').click();
-        }
-    });
-
-    // --- GESTIONE AGGIUNTA ESAMI PERSONALIZZATI ---
     document.getElementById('add-custom-exam-btn').addEventListener('click', () => {
-        const customExamTemplate = document.getElementById('custom-exam-template');
-        const clone = customExamTemplate.cloneNode(true);
+        const clone = document.getElementById('custom-exam-template').cloneNode(true);
         clone.classList.add('custom-exam-item');
         clone.classList.remove('hidden');
         examsToPerformList.appendChild(clone);
     });
-
     examsToPerformList.addEventListener('click', (e) => {
         if(e.target.classList.contains('remove-custom-exam-btn')) {
             e.target.closest('.custom-exam-item').remove();
@@ -666,8 +720,6 @@
 
         if (!isExpired) {
              importantMessageContainer.appendChild(clone);
-
-             // Popola i campi se i dati sono stati forniti
              if (Object.keys(messageData).length > 0) {
                  clone.querySelector('[data-field="startDate"]').value = messageData.startDate;
                  clone.querySelector('[data-field="endDate"]').value = messageData.endDate;
@@ -675,11 +727,8 @@
              } else {
                 clone.querySelector('[data-field="startDate"]').value = today;
              }
-        } else {
-            console.log("Messaggio scaduto, non aggiunto al DOM.");
         }
     }
-
     document.getElementById('add-important-message-btn').addEventListener('click', () => {
         if (importantMessageContainer.children.length === 0) {
             addImportantMessage({});
@@ -687,7 +736,6 @@
             displayMessage("È già presente un messaggio importante. Rimuovilo per aggiungerne un altro.", "error");
         }
     });
-
     importantMessageContainer.addEventListener('click', (e) => {
         if (e.target.classList.contains('remove-important-message-btn')) {
             e.target.closest('.p-4.border.rounded-lg').remove();
@@ -695,42 +743,25 @@
     });
 
     // --- GESTIONE STAMPA ---
-    let originalTextareas = [];
-
     window.onbeforeprint = () => {
-        // Nasconde il header solo nella stampa
-        document.getElementById('patient-info-header-print').classList.remove('hidden');
-
-        // Sostituisce le textarea con <div> per la stampa
         document.querySelectorAll('textarea.printable-data').forEach(textarea => {
             const replacementDiv = document.createElement('div');
             replacementDiv.classList.add('printable-data', 'print-only-content');
             replacementDiv.textContent = textarea.value;
-            textarea.style.display = 'none'; // Nasconde la textarea originale
+            textarea.style.display = 'none';
             textarea.parentNode.insertBefore(replacementDiv, textarea.nextSibling);
-            originalTextareas.push({ textarea: textarea, replacement: replacementDiv });
         });
     };
-
     window.onafterprint = () => {
-        // Ripristina l'interfaccia rimuovendo i <div> e mostrando le textarea
-        originalTextareas.forEach(item => {
-            item.replacement.remove();
-            item.textarea.style.display = '';
-        });
-        originalTextareas = [];
-
-        // Nasconde il header dopo la stampa
-        document.getElementById('patient-info-header-print').classList.add('hidden');
+        document.querySelectorAll('.print-only-content').forEach(el => el.remove());
+        document.querySelectorAll('textarea.printable-data').forEach(textarea => textarea.style.display = '');
     };
-
     document.getElementById('print-button').addEventListener('click', () => {
         document.body.classList.remove('print-evaluation-only');
         document.querySelector('#patient-info-header-print h1').textContent = `Cartella Clinica: ${document.getElementById('patientName').value || 'N/D'} (${document.getElementById('ownerLastname').value || 'N/D'})`;
         document.querySelector('#patient-info-header-print p').textContent = `Data di Stampa: ${new Date().toLocaleDateString('it-IT')}`;
         window.print();
     });
-
     document.getElementById('print-evaluation-button').addEventListener('click', () => {
         document.body.classList.add('print-evaluation-only');
         document.querySelector('#patient-info-header-print h1').textContent = `Valutazione Medica: ${document.getElementById('patientName').value || 'N/D'} (${document.getElementById('ownerLastname').value || 'N/D'})`;
@@ -741,50 +772,37 @@
     // --- GESTIONE AUTHENTICATION E FIREBASE ---
     auth.onAuthStateChanged(user => {
         if (user) {
-            // L'utente è loggato
             loginScreen.classList.add('hidden');
-            document.body.classList.remove('overflow-hidden');
             renderPatientsList();
         } else {
-            // L'utente non è loggato
             loginScreen.classList.remove('hidden');
-            document.body.classList.add('overflow-hidden');
             patientsListDiv.innerHTML = '<p class="text-gray-500">Effettua l\'accesso per vedere i pazienti.</p>';
             clearForm();
         }
     });
-
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         try {
             await auth.signInWithEmailAndPassword(loginEmail.value, loginPassword.value);
             loginError.classList.add('hidden');
         } catch (error) {
-            console.error("Login fallito:", error);
             loginError.textContent = "Credenziali non valide. Riprova.";
             loginError.classList.remove('hidden');
         }
     });
-
-    logoutBtn.addEventListener('click', async () => {
-        await auth.signOut();
-    });
+    logoutBtn.addEventListener('click', () => auth.signOut());
 
     // --- CARICAMENTO, POPOLAMENTO E SALVATAGGIO DATI (FIREBASE) ---
     async function renderPatientsList() {
-        const patientsListDiv = document.getElementById('patients-list');
         patientsListDiv.innerHTML = '<p id="loading-patients" class="text-gray-500">Caricamento pazienti...</p>';
-
         try {
             const snapshot = await patientsCollection.orderBy('updatedAt', 'desc').get();
             const patientsArray = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
             patientsListDiv.innerHTML = '';
             if (patientsArray.length === 0) {
                 patientsListDiv.innerHTML = '<p class="text-gray-500">Nessun paziente salvato.</p>';
                 return;
             }
-
             patientsArray.forEach(patient => {
                 const patientCard = document.createElement('div');
                 patientCard.className = 'p-4 border rounded-lg bg-gray-50 flex flex-col sm:flex-row justify-between sm:items-center';
@@ -808,12 +826,8 @@
     }
 
     patientsListDiv.addEventListener('click', (e) => {
-        if (e.target.classList.contains('open-patient-btn')) {
-            loadPatientData(e.target.dataset.id);
-        }
-        if (e.target.classList.contains('delete-patient-btn')) {
-            deletePatientData(e.target.dataset.id);
-        }
+        if (e.target.classList.contains('open-patient-btn')) loadPatientData(e.target.dataset.id);
+        if (e.target.classList.contains('delete-patient-btn')) deletePatientData(e.target.dataset.id);
     });
 
     async function loadPatientData(id) {
@@ -826,124 +840,74 @@
                 saveButton.textContent = 'Aggiorna Scheda';
                 displayMessage(`Scheda di ${doc.data().patientName} caricata.`, 'success');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                displayMessage("Paziente non trovato.", "error");
             }
         } catch (error) {
-            console.error("Errore nel caricamento del paziente:", error);
             displayMessage("Errore nel caricamento dei dati.", "error");
         }
     }
 
-
     function populateForm(data) {
-        // Popola i campi statici
         const formElements = document.querySelectorAll('#patient-form [id]');
         formElements.forEach(el => {
             const key = el.id;
             if (data.hasOwnProperty(key)) {
-                if (el.type === 'checkbox') {
-                    el.checked = data[key];
-                } else if (el.tagName === 'SELECT') {
-                    el.value = data[key] || el.options[0].value;
-                } else {
-                    el.value = data[key] || '';
-                }
+                if (el.type === 'checkbox') el.checked = data[key];
+                else el.value = data[key] || '';
             }
         });
+        document.querySelectorAll('.conditional-select').forEach(el => el.dispatchEvent(new Event('change')));
 
-        // Gestisce i campi "other"
-        document.querySelectorAll('.conditional-select').forEach(el => {
-            el.dispatchEvent(new Event('change'));
-        });
-
-        // Popola gli esami da eseguire
         if (data.examsToPerform) {
-            document.getElementById('exam-cbc').checked = data.examsToPerform.cbc;
-            document.getElementById('exam-biochem').checked = data.examsToPerform.biochem;
-            document.getElementById('exam-biochem-other').value = data.examsToPerform.biochem_other || '';
-            document.getElementById('exam-snap').checked = data.examsToPerform.snap;
-            document.getElementById('exam-snap-other').value = data.examsToPerform.snap_other || '';
-            document.getElementById('exam-urinalysis').checked = data.examsToPerform.urinalysis;
-            document.getElementById('exam-pucu').checked = data.examsToPerform.pucu;
-            document.getElementById('exam-rx').checked = data.examsToPerform.rx;
-            document.getElementById('exam-rx-other').value = data.examsToPerform.rx_other || '';
-            document.getElementById('exam-ultrasound').checked = data.examsToPerform.ultrasound;
-            document.getElementById('exam-ecofast').checked = data.examsToPerform.ecofast;
-            document.getElementById('exam-emogas').checked = data.examsToPerform.emogas;
-            document.getElementById('exam-surgery').checked = data.examsToPerform.surgery;
-            document.getElementById('exam-surgery-other').value = data.examsToPerform.surgery_other || '';
-            document.getElementById('exam-lab').checked = data.examsToPerform.lab;
-            document.getElementById('exam-lab-other').value = data.examsToPerform.lab_other || '';
-            document.getElementById('exam-other').checked = data.examsToPerform.other;
-            document.getElementById('exam-other-other').value = data.examsToPerform.other_other || '';
+            Object.keys(data.examsToPerform).forEach(key => {
+                const el = document.getElementById(`exam-${key.replace('_other', '-other')}`);
+                if (el) {
+                    if (el.type === 'checkbox') el.checked = data.examsToPerform[key];
+                    else el.value = data.examsToPerform[key];
+                }
+            });
         }
-
         if (data.customExams) {
-            // Rimuove i vecchi esami custom prima di aggiungerli
             document.querySelectorAll('.custom-exam-item').forEach(el => el.remove());
             data.customExams.forEach(exam => {
-                const template = document.getElementById('custom-exam-template');
-                const clone = template.cloneNode(true);
+                const clone = document.getElementById('custom-exam-template').cloneNode(true);
                 clone.classList.remove('hidden');
-                const checkbox = clone.querySelector('.exam-checkbox');
-                const nameInput = clone.querySelector('.custom-exam-name');
-                checkbox.checked = exam.checked;
-                nameInput.value = exam.name || '';
+                clone.querySelector('.exam-checkbox').checked = exam.checked;
+                clone.querySelector('.custom-exam-name').value = exam.name || '';
                 examsToPerformList.appendChild(clone);
             });
         }
-
-        // Popola gli esami eseguiti
         if (data.examsExecuted) {
-            document.getElementById('executed-exam-cbc').checked = data.examsExecuted.cbc;
-            document.getElementById('executed-exam-biochem').checked = data.examsExecuted.biochem;
-            document.getElementById('executed-exam-biochem-other').value = data.examsExecuted.biochem_other || '';
-            document.getElementById('executed-exam-snap').checked = data.examsExecuted.snap;
-            document.getElementById('executed-exam-urinalysis').checked = data.examsExecuted.urinalysis;
-            document.getElementById('executed-exam-pucu').checked = data.examsExecuted.pucu;
-            document.getElementById('executed-exam-rx').checked = data.examsExecuted.rx;
-            document.getElementById('executed-exam-ultrasound').checked = data.examsExecuted.ultrasound;
-            document.getElementById('executed-exam-ecofast').checked = data.examsExecuted.ecofast;
-            document.getElementById('executed-exam-emogas').checked = data.examsExecuted.emogas;
-            document.getElementById('executed-exam-surgery').checked = data.examsExecuted.surgery;
-            document.getElementById('executed-exam-lab').checked = data.examsExecuted.lab;
-            document.getElementById('executed-exam-other-text').value = data.examsExecuted.other_text || '';
+            Object.keys(data.examsExecuted).forEach(key => {
+                const el = document.getElementById(`executed-exam-${key.replace('_other', '-other').replace('_text', '-text')}`);
+                if (el) {
+                    if (el.type === 'checkbox') el.checked = data.examsExecuted[key];
+                    else el.value = data.examsExecuted[key];
+                }
+            });
         }
 
-        // Popola le sezioni dinamiche (flebo, monitoraggio, terapia, messaggio)
-        const populateDynamicSection = (containerId, templateId, entries) => {
-            const container = document.getElementById(containerId);
+        const populateSimpleDynamic = (container, templateId, entries) => {
             container.innerHTML = '';
             (entries || []).forEach(entryData => {
-                const template = document.getElementById(templateId);
-                const clone = template.cloneNode(true);
+                const clone = document.getElementById(templateId).cloneNode(true);
                 clone.id = '';
                 clone.classList.remove('hidden');
                 clone.querySelectorAll('[data-field]').forEach(input => {
-                    if (input.type === 'checkbox') {
-                        input.checked = entryData[input.dataset.field];
-                    } else {
-                        input.value = entryData[input.dataset.field] || '';
-                    }
+                    if (entryData[input.dataset.field]) input.value = entryData[input.dataset.field];
                 });
                 container.appendChild(clone);
             });
-            // Assicura che ci sia sempre almeno un campo di default se la sezione era vuota
-            if (container.children.length === 0 && templateId !== 'custom-exam-template' && templateId !== 'important-message-template') {
-                const defaultClone = document.getElementById(templateId).cloneNode(true);
-                defaultClone.id = '';
-                defaultClone.classList.remove('hidden');
-                container.appendChild(defaultClone);
+            if (container.children.length === 0) {
+                 const clone = document.getElementById(templateId).cloneNode(true);
+                 clone.id = '';
+                 clone.classList.remove('hidden');
+                 container.appendChild(clone);
             }
         };
-
-        // Flebo
-        populateDynamicSection('dynamic-infusion-inputs', 'infusion-row-template', data.infusionTherapy);
-        // Farmaci
-        const drugsContainer = document.getElementById('dynamic-drug-inputs');
+        populateSimpleDynamic(infusionContainer, 'infusion-row-template', data.infusionTherapy);
+        
         drugsContainer.innerHTML = '';
-        (data.drugsToAdminister || []).forEach(drug => {
+        (data.drugsToAdminister || ['']).forEach(drug => {
             const drugInput = document.createElement('input');
             drugInput.type = 'text';
             drugInput.placeholder = 'Nome farmaco...';
@@ -951,27 +915,17 @@
             drugInput.value = drug;
             drugsContainer.appendChild(drugInput);
         });
-        const emptyInput = document.createElement('input');
-        emptyInput.type = 'text';
-        emptyInput.placeholder = 'Nome farmaco...';
-        emptyInput.className = 'w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data';
-        drugsContainer.appendChild(emptyInput);
 
-        // Messaggio importante
         importantMessageContainer.innerHTML = '';
-        if (data.importantMessage) {
-             addImportantMessage(data.importantMessage);
-        }
+        if (data.importantMessage) addImportantMessage(data.importantMessage);
 
-        // Monitoraggio e terapia log
-        populateDynamicSection('monitoring-entries-container', 'monitoring-entry-template', data.monitoringEntries);
-        populateDynamicSection('therapy-log-container', 'therapy-log-template', data.therapyLog);
+        renderGroupedEntries('monitoring-entries-container', data.monitoringEntries, 'monitoring-entry-template', 'Monitoraggio', 'monitoring');
+        renderGroupedEntries('therapy-log-container', data.therapyLog, 'therapy-log-template', 'Somministrazione', 'therapy');
     }
-
 
     async function saveData() {
         const getDynamicEntries = (containerId) => {
-            return Array.from(document.querySelectorAll(`#${containerId} > div:not(.hidden)`)).map(entryDiv => {
+            return Array.from(document.querySelectorAll(`#${containerId} .p-4.border.rounded-lg.relative`)).map(entryDiv => {
                 const entryData = {};
                 entryDiv.querySelectorAll('[data-field]').forEach(input => {
                     entryData[input.dataset.field] = input.type === 'checkbox' ? input.checked : input.value;
@@ -979,97 +933,35 @@
                 return entryData;
             });
         };
-
-        const customExams = Array.from(document.querySelectorAll('.custom-exam-item')).map(item => {
-            const checkbox = item.querySelector('.exam-checkbox');
-            const nameInput = item.querySelector('.custom-exam-name');
-            return {
-                name: nameInput.value.trim(),
-                checked: checkbox.checked
-            };
-        }).filter(exam => exam.name);
-
-        // Ottiene i dati del messaggio importante
+        
         const importantMessageElement = importantMessageContainer.querySelector('div:not(.hidden)');
-        const importantMessageData = importantMessageElement ? {
+        const patientData = {};
+        document.querySelectorAll('#patient-form [id]').forEach(el => {
+            if(el.id) patientData[el.id] = el.type === 'checkbox' ? el.checked : el.value.trim();
+        });
+
+        patientData.customExams = Array.from(document.querySelectorAll('.custom-exam-item')).map(item => ({
+            name: item.querySelector('.custom-exam-name').value.trim(),
+            checked: item.querySelector('.exam-checkbox').checked
+        })).filter(exam => exam.name);
+        
+        patientData.importantMessage = importantMessageElement ? {
              startDate: importantMessageElement.querySelector('[data-field="startDate"]').value,
              endDate: importantMessageElement.querySelector('[data-field="endDate"]').value,
              messageText: importantMessageElement.querySelector('[data-field="messageText"]').value,
         } : null;
 
-        const patientData = {
-            entryDate: document.getElementById('entryDate').value,
-            ownerLastname: document.getElementById('ownerLastname').value.trim(),
-            phone: document.getElementById('phone').value.trim(),
-            altContact: document.getElementById('altContact').value.trim(),
-            patientName: document.getElementById('patientName').value.trim(),
-            species: document.getElementById('species').value.trim(),
-            sex: document.getElementById('sex').value,
-            age: document.getElementById('age').value.trim(),
-            weight: document.getElementById('weight').value,
-            microchip: document.getElementById('microchip').value.trim(),
-            reasonForHospitalization: document.getElementById('reasonForHospitalization').value.trim(),
-            vaccinations: document.getElementById('vaccinations').value,
-            vaccinationsOther: document.getElementById('vaccinations-other').value.trim(),
-            parasiteTreatments: document.getElementById('parasiteTreatments').value,
-            parasiteTreatmentsOther: document.getElementById('parasite-treatments-other').value.trim(),
-            previousPathologies: document.getElementById('previousPathologies').value.trim(),
-            mentalState: document.getElementById('mentalState').value,
-            mentalStateOther: document.getElementById('mentalStateOther').value.trim(),
-            gait: document.getElementById('gait').value,
-            gaitOther: document.getElementById('gaitOther').value.trim(),
-            temperature: document.getElementById('temperature').value,
-            capillaryRefillTime: document.getElementById('capillaryRefillTime').value,
-            mucousMembranes: document.getElementById('mucousMembranes').value.trim(),
-            hydration: document.getElementById('hydration').value,
-            lymphNodes: document.getElementById('lymphNodes').value,
-            lymphNodesOther: document.getElementById('lymphNodesOther').value.trim(),
-            abdominalPalpation: document.getElementById('abdominalPalpation').value,
-            cardiacAuscultation: document.getElementById('cardiacAuscultation').value,
-            pulmonaryAuscultation: document.getElementById('pulmonaryAuscultation').value,
-            cns: document.getElementById('cns').value.trim(),
-            otherFindings: document.getElementById('otherFindings').value.trim(),
-            homeTreatments: document.getElementById('homeTreatments').value.trim(),
-            admissionTherapy: document.getElementById('admissionTherapy').value.trim(),
-            examsToPerform: {
-                cbc: document.getElementById('exam-cbc').checked,
-                biochem: document.getElementById('exam-biochem').checked, biochem_other: document.getElementById('exam-biochem-other').value.trim(),
-                snap: document.getElementById('exam-snap').checked, snap_other: document.getElementById('exam-snap-other').value.trim(),
-                urinalysis: document.getElementById('exam-urinalysis').checked, pucu: document.getElementById('exam-pucu').checked,
-                rx: document.getElementById('exam-rx').checked, rx_other: document.getElementById('exam-rx-other').value,
-                ultrasound: document.getElementById('exam-ultrasound').checked, ecofast: document.getElementById('exam-ecofast').checked,
-                emogas: document.getElementById('exam-emogas').checked,
-                surgery: document.getElementById('exam-surgery').checked, surgery_other: document.getElementById('exam-surgery-other').value.trim(),
-                lab: document.getElementById('exam-lab').checked, lab_other: document.getElementById('exam-lab-other').value.trim(),
-                other: document.getElementById('exam-other').checked, other_other: document.getElementById('exam-other-other').value.trim(),
-            },
-            customExams: customExams,
-            examsExecuted: {
-                cbc: document.getElementById('executed-exam-cbc').checked,
-                biochem: document.getElementById('executed-exam-biochem').checked,
-                biochem_other: document.getElementById('executed-exam-biochem-other').value.trim(),
-                snap: document.getElementById('executed-exam-snap').checked,
-                urinalysis: document.getElementById('executed-exam-urinalysis').checked,
-                pucu: document.getElementById('executed-exam-pucu').checked,
-                rx: document.getElementById('executed-exam-rx').checked,
-                ultrasound: document.getElementById('executed-exam-ultrasound').checked,
-                ecofast: document.getElementById('executed-exam-ecofast').checked,
-                emogas: document.getElementById('executed-exam-emogas').checked,
-                surgery: document.getElementById('executed-exam-surgery').checked,
-                lab: document.getElementById('executed-exam-lab').checked,
-                other_text: document.getElementById('executed-exam-other-text').value.trim(),
-            },
-            infusionTherapy: getDynamicEntries('dynamic-infusion-inputs'),
-            drugsToAdminister: Array.from(document.querySelectorAll('#dynamic-drug-inputs input')).map(input => input.value.trim()).filter(Boolean),
-            medicalCourse: document.getElementById('medicalCourse').value.trim(),
-            dischargeConditions: document.getElementById('dischargeConditions').value.trim(),
-            homeTherapy: document.getElementById('homeTherapy').value.trim(),
-            followUp: document.getElementById('followUp').value.trim(),
-            importantMessage: importantMessageData,
-            monitoringEntries: getDynamicEntries('monitoring-entries-container'),
-            therapyLog: getDynamicEntries('therapy-log-container'),
-            updatedAt: new Date(),
-        };
+        patientData.infusionTherapy = Array.from(document.querySelectorAll('#dynamic-infusion-inputs .infusion-row')).map(row => ({
+            ivFluids: row.querySelector('[data-field="ivFluids"]').value,
+            ivVolume: row.querySelector('[data-field="ivVolume"]').value,
+            ivRoute: row.querySelector('[data-field="ivRoute"]').value,
+            ivRate: row.querySelector('[data-field="ivRate"]').value,
+            ivRateOther: row.querySelector('[data-field="ivRateOther"]').value,
+        }));
+        patientData.drugsToAdminister = Array.from(document.querySelectorAll('#dynamic-drug-inputs input')).map(input => input.value.trim()).filter(Boolean);
+        patientData.monitoringEntries = getDynamicEntries('monitoring-entries-container');
+        patientData.therapyLog = getDynamicEntries('therapy-log-container');
+        patientData.updatedAt = new Date();
 
         if (!patientData.ownerLastname || !patientData.patientName || !patientData.weight) {
             displayMessage("Compila tutti i campi anagrafici obbligatori (*).", "error");
@@ -1079,33 +971,30 @@
 
         try {
             if (currentPatientId) {
-                await patientsCollection.doc(currentPatientId).update(patientData);
+                await patientsCollection.doc(currentPatientId).set(patientData, { merge: true });
                 displayMessage("Scheda aggiornata con successo!", "success");
             } else {
-                await patientsCollection.add({
-                    ...patientData,
-                    createdAt: new Date()
-                });
+                patientData.createdAt = new Date();
+                await patientsCollection.add(patientData);
                 displayMessage("Scheda salvata con successo!", "success");
                 clearForm();
             }
             renderPatientsList();
         } catch (error) {
-            console.error("Errore nel salvataggio dei dati:", error);
+            console.error("Errore nel salvataggio:", error);
             displayMessage("Errore nel salvataggio dei dati.", "error");
         }
     }
     saveButton.addEventListener('click', saveData);
 
     async function deletePatientData(id) {
-        if (confirm("Sei sicuro di voler eliminare questa scheda paziente? Questa azione è irreversibile.")) {
+        if (confirm("Sei sicuro di voler eliminare questa scheda paziente? L'azione è irreversibile.")) {
             try {
                 await patientsCollection.doc(id).delete();
-                displayMessage("Scheda eliminata con successo.", "success");
-                clearForm();
+                displayMessage("Scheda eliminata.", "success");
+                if (id === currentPatientId) clearForm();
                 renderPatientsList();
             } catch (error) {
-                console.error("Errore nell'eliminazione della scheda:", error);
                 displayMessage("Errore nell'eliminazione della scheda.", "error");
             }
         }
@@ -1117,4 +1006,3 @@
 </script>
 </body>
 </html>
-
