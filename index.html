@@ -403,6 +403,15 @@
                 </div>
 
                 <hr class="my-8 border-t-2 border-dashed border-gray-300">
+                <div class="form-section">
+                    <h2 class="form-section-title">Chirurgia</h2>
+                    <div class="space-y-6 form-section-content">
+                        <div><label for="surgeryDescription" class="block text-sm font-medium text-gray-700 mb-1">Descrizione intervento chirurgico</label><textarea id="surgeryDescription" rows="4" class="w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data"></textarea></div>
+                        <div><label for="surgeryCondition" class="block text-sm font-medium text-gray-700 mb-1">Condizione da trattare</label><textarea id="surgeryCondition" rows="4" class="w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data"></textarea></div>
+                    </div>
+                </div>
+
+                <hr class="my-8 border-t-2 border-dashed border-gray-300">
                 <div id="important-message-section" class="form-section">
                     <div id="important-message-container" class="form-section-content">
                         </div>
@@ -482,7 +491,9 @@
                 <div><label class="block text-sm font-medium">Pressione Sanguigna</label><input type="text" data-field="bp" class="w-full mt-1 p-2 border rounded-md printable-data"></div>
             </div>
             <div><label class="block text-sm font-medium">Note Aggiuntive</label><textarea data-field="notes" rows="2" class="w-full mt-1 p-2 border rounded-md printable-data"></textarea></div>
-            <hr>
+            <hr class="my-4">
+            <div><label class="block text-sm font-medium">Monitoraggio Chirurgico</label><textarea data-field="surgicalMonitoring" rows="2" class="w-full mt-1 p-2 border rounded-md printable-data"></textarea></div>
+            <hr class="my-4">
             <h4 class="font-semibold text-md text-gray-600">Alimentazione</h4>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
                 <div><label class="block text-sm font-medium">Tipo di Dieta</label><input type="text" data-field="dietType" class="w-full mt-1 p-2 border rounded-md printable-data"></div>
@@ -1010,7 +1021,7 @@
         };
 
         // Popola tutti i campi statici
-        const allStaticIds = ['entryDate', 'ownerLastname', 'phone', 'altContact', 'patientName', 'species', 'sex', 'age', 'weight', 'microchip', 'reasonForHospitalization', 'vaccinations', 'vaccinationsOther', 'parasiteTreatments', 'parasiteTreatmentsOther', 'previousPathologies', 'mentalState', 'mentalStateOther', 'gait', 'gaitOther', 'temperature', 'capillaryRefillTime', 'mucousMembranes', 'hydration', 'lymphNodes', 'lymphNodesOther', 'abdominalPalpation', 'cardiacAuscultation', 'pulmonaryAuscultation', 'cns', 'otherFindings', 'homeTreatments', 'admissionTherapy', 'medicalCourse', 'dischargeConditions', 'homeTherapy', 'followUp', 'dischargeDate', 'dischargeNotes', 'deceasedDateTime', 'deceasedNotes'];
+        const allStaticIds = ['entryDate', 'ownerLastname', 'phone', 'altContact', 'patientName', 'species', 'sex', 'age', 'weight', 'microchip', 'reasonForHospitalization', 'vaccinations', 'vaccinationsOther', 'parasiteTreatments', 'parasiteTreatmentsOther', 'previousPathologies', 'mentalState', 'mentalStateOther', 'gait', 'gaitOther', 'temperature', 'capillaryRefillTime', 'mucousMembranes', 'hydration', 'lymphNodes', 'lymphNodesOther', 'abdominalPalpation', 'cardiacAuscultation', 'pulmonaryAuscultation', 'cns', 'otherFindings', 'homeTreatments', 'admissionTherapy', 'surgeryDescription', 'surgeryCondition', 'medicalCourse', 'dischargeConditions', 'homeTherapy', 'followUp', 'dischargeDate', 'dischargeNotes', 'deceasedDateTime', 'deceasedNotes'];
         allStaticIds.forEach(id => setData(id));
         
         document.querySelectorAll('.conditional-select').forEach(el => el.dispatchEvent(new Event('change')));
@@ -1140,6 +1151,8 @@
             otherFindings: document.getElementById('otherFindings').value.trim(),
             homeTreatments: document.getElementById('homeTreatments').value.trim(),
             admissionTherapy: document.getElementById('admissionTherapy').value.trim(),
+            surgeryDescription: document.getElementById('surgeryDescription').value.trim(),
+            surgeryCondition: document.getElementById('surgeryCondition').value.trim(),
             examsToPerform: {
                 cbc: document.getElementById('exam-cbc').checked,
                 biochem: document.getElementById('exam-biochem').checked, biochem_other: document.getElementById('exam-biochem-other').value.trim(),
