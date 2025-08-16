@@ -672,11 +672,19 @@
         infusionContainer.appendChild(defaultInfusion);
 
         drugsContainer.innerHTML = '';
-        const defaultDrug = document.createElement('input');
-        defaultDrug.type = 'text';
-        defaultDrug.placeholder = 'Nome farmaco...';
-        defaultDrug.className = 'w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data';
-        drugsContainer.appendChild(defaultDrug);
+        const drugWrapper = document.createElement('div');
+        drugWrapper.className = 'flex items-center space-x-2 mb-2';
+        const drugInput = document.createElement('input');
+        drugInput.type = 'text';
+        drugInput.placeholder = 'Nome farmaco...';
+        drugInput.className = 'w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data';
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'remove-drug-btn text-red-500 hover:text-red-700 text-2xl font-bold no-print';
+        removeBtn.innerHTML = '&times;';
+        drugWrapper.appendChild(drugInput);
+        drugWrapper.appendChild(removeBtn);
+        drugsContainer.appendChild(drugWrapper);
 
         document.querySelectorAll('.custom-exam-item').forEach(el => el.remove());
 
@@ -745,7 +753,7 @@
                 </div>
                 <div class="${sectionClassPrefix}-group-content hidden space-y-4 mt-2 p-2 pl-4 border-l-4 border-gray-200"></div>
             `;
-            container.appendChild(groupWrapper);
+            container.prepend(groupWrapper);
         }
         return groupWrapper.querySelector(`.${sectionClassPrefix}-group-content`);
     }
@@ -762,7 +770,7 @@
         if (dateInput) dateInput.value = today;
 
         const groupContent = findOrCreateDateGroup(container, today, sectionTitle, sectionClassPrefix);
-        groupContent.appendChild(clone);
+        groupContent.prepend(clone);
         
         groupContent.classList.remove('hidden');
         const icon = groupContent.previousElementSibling.querySelector('.toggle-icon');
@@ -822,16 +830,35 @@
         const clone = document.getElementById('infusion-row-template').cloneNode(true);
         clone.id = '';
         clone.classList.remove('hidden');
-        infusionContainer.appendChild(clone);
+        infusionContainer.prepend(clone);
     });
     document.getElementById('add-drug-btn').addEventListener('click', () => {
+        const drugWrapper = document.createElement('div');
+        drugWrapper.className = 'flex items-center space-x-2 mb-2';
+
         const newInput = document.createElement('input');
         newInput.type = 'text';
         newInput.placeholder = 'Nome farmaco...';
         newInput.className = 'w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data';
-        drugsContainer.appendChild(newInput);
+
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'remove-drug-btn text-red-500 hover:text-red-700 text-2xl font-bold no-print';
+        removeBtn.innerHTML = '&times;';
+
+        drugWrapper.appendChild(newInput);
+        drugWrapper.appendChild(removeBtn);
+
+        drugsContainer.prepend(drugWrapper);
         newInput.focus();
     });
+
+    drugsContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-drug-btn')) {
+            e.target.parentElement.remove();
+        }
+    });
+
     document.getElementById('add-custom-exam-btn').addEventListener('click', () => {
         const clone = document.getElementById('custom-exam-template').cloneNode(true);
         clone.classList.add('custom-exam-item');
