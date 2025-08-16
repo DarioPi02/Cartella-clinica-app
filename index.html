@@ -160,6 +160,9 @@
         <div class="flex justify-between items-center mb-6 no-print">
             <h1 class="text-3xl font-bold text-gray-800">Cartella Clinica</h1>
             <div class="flex space-x-2">
+                <button type="button" id="show-attention-btn" class="px-5 py-2 bg-yellow-500 text-white font-semibold rounded-lg hover:bg-yellow-600 transition">
+                    Attenzioni
+                </button>
                  <button type="button" id="logout-btn" class="px-5 py-2 border border-red-500 text-red-600 font-semibold rounded-lg hover:bg-red-50 transition">
                     Logout
                 </button>
@@ -198,6 +201,13 @@
                             <div><label for="age" class="block text-sm font-medium text-gray-700 mb-1">Età</label><input type="text" id="age" placeholder="Es. 2 anni" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg printable-data"></div>
                             <div><label for="weight" class="block text-sm font-medium text-gray-700 mb-1">Peso (kg) <span class="text-red-500">*</span></label><input type="number" step="0.1" id="weight" placeholder="Es. 10.5" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg printable-data" required></div>
                             <div><label for="microchip" class="block text-sm font-medium text-gray-700 mb-1">Microchip</label><input type="text" id="microchip" placeholder="Numero microchip" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg printable-data"></div>
+                        </div>
+
+                        <div class="pt-4 border-t border-gray-200">
+                            <div class="flex items-center justify-center">
+                                <input id="requiresAttention" type="checkbox" class="h-5 w-5 rounded text-yellow-500 focus:ring-yellow-400 border-gray-300">
+                                <label for="requiresAttention" class="ml-2 font-medium text-yellow-600">Paziente Richiede Attenzione</label>
+                            </div>
                         </div>
 
                         <!-- Buttons for Discharge/Deceased -->
@@ -584,10 +594,20 @@
         </div>
         <div class="mt-4">
             <label class="block text-sm font-medium text-yellow-800 mb-1">Messaggio</label>
-            <textarea data-field="messageText" rows="3" class="w-full px-4 py-2 bg-yellow-50 border border-yellow-300 rounded-lg printable-data"></textarea>
+            <textarea data-field="messageText" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-yellow-300 rounded-lg printable-data"></textarea>
         </div>
     </div>
 
+    <!-- Attention Modal -->
+    <div id="attention-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50 hidden no-print">
+        <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-2xl text-left relative">
+            <button id="close-attention-modal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+            <h2 class="text-2xl font-bold text-yellow-600 mb-4">Pazienti che Richiedono Attenzione</h2>
+            <div id="attention-list" class="space-y-4 max-h-96 overflow-y-auto">
+                <!-- Urgent patients will be listed here -->
+            </div>
+        </div>
+    </div>
 
    <script>
     // --- Riferimenti a Firebase Authentication e Firestore ---
@@ -608,7 +628,6 @@
     const therapyContainer = document.getElementById('therapy-log-container');
     let originalTextareas = [];
 
-
     // Elementi di autenticazione
     const loginScreen = document.getElementById('login-screen');
     const loginForm = document.getElementById('login-form');
@@ -616,6 +635,12 @@
     const loginPassword = document.getElementById('login-password');
     const loginError = document.getElementById('login-error');
     const logoutBtn = document.getElementById('logout-btn');
+
+    // Elementi Urgenze
+    const showAttentionBtn = document.getElementById('show-attention-btn');
+    const attentionModal = document.getElementById('attention-modal');
+    const closeAttentionModalBtn = document.getElementById('close-attention-modal');
+    const attentionListDiv = document.getElementById('attention-list');
 
     let currentPatientId = null;
 
@@ -1021,7 +1046,7 @@
         };
 
         // Popola tutti i campi statici
-        const allStaticIds = ['entryDate', 'ownerLastname', 'phone', 'altContact', 'patientName', 'species', 'sex', 'age', 'weight', 'microchip', 'reasonForHospitalization', 'vaccinations', 'vaccinationsOther', 'parasiteTreatments', 'parasiteTreatmentsOther', 'previousPathologies', 'mentalState', 'mentalStateOther', 'gait', 'gaitOther', 'temperature', 'capillaryRefillTime', 'mucousMembranes', 'hydration', 'lymphNodes', 'lymphNodesOther', 'abdominalPalpation', 'cardiacAuscultation', 'pulmonaryAuscultation', 'cns', 'otherFindings', 'homeTreatments', 'admissionTherapy', 'surgeryDescription', 'surgeryCondition', 'medicalCourse', 'dischargeConditions', 'homeTherapy', 'followUp', 'dischargeDate', 'dischargeNotes', 'deceasedDateTime', 'deceasedNotes'];
+        const allStaticIds = ['entryDate', 'ownerLastname', 'phone', 'altContact', 'patientName', 'species', 'sex', 'age', 'weight', 'microchip', 'requiresAttention', 'reasonForHospitalization', 'vaccinations', 'vaccinationsOther', 'parasiteTreatments', 'parasiteTreatmentsOther', 'previousPathologies', 'mentalState', 'mentalStateOther', 'gait', 'gaitOther', 'temperature', 'capillaryRefillTime', 'mucousMembranes', 'hydration', 'lymphNodes', 'lymphNodesOther', 'abdominalPalpation', 'cardiacAuscultation', 'pulmonaryAuscultation', 'cns', 'otherFindings', 'homeTreatments', 'admissionTherapy', 'surgeryDescription', 'surgeryCondition', 'medicalCourse', 'dischargeConditions', 'homeTherapy', 'followUp', 'dischargeDate', 'dischargeNotes', 'deceasedDateTime', 'deceasedNotes'];
         allStaticIds.forEach(id => setData(id));
         
         document.querySelectorAll('.conditional-select').forEach(el => el.dispatchEvent(new Event('change')));
@@ -1124,6 +1149,7 @@
             age: document.getElementById('age').value.trim(),
             weight: document.getElementById('weight').value,
             microchip: document.getElementById('microchip').value.trim(),
+            requiresAttention: document.getElementById('requiresAttention').checked,
             dischargeDate: document.getElementById('dischargeDate').value,
             dischargeNotes: document.getElementById('dischargeNotes').value.trim(),
             deceasedDateTime: document.getElementById('deceasedDateTime').value,
@@ -1244,6 +1270,56 @@
     deceasedBtn.addEventListener('click', () => {
         deceasedSection.classList.toggle('hidden');
         dischargeSection.classList.add('hidden'); // Hide the other section
+    });
+
+    // --- ATTENTION MODAL LOGIC ---
+    async function showUrgentPatients() {
+        attentionListDiv.innerHTML = '<p class="text-gray-500">Caricamento pazienti...</p>';
+        attentionModal.classList.remove('hidden');
+
+        try {
+            const snapshot = await patientsCollection.where('requiresAttention', '==', true).get();
+            const urgentPatients = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+            attentionListDiv.innerHTML = '';
+            if (urgentPatients.length === 0) {
+                attentionListDiv.innerHTML = '<p class="text-gray-500">Nessun paziente richiede attenzione immediata.</p>';
+                return;
+            }
+
+            urgentPatients.forEach(patient => {
+                const patientCard = document.createElement('div');
+                patientCard.className = 'p-4 border rounded-lg bg-yellow-50 flex justify-between items-center';
+                patientCard.innerHTML = `
+                    <div>
+                        <p class="font-bold text-lg text-yellow-800">${patient.patientName || 'N/D'}</p>
+                        <p class="text-gray-700">Proprietario: ${patient.ownerLastname || 'N/D'}</p>
+                    </div>
+                    <button data-id="${patient.id}" class="open-attention-patient-btn px-4 py-2 bg-yellow-500 text-white font-semibold rounded-lg hover:bg-yellow-600 transition">Apri Scheda</button>
+                `;
+                attentionListDiv.appendChild(patientCard);
+            });
+        } catch (error) {
+            console.error("Errore nel caricamento dei pazienti urgenti:", error);
+            attentionListDiv.innerHTML = '<p class="text-red-500">Errore nel caricamento dei dati.</p>';
+        }
+    }
+
+    showAttentionBtn.addEventListener('click', showUrgentPatients);
+    closeAttentionModalBtn.addEventListener('click', () => {
+        attentionModal.classList.add('hidden');
+    });
+    attentionModal.addEventListener('click', (e) => {
+        if (e.target === attentionModal) {
+            attentionModal.classList.add('hidden');
+        }
+    });
+    attentionListDiv.addEventListener('click', (e) => {
+        if (e.target.classList.contains('open-attention-patient-btn')) {
+            const patientId = e.target.dataset.id;
+            loadPatientData(patientId);
+            attentionModal.classList.add('hidden');
+        }
     });
 
 
