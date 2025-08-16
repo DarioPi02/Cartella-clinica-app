@@ -367,7 +367,13 @@
                                 <div class="flex items-center"><input id="executed-exam-rx" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="executed-exam-rx" class="ml-2">Rx</label></div>
                                 <div class="flex items-center"><input id="executed-exam-ultrasound" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="executed-exam-ultrasound" class="ml-2">Ecografia specialistica</label></div>
                                 <div class="flex items-center"><input id="executed-exam-ecofast" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="executed-exam-ecofast" class="ml-2">Ecofast</label></div>
-                                <div class="flex items-center"><input id="executed-exam-emogas" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="executed-exam-emogas" class="ml-2">Emogas</label></div>
+                                <div>
+                                    <div class="flex items-center"><input id="executed-exam-emogas" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="executed-exam-emogas" class="ml-2">Emogas</label></div>
+                                    <div class="ml-6 mt-1">
+                                        <label for="executed-exam-emogas-count" class="text-sm">Quanti eseguiti?</label>
+                                        <input type="number" id="executed-exam-emogas-count" class="w-full mt-1 px-2 py-1 bg-gray-50 border rounded-md printable-data">
+                                    </div>
+                                </div>
                                 <div class="flex items-center"><input id="executed-exam-surgery" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="executed-exam-surgery" class="ml-2">Chirurgia</label></div>
                                 <div class="flex items-center"><input id="executed-exam-lab" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="executed-exam-lab" class="ml-2">Laboratorio</label></div>
                                 <div class="pt-2">
@@ -1079,7 +1085,7 @@
         }
         if (data.examsExecuted) {
             Object.keys(data.examsExecuted).forEach(key => {
-                const el = document.getElementById(`executed-exam-${key.replace('_other', '-other').replace('_text', '-text')}`);
+                const el = document.getElementById(`executed-exam-${key.replace('_other', '-other').replace('_text', '-text').replace('_count', '-count')}`);
                 if (el) el.type === 'checkbox' ? el.checked = data.examsExecuted[key] : el.value = data.examsExecuted[key];
             });
         }
@@ -1202,6 +1208,7 @@
                 ultrasound: document.getElementById('executed-exam-ultrasound').checked,
                 ecofast: document.getElementById('executed-exam-ecofast').checked,
                 emogas: document.getElementById('executed-exam-emogas').checked,
+                emogas_count: document.getElementById('executed-exam-emogas-count').value,
                 surgery: document.getElementById('executed-exam-surgery').checked,
                 lab: document.getElementById('executed-exam-lab').checked,
                 other_text: document.getElementById('executed-exam-other-text').value.trim(),
