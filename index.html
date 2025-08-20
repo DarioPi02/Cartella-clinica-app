@@ -412,7 +412,10 @@
                                 <button type="button" id="add-drug-btn" class="no-print px-3 py-1 text-sm bg-green-500 text-white rounded-lg hover:bg-green-600 transition">+ Aggiungi Farmaco</button>
                             </div>
                             <div id="dynamic-drug-inputs" class="dynamic-input-container printable-data">
-                                <input type="text" placeholder="Nome farmaco..." class="w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data">
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <input type="text" placeholder="Nome farmaco..." class="w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data">
+                                    <button type="button" class="remove-drug-btn text-red-500 hover:text-red-700 text-2xl font-bold no-print">&times;</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -422,7 +425,6 @@
                 <div class="form-section">
                     <h2 class="form-section-title">Chirurgia</h2>
                     <div class="space-y-6 form-section-content">
-                        <div><label class="block text-sm font-medium">Giorno</label><input type="date" data-field="day" class="w-full mt-1 p-2 border rounded-md printable-data"></div>
                         <div><label for="surgeryDescription" class="block text-sm font-medium text-gray-700 mb-1">Descrizione intervento chirurgico</label><textarea id="surgeryDescription" rows="4" class="w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data"></textarea></div>
                         <div><label for="surgeryCondition" class="block text-sm font-medium text-gray-700 mb-1">Condizione da trattare</label><textarea id="surgeryCondition" rows="4" class="w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data"></textarea></div>
                     </div>
@@ -499,7 +501,6 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div><label class="block text-sm font-medium">Giorno</label><input type="date" data-field="day" class="w-full mt-1 p-2 border rounded-md printable-data"></div>
                 <div><label class="block text-sm font-medium">Ora</label><input type="time" data-field="time" class="w-full mt-1 p-2 border rounded-md printable-data"></div>
-                <div><label class="block text-sm font-medium">Operatore</label><input type="text" data-field="operator" class="w-full mt-1 p-2 border rounded-md printable-data"></div>
                 <div><label class="block text-sm font-medium">Temperatura</label><input type="number" step="0.1" data-field="temp" class="w-full mt-1 p-2 border rounded-md printable-data"></div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -1025,11 +1026,19 @@
                 return;
             }
             patientsArray.forEach(patient => {
+                let statusBadge = '';
+                if (patient.deceasedDateTime) {
+                    statusBadge = '<span class="ml-2 px-2 py-1 text-xs font-semibold text-white bg-red-500 rounded-full">Deceduto</span>';
+                } else if (patient.dischargeDate) {
+                    statusBadge = '<span class="ml-2 px-2 py-1 text-xs font-semibold text-white bg-blue-500 rounded-full">Dimesso</span>';
+                }
+
                 const patientCard = document.createElement('div');
                 patientCard.className = 'p-4 border rounded-lg bg-gray-50 flex flex-col sm:flex-row justify-between sm:items-center';
                 patientCard.innerHTML = `
                     <div>
-                        <p class="font-bold text-lg text-blue-700">${patient.patientName || 'N/D'} <span class="text-sm font-normal text-gray-500">(${patient.species || 'N/D'})</span></p>
+                        <p class="font-bold text-lg text-blue-700">${patient.patientName || 'N/D'} ${statusBadge}</p>
+                        <p class="text-sm text-gray-600">Specie: ${patient.species || 'N/D'}</p>
                         <p class="text-gray-600">Proprietario: ${patient.ownerLastname || 'N/D'}</p>
                         <p class="text-xs text-gray-400 mt-1">Ultima modifica: ${new Date(patient.updatedAt.toDate()).toLocaleString('it-IT')}</p>
                     </div>
@@ -1143,12 +1152,20 @@
         // Popola Farmaci
         drugsContainer.innerHTML = '';
         (data.drugsToAdminister || ['']).forEach(drug => {
+            const drugWrapper = document.createElement('div');
+            drugWrapper.className = 'flex items-center space-x-2 mb-2';
             const drugInput = document.createElement('input');
             drugInput.type = 'text';
             drugInput.placeholder = 'Nome farmaco...';
             drugInput.className = 'w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data';
             drugInput.value = drug;
-            drugsContainer.appendChild(drugInput);
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'remove-drug-btn text-red-500 hover:text-red-700 text-2xl font-bold no-print';
+            removeBtn.innerHTML = '&times;';
+            drugWrapper.appendChild(drugInput);
+            drugWrapper.appendChild(removeBtn);
+            drugsContainer.appendChild(drugWrapper);
         });
 
         // Popola Messaggio Importante e sezioni raggruppate
