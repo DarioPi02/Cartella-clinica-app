@@ -32,7 +32,12 @@
     .form-section-title { font-size: 1.5rem; font-weight: 700; color: #2563eb; margin-bottom: 0.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e5e7eb; }
     .form-section-subtitle { color: #6b7280; margin-bottom: 1.5rem; }
     .dynamic-input-container input { margin-bottom: 0.5rem; }
-    .group-header { cursor: pointer; user-select: none; }
+    .group-header, .section-header { cursor: pointer; user-select: none; }
+    .section-header .form-section-title {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
 
     /* Stili per la Stampa */
     @media print {
@@ -97,8 +102,10 @@
         }
         .form-section-subtitle { display: none !important; }
 
-        .group-content { display: block !important; }
-        .group-header .toggle-icon { display: none !important; }
+        .group-content, .form-section-content { display: block !important; border: none !important; padding: 0 !important; }
+        .group-header .toggle-icon, .section-header .section-toggle-icon { display: none !important; }
+        .section-header { background: none !important; padding: 0 !important; border: none !important; }
+
 
         /* REGOLE PER OTTIMIZZAZIONE STAMPA */
         .print-hide {
@@ -180,9 +187,12 @@
 
             <form id="patient-form">
                 <div class="form-section">
-                    <h2 class="form-section-title">Anagrafica Paziente</h2>
-                    <p class="form-section-subtitle">Dati identificativi del paziente e del proprietario.</p>
-                    <div class="space-y-6 form-section-content">
+                    <div class="section-header flex justify-between items-center p-2 bg-gray-50 rounded-t-lg border">
+                        <h2 class="form-section-title">Anagrafica Paziente</h2>
+                        <span class="section-toggle-icon text-2xl text-gray-500 no-print">▲</span>
+                    </div>
+                    <div class="form-section-content space-y-6 p-6 border border-t-0 rounded-b-lg">
+                        <p class="form-section-subtitle">Dati identificativi del paziente e del proprietario.</p>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div><label for="entryDate" class="block text-sm font-medium text-gray-700 mb-1">Data di Ingresso</label><input type="date" id="entryDate" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg printable-data"></div>
                             <div><label for="ownerLastname" class="block text-sm font-medium text-gray-700 mb-1">Cognome Proprietario <span class="text-red-500">*</span></label><input type="text" id="ownerLastname" placeholder="Es. Rossi" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg printable-data" required></div>
@@ -246,8 +256,12 @@
 
                 <hr class="my-8 border-t-2 border-dashed border-gray-300">
                 <div class="form-section">
-                    <h2 class="form-section-title">Storico Paziente e Anamnesi</h2>
-                    <div class="space-y-6 form-section-content">
+                    <div class="section-header flex justify-between items-center cursor-pointer p-2 bg-gray-50 rounded-t-lg border">
+                        <h2 class="form-section-title">Storico Paziente e Anamnesi</h2>
+                        <span class="section-toggle-icon text-2xl text-gray-500 no-print">▼</span>
+                    </div>
+                    <div class="form-section-content space-y-6 p-6 border border-t-0 rounded-b-lg hidden">
+                        <p class="form-section-subtitle">Dati storici e motivo della visita.</p>
                         <div><label for="reasonForHospitalization" class="block text-sm font-medium text-gray-700 mb-1">Motivo di Ricovero</label><textarea id="reasonForHospitalization" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg printable-data"></textarea></div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
@@ -267,8 +281,12 @@
 
                 <hr class="my-8 border-t-2 border-dashed border-gray-300">
                 <div class="form-section">
-                    <h2 class="form-section-title">Esame Clinico Obbiettivo d'Ingresso</h2>
-                    <div class="space-y-6 form-section-content">
+                    <div class="section-header flex justify-between items-center cursor-pointer p-2 bg-gray-50 rounded-t-lg border">
+                        <h2 class="form-section-title">Esame Clinico Obbiettivo d'Ingresso</h2>
+                        <span class="section-toggle-icon text-2xl text-gray-500 no-print">▼</span>
+                    </div>
+                    <div class="form-section-content space-y-6 p-6 border border-t-0 rounded-b-lg hidden">
+                        <p class="form-section-subtitle">Valutazione clinica al momento del ricovero.</p>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label for="mentalState" class="block text-sm font-medium text-gray-700 mb-1">Stato mentale/Reattività</label>
@@ -309,8 +327,12 @@
 
                 <hr class="my-8 border-t-2 border-dashed border-gray-300">
                 <div class="form-section">
-                    <h2 class="form-section-title">Trattamento in Atto (a casa) e Terapie all'Ingresso</h2>
-                    <div class="space-y-6 form-section-content">
+                    <div class="section-header flex justify-between items-center cursor-pointer p-2 bg-gray-50 rounded-t-lg border">
+                        <h2 class="form-section-title">Trattamento in Atto (a casa) e Terapie all'Ingresso</h2>
+                        <span class="section-toggle-icon text-2xl text-gray-500 no-print">▼</span>
+                    </div>
+                    <div class="form-section-content space-y-6 p-6 border border-t-0 rounded-b-lg hidden">
+                        <p class="form-section-subtitle">Trattamenti a casa e terapie segnate al ricovero (non necessariamente da eseguire).</p>
                         <div><label for="homeTreatments" class="block text-sm font-medium text-gray-700 mb-1">Fluidi o farmaci A CASA (dosaggio, via e frequenza)</label><textarea id="homeTreatments" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg printable-data"></textarea></div>
                         <div><label for="admissionTherapy" class="block text-sm font-medium text-gray-700 mb-1">Terapia medica ALL'ATTO DEL RICOVERO</label><textarea id="admissionTherapy" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg printable-data"></textarea></div>
 
@@ -387,8 +409,12 @@
 
                 <hr class="my-8 border-t-2 border-dashed border-gray-300">
                 <div class="form-section">
-                    <h2 class="form-section-title">Terapia Effettiva da Eseguire (Compilazione Medica)</h2>
-                    <div class="space-y-6 form-section-content">
+                    <div class="section-header flex justify-between items-center cursor-pointer p-2 bg-gray-50 rounded-t-lg border">
+                        <h2 class="form-section-title">Terapia Effettiva da Eseguire (Compilazione Medica)</h2>
+                        <span class="section-toggle-icon text-2xl text-gray-500 no-print">▼</span>
+                    </div>
+                    <div class="form-section-content space-y-6 p-6 border border-t-0 rounded-b-lg hidden">
+                        <p class="form-section-subtitle">Terapie impostate per il ricovero.</p>
                         <div class="flex justify-between items-center mb-1">
                             <label class="block text-sm font-medium text-gray-700">Terapia con Flebo</label>
                             <button type="button" id="add-infusion-btn" class="no-print px-3 py-1 text-sm bg-green-500 text-white rounded-lg hover:bg-green-600 transition">+ Aggiungi Flebo</button>
@@ -423,8 +449,12 @@
 
                 <hr class="my-8 border-t-2 border-dashed border-gray-300">
                 <div class="form-section">
-                    <h2 class="form-section-title">Chirurgia</h2>
-                    <div class="space-y-6 form-section-content">
+                    <div class="section-header flex justify-between items-center cursor-pointer p-2 bg-gray-50 rounded-t-lg border">
+                        <h2 class="form-section-title">Chirurgia</h2>
+                        <span class="section-toggle-icon text-2xl text-gray-500 no-print">▼</span>
+                    </div>
+                    <div class="form-section-content space-y-6 p-6 border border-t-0 rounded-b-lg hidden">
+                        <p class="form-section-subtitle">Dettagli sull'intervento chirurgico.</p>
                         <div><label for="surgeryDescription" class="block text-sm font-medium text-gray-700 mb-1">Descrizione intervento chirurgico</label><textarea id="surgeryDescription" rows="4" class="w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data"></textarea></div>
                         <div><label for="surgeryCondition" class="block text-sm font-medium text-gray-700 mb-1">Condizione da trattare</label><textarea id="surgeryCondition" rows="4" class="w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data"></textarea></div>
                     </div>
@@ -438,17 +468,18 @@
 
                 <hr class="my-8 border-t-2 border-dashed border-gray-300">
                 <div id="medical-evaluation-section" class="form-section">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h2 class="form-section-title">Valutazione Medica</h2>
-                            <p class="form-section-subtitle">Valutazione, decorso e dimissioni (Compilazione Medica).</p>
-                        </div>
-                        <div class="flex space-x-2 no-print">
-                            <button type="button" id="add-important-message-btn" class="px-4 py-2 border border-yellow-500 text-yellow-600 font-semibold rounded-lg hover:bg-yellow-50 transition duration-200 whitespace-nowrap">+ Messaggio</button>
-                            <button type="button" id="print-evaluation-button" class="px-4 py-2 border border-blue-500 text-blue-500 font-semibold rounded-lg hover:bg-blue-50 transition duration-200 whitespace-nowrap">Stampa Valutazione</button>
-                        </div>
+                    <div class="section-header flex justify-between items-center cursor-pointer p-2 bg-gray-50 rounded-t-lg border">
+                        <h2 class="form-section-title">Valutazione Medica</h2>
+                        <span class="section-toggle-icon text-2xl text-gray-500 no-print">▼</span>
                     </div>
-                    <div class="space-y-6 form-section-content">
+                    <div class="form-section-content space-y-6 p-6 border border-t-0 rounded-b-lg hidden">
+                        <div class="flex justify-between items-start">
+                            <p class="form-section-subtitle">Valutazione, decorso e dimissioni (Compilazione Medica).</p>
+                            <div class="flex space-x-2 no-print">
+                                <button type="button" id="add-important-message-btn" class="px-4 py-2 border border-yellow-500 text-yellow-600 font-semibold rounded-lg hover:bg-yellow-50 transition duration-200 whitespace-nowrap">+ Messaggio</button>
+                                <button type="button" id="print-evaluation-button" class="px-4 py-2 border border-blue-500 text-blue-500 font-semibold rounded-lg hover:bg-blue-50 transition duration-200 whitespace-nowrap">Stampa Valutazione</button>
+                            </div>
+                        </div>
                         <div><label for="medicalCourse" class="block text-sm font-medium text-gray-700 mb-1">Valutazione e Decorso Medico</label><textarea id="medicalCourse" rows="8" class="w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data"></textarea></div>
                         <div><label for="dischargeConditions" class="block text-sm font-medium text-gray-700 mb-1">Condizioni all'Atto delle Dimissioni (con eventuale diagnosi)</label><textarea id="dischargeConditions" rows="8" class="w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data"></textarea></div>
                         <div><label for="homeTherapy" class="block text-sm font-medium text-gray-700 mb-1">Terapie da Continuare a Casa</label><textarea id="homeTherapy" rows="8" class="w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data"></textarea></div>
@@ -459,22 +490,34 @@
 
                 <hr class="my-8 border-t-2 border-dashed border-gray-300">
                 <div class="form-section">
-                    <div class="flex justify-between items-center mb-4">
+                    <div class="section-header flex justify-between items-center cursor-pointer p-2 bg-gray-50 rounded-t-lg border">
                         <h2 class="form-section-title">Monitoraggio Parametri Vitali</h2>
-                        <button type="button" id="add-monitoring-btn" class="no-print px-4 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition">Aggiungi Monitoraggio</button>
+                        <span class="section-toggle-icon text-2xl text-gray-500 no-print">▼</span>
                     </div>
-                    <div id="monitoring-entries-container" class="space-y-4 form-section-content printable-data">
+                    <div class="form-section-content p-6 border border-t-0 rounded-b-lg hidden">
+                        <div class="flex justify-between items-center mb-4">
+                            <p class="form-section-subtitle">Registro dei parametri vitali del paziente.</p>
+                            <button type="button" id="add-monitoring-btn" class="no-print px-4 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition">Aggiungi Monitoraggio</button>
                         </div>
+                        <div id="monitoring-entries-container" class="space-y-4 printable-data">
+                        </div>
+                    </div>
                 </div>
 
                 <hr class="my-8 border-t-2 border-dashed border-gray-300">
                 <div class="form-section">
-                    <div class="flex justify-between items-center mb-4">
+                     <div class="section-header flex justify-between items-center cursor-pointer p-2 bg-gray-50 rounded-t-lg border">
                         <h2 class="form-section-title">Terapia (Somministrazioni)</h2>
-                        <button type="button" id="add-therapy-log-btn" class="no-print px-4 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition">Aggiungi Somministrazione</button>
+                        <span class="section-toggle-icon text-2xl text-gray-500 no-print">▼</span>
                     </div>
-                    <div id="therapy-log-container" class="space-y-4 form-section-content printable-data">
+                    <div class="form-section-content p-6 border border-t-0 rounded-b-lg hidden">
+                        <div class="flex justify-between items-center mb-4">
+                            <p class="form-section-subtitle">Registro delle somministrazioni di farmaci e fluidi.</p>
+                            <button type="button" id="add-therapy-log-btn" class="no-print px-4 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition">Aggiungi Somministrazione</button>
                         </div>
+                        <div id="therapy-log-container" class="space-y-4 printable-data">
+                        </div>
+                    </div>
                 </div>
             </form>
 
@@ -720,10 +763,10 @@
 
     // --- GESTIONE GRUPPI A SCOMPARSA (ACCORDION) ---
     document.body.addEventListener('click', (e) => {
-        const header = e.target.closest('.group-header');
+        const header = e.target.closest('.group-header, .section-header');
         if (header) {
             const content = header.nextElementSibling;
-            const icon = header.querySelector('.toggle-icon');
+            const icon = header.querySelector('.toggle-icon, .section-toggle-icon');
             content.classList.toggle('hidden');
             if (icon) {
                 icon.textContent = content.classList.contains('hidden') ? '▼' : '▲';
@@ -1384,6 +1427,3 @@
 </script>
 </body>
 </html>
-
-
-
