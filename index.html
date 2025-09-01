@@ -384,7 +384,7 @@
                                     <div class="ml-6 mt-1"><label for="executed-exam-biochem-other" class="text-sm">Quale?</label><input type="text" id="executed-exam-biochem-other" class="w-full mt-1 px-2 py-1 bg-gray-50 border rounded-md printable-data"></div>
                                 </div>
                                 <div class="flex items-center"><input id="executed-exam-snap" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="executed-exam-snap" class="ml-2">Snap Test</label></div>
-                                    <div class="ml-6 mt-1"><label for="exam-snap-other" class="text-sm">Quale snap test?</label><input type="text" id="exam-snap-other" class="w-full mt-1 px-2 py-1 bg-gray-50 border rounded-md printable-data"></div>
+                                    <div class="ml-6 mt-1"><label for="executed-exam-snap-other" class="text-sm">Quale snap test?</label><input type="text" id="executed-exam-snap-other" class="w-full mt-1 px-2 py-1 bg-gray-50 border rounded-md printable-data"></div>
 
                                 <div class="flex items-center"><input id="executed-exam-urinalysis" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="executed-exam-urinalysis" class="ml-2">Esame Urine (chimico e fisico)</label></div>
                                 <div class="flex items-center"><input id="executed-exam-pucu" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="executed-exam-pucu" class="ml-2">Pu/Cu</label></div>
@@ -1139,7 +1139,8 @@
         };
 
         // Popola tutti i campi statici
-        const allStaticIds = ['entryDate', 'ownerLastname', 'phone', 'altContact', 'patientName', 'species', 'sex', 'age', 'weight', 'microchip', 'requiresAttention', 'reasonForHospitalization', 'vaccinations', 'vaccinationsOther', 'parasiteTreatments', 'parasiteTreatmentsOther', 'previousPathologies', 'mentalState', 'mentalStateOther', 'gait', 'gaitOther', 'temperature', 'capillaryRefillTime', 'mucousMembranes', 'hydration', 'lymphNodes', 'lymphNodesOther', 'abdominalPalpation', 'cardiacAuscultation', 'pulmonaryAuscultation', 'cns', 'otherFindings', 'homeTreatments', 'admissionTherapy', 'surgeryDescription', 'surgeryCondition', 'medicalCourse', 'dischargeConditions', 'homeTherapy', 'followUp', 'dischargeDate', 'dischargeNotes', 'deceasedDateTime', 'deceasedNotes'];
+        const allStaticIds = ['entryDate', 'ownerLastname', 'phone', 'altContact', 'patientName', 'species', 'sex', 'age', 'weight', 'microchip', 'requiresAttention', 'reasonForHospitalization', 'vaccinations', 'vaccinationsOther', 'parasiteTreatments', 'parasiteTreatmentsOther', 'previousPathologies', 'mentalState', 'mentalStateOther', 'gait', 'gaitOther', 'temperature', 'capillaryRefillTime', 'mucousMembranes', 'hydration', 'lymphNodes', 'lymphNodesOther', 'abdominalPalpation', 'cardiacAuscultation', 'pulmonaryAuscultation', 'cns', 'otherFindings', 'homeTreatments', 'admissionTherapy', 'surgeryDescription', 'surgeryCondition', 'medicalCourse', 'dischargeConditions', 'homeTherapy', 'followUp', 'dischargeDate', 'dischargeNotes', 'deceasedDateTime',    'exam-snap-other',
+    'executed-exam-snap-other', 'deceasedNotes'];
         allStaticIds.forEach(id => setData(id));
         
         document.querySelectorAll('.conditional-select').forEach(el => el.dispatchEvent(new Event('change')));
@@ -1170,12 +1171,12 @@
                 examsToPerformList.appendChild(clone);
             });
         }
-        if (data.examsExecuted) {
-            Object.keys(data.examsExecuted).forEach(key => {
-                const el = document.getElementById(`executed-exam-${key.replace('_other', '-other').replace('_text', '-text').replace('_count', '-count')}`);
-                if (el) el.type === 'checkbox' ? el.checked = data.examsExecuted[key] : el.value = data.examsExecuted[key];
-            });
-        }
+if (data.examsExecuted) {
+    Object.keys(data.examsExecuted).forEach(key => {
+        const el = document.getElementById(`executed-exam-${key.replace('_other', '-other')}`);
+        if (el) el.type === 'checkbox' ? el.checked = data.examsExecuted[key] : el.value = data.examsExecuted[key];
+    });
+}
 
         // Popola Flebo
         const populateSimpleDynamic = (container, templateId, entries) => {
