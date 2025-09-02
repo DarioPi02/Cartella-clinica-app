@@ -1172,9 +1172,33 @@
             });
         }
 if (data.examsExecuted) {
-    Object.keys(data.examsExecuted).forEach(key => {
-        const el = document.getElementById(`executed-exam-${key.replace('_other', '-other')}`);
-        if (el) el.type === 'checkbox' ? el.checked = data.examsExecuted[key] : el.value = data.examsExecuted[key];
+    // Campi checkbox
+    [
+        'cbc',
+        'biochem',
+        'snap',
+        'urinalysis',
+        'pucu',
+        'rx',
+        'ultrasound',
+        'ecofast',
+        'emogas',
+        'surgery',
+        'lab'
+    ].forEach(key => {
+        const el = document.getElementById(`executed-exam-${key}`);
+        if (el) el.checked = !!data.examsExecuted[key];
+    });
+    // Campi testo/numero
+    [
+        { id: 'executed-exam-biochem-other', key: 'biochem_other' },
+        { id: 'executed-exam-snap-other', key: 'snap_other' },
+        { id: 'exam-rx-other', key: 'rx_other' },
+        { id: 'executed-exam-emogas-count', key: 'emogas_count' },
+        { id: 'executed-exam-other-text', key: 'other_text' }
+    ].forEach(field => {
+        const el = document.getElementById(field.id);
+        if (el && field.key in data.examsExecuted) el.value = data.examsExecuted[field.key] || '';
     });
 }
 
