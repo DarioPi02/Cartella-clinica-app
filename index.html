@@ -389,7 +389,7 @@
                                 <div class="flex items-center"><input id="executed-exam-urinalysis" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="executed-exam-urinalysis" class="ml-2">Esame Urine (chimico e fisico)</label></div>
                                 <div class="flex items-center"><input id="executed-exam-pucu" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="executed-exam-pucu" class="ml-2">Pu/Cu</label></div>
                                 <div class="flex items-center"><input id="executed-exam-rx" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="executed-exam-rx" class="ml-2">Rx</label></div>
-                                <div class="ml-6 mt-1"><label for="exam-rx-other" class="text-sm">Quante?</label><input type="number" id="exam-rx-other" class="w-full mt-1 px-2 py-1 bg-gray-50 border rounded-md printable-data"></div>
+<div class="ml-6 mt-1"><label for="executed-exam-rx-other" class="text-sm">Quante?</label><input type="number" id="executed-exam-rx-other" class="w-full mt-1 px-2 py-1 bg-gray-50 border rounded-md printable-data"></div>
 
                                 <div class="flex items-center"><input id="executed-exam-ultrasound" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="executed-exam-ultrasound" class="ml-2">Ecografia specialistica</label></div>
                                 <div class="flex items-center"><input id="executed-exam-ecofast" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="executed-exam-ecofast" class="ml-2">Ecofast</label></div>
@@ -1194,6 +1194,7 @@ if (data.examsExecuted) {
         { id: 'executed-exam-biochem-other', key: 'biochem_other' },
         { id: 'executed-exam-snap-other', key: 'snap_other' },
         { id: 'exam-rx-other', key: 'rx_other' },
+        { id: 'executed-exam-rx-other', key: 'rx_other' }
         { id: 'executed-exam-emogas-count', key: 'emogas_count' },
         { id: 'executed-exam-other-text', key: 'other_text' }
     ].forEach(field => {
