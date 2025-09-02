@@ -1191,12 +1191,11 @@ if (data.examsExecuted) {
     });
     // Campi testo/numero
     [
-        { id: 'executed-exam-biochem-other', key: 'biochem_other' },
-        { id: 'executed-exam-snap-other', key: 'snap_other' },
-        { id: 'exam-rx-other', key: 'rx_other' },
-        { id: 'executed-exam-rx-other', key: 'rx_other' },
-        { id: 'executed-exam-emogas-count', key: 'emogas_count' },
-        { id: 'executed-exam-other-text', key: 'other_text' }
+    { id: 'executed-exam-biochem-other', key: 'biochem_other' },
+    { id: 'executed-exam-snap-other', key: 'snap_other' },
+    { id: 'executed-exam-rx-other', key: 'rx_other' }, // <-- CORRETTO!
+    { id: 'executed-exam-emogas-count', key: 'emogas_count' },
+    { id: 'executed-exam-other-text', key: 'other_text' }
     ].forEach(field => {
         const el = document.getElementById(field.id);
         if (el && field.key in data.examsExecuted) {
@@ -1323,26 +1322,24 @@ if (data.examsExecuted) {
                 lab: document.getElementById('exam-lab').checked, lab_other: document.getElementById('exam-lab-other').value.trim(),
                 other: document.getElementById('exam-other').checked, other_other: document.getElementById('exam-other-other').value.trim(),
             },
-            examsExecuted: {
-                cbc: document.getElementById('executed-exam-cbc').checked,
-                biochem: document.getElementById('executed-exam-biochem').checked,
-                biochem_other: document.getElementById('executed-exam-biochem-other').value.trim(),
-                snap: document.getElementById('executed-exam-snap').checked,
-                    snap_other: document.getElementById('executed-exam-snap-other').value.trim(), // <--- AGGIUNGI QUI!
-
-                urinalysis: document.getElementById('executed-exam-urinalysis').checked,
-                pucu: document.getElementById('executed-exam-pucu').checked,
-                rx: document.getElementById('executed-exam-rx').checked,
-                                rx_other: document.getElementById('exam-rx-other').value,
-
-                ultrasound: document.getElementById('executed-exam-ultrasound').checked,
-                ecofast: document.getElementById('executed-exam-ecofast').checked,
-                emogas: document.getElementById('executed-exam-emogas').checked,
-                emogas_count: document.getElementById('executed-exam-emogas-count').value,
-                surgery: document.getElementById('executed-exam-surgery').checked,
-                lab: document.getElementById('executed-exam-lab').checked,
-                other_text: document.getElementById('executed-exam-other-text').value.trim(),
-            },
+examsExecuted: {
+    cbc: document.getElementById('executed-exam-cbc').checked,
+    biochem: document.getElementById('executed-exam-biochem').checked,
+    biochem_other: document.getElementById('executed-exam-biochem-other').value.trim(),
+    snap: document.getElementById('executed-exam-snap').checked,
+    snap_other: document.getElementById('executed-exam-snap-other').value.trim(),
+    urinalysis: document.getElementById('executed-exam-urinalysis').checked,
+    pucu: document.getElementById('executed-exam-pucu').checked,
+    rx: document.getElementById('executed-exam-rx').checked,
+    rx_other: document.getElementById('executed-exam-rx-other').value, // <-- CORRETTO!
+    ultrasound: document.getElementById('executed-exam-ultrasound').checked,
+    ecofast: document.getElementById('executed-exam-ecofast').checked,
+    emogas: document.getElementById('executed-exam-emogas').checked,
+    emogas_count: document.getElementById('executed-exam-emogas-count').value,
+    surgery: document.getElementById('executed-exam-surgery').checked,
+    lab: document.getElementById('executed-exam-lab').checked,
+    other_text: document.getElementById('executed-exam-other-text').value.trim(),
+},
             medicalCourse: document.getElementById('medicalCourse').value.trim(),
             dischargeConditions: document.getElementById('dischargeConditions').value.trim(),
             homeTherapy: document.getElementById('homeTherapy').value.trim(),
