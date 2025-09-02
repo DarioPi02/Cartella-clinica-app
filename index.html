@@ -1198,7 +1198,11 @@ if (data.examsExecuted) {
         { id: 'executed-exam-other-text', key: 'other_text' }
     ].forEach(field => {
         const el = document.getElementById(field.id);
-        if (el && field.key in data.examsExecuted) el.value = data.examsExecuted[field.key] || '';
+        if (el && field.key in data.examsExecuted) {
+            el.value = (data.examsExecuted[field.key] !== undefined && data.examsExecuted[field.key] !== null)
+                ? data.examsExecuted[field.key]
+                : '';
+        }
     });
 }
 
