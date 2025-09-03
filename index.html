@@ -144,7 +144,14 @@
         body.print-evaluation-only #medical-evaluation-section > .flex.justify-between.items-start {
             display: none !important;
         }
-    }
+
+
+          body.print-evaluation-only #important-message-section,
+  body.print-evaluation-only #important-message-container,
+  body.print-evaluation-only .p-4.border.rounded-lg.bg-yellow-100 {
+    display: none !important;
+  }
+}
 </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -465,6 +472,7 @@
                 </div>
 
 
+                <hr class="my-8 border-t-2 border-dashed border-gray-300">
 
                                 <!-- Sezione Avviso Importante -->
 <div id="important-message-section" class="form-section">
@@ -1468,6 +1476,7 @@ examsExecuted: {
 </script>
 </body>
 </html>
+
 
 
 
