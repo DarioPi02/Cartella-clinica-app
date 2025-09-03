@@ -292,7 +292,6 @@
                         <div><label for="previousPathologies" class="block text-sm font-medium text-gray-700 mb-1">Patologie Pregresse</label><textarea id="previousPathologies" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg printable-data"></textarea></div>
                     </div>
                 </div>
-
                 <hr class="my-8 border-t-2 border-dashed border-gray-300">
                 <div class="form-section">
                     <div class="section-header flex justify-between items-center cursor-pointer p-2 bg-gray-50 rounded-t-lg border">
@@ -349,7 +348,6 @@
                         <p class="form-section-subtitle">Trattamenti a casa e terapie segnate al ricovero (non necessariamente da eseguire).</p>
                         <div><label for="homeTreatments" class="block text-sm font-medium text-gray-700 mb-1">Fluidi o farmaci A CASA (dosaggio, via e frequenza)</label><textarea id="homeTreatments" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg printable-data"></textarea></div>
                         <div><label for="admissionTherapy" class="block text-sm font-medium text-gray-700 mb-1">Terapia medica ALL'ATTO DEL RICOVERO</label><textarea id="admissionTherapy" rows="3" class="w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg printable-data"></textarea></div>
-
                         <div>
                             <div class="flex justify-between items-center mb-2">
                                 <label class="block text-sm font-medium text-gray-700">Esami da Eseguire (mettere una spunta)</label>
@@ -384,7 +382,7 @@
                                 </div>
                                 <div class="flex items-center"><input id="exam-other" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="exam-other" class="ml-2">Altro</label></div>
                                 <div class="ml-6 mt-1"><label for="exam-other-other" class="text-sm">Altro cosa?</label><input type="text" id="exam-other-other" class="w-full mt-1 px-2 py-1 bg-gray-50 border rounded-md printable-data"></div>
-                                </div>
+                            </div>
                         </div>
 
                         <div class="mt-6 pt-6 border-t border-gray-200">
@@ -398,13 +396,11 @@
                                     <div class="ml-6 mt-1"><label for="executed-exam-biochem-other" class="text-sm">Quale?</label><input type="text" id="executed-exam-biochem-other" class="w-full mt-1 px-2 py-1 bg-gray-50 border rounded-md printable-data"></div>
                                 </div>
                                 <div class="flex items-center"><input id="executed-exam-snap" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="executed-exam-snap" class="ml-2">Snap Test</label></div>
-                                    <div class="ml-6 mt-1"><label for="executed-exam-snap-other" class="text-sm">Quale snap test?</label><input type="text" id="executed-exam-snap-other" class="w-full mt-1 px-2 py-1 bg-gray-50 border rounded-md printable-data"></div>
-
+                                <div class="ml-6 mt-1"><label for="executed-exam-snap-other" class="text-sm">Quale snap test?</label><input type="text" id="executed-exam-snap-other" class="w-full mt-1 px-2 py-1 bg-gray-50 border rounded-md printable-data"></div>
                                 <div class="flex items-center"><input id="executed-exam-urinalysis" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="executed-exam-urinalysis" class="ml-2">Esame Urine (chimico e fisico)</label></div>
                                 <div class="flex items-center"><input id="executed-exam-pucu" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="executed-exam-pucu" class="ml-2">Pu/Cu</label></div>
                                 <div class="flex items-center"><input id="executed-exam-rx" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="executed-exam-rx" class="ml-2">Rx</label></div>
-<div class="ml-6 mt-1"><label for="executed-exam-rx-other" class="text-sm">Quante?</label><input type="number" id="executed-exam-rx-other" class="w-full mt-1 px-2 py-1 bg-gray-50 border rounded-md printable-data"></div>
-
+                                <div class="ml-6 mt-1"><label for="executed-exam-rx-other" class="text-sm">Quante?</label><input type="number" id="executed-exam-rx-other" class="w-full mt-1 px-2 py-1 bg-gray-50 border rounded-md printable-data"></div>
                                 <div class="flex items-center"><input id="executed-exam-ultrasound" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="executed-exam-ultrasound" class="ml-2">Ecografia specialistica</label></div>
                                 <div class="flex items-center"><input id="executed-exam-ecofast" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="executed-exam-ecofast" class="ml-2">Ecofast</label></div>
                                 <div>
@@ -424,7 +420,6 @@
                         </div>
                     </div>
                 </div>
-
                 <hr class="my-8 border-t-2 border-dashed border-gray-300">
                 <div class="form-section">
                     <div class="section-header flex justify-between items-center cursor-pointer p-2 bg-gray-50 rounded-t-lg border">
@@ -478,38 +473,34 @@
                     </div>
                 </div>
 
-
                 <hr class="my-8 border-t-2 border-dashed border-gray-300">
-
-                                <!-- Sezione Avviso Importante -->
-<div id="important-message-section" class="form-section">
-  <div class="form-section-content">
-    <button type="button" id="add-important-message-btn" class="px-4 py-2 border border-yellow-500 text-yellow-600 font-semibold rounded-lg hover:bg-yellow-50 transition duration-200 whitespace-nowrap no-print">+ Messaggio</button>
-    <div id="important-message-container"></div>
-  </div>
-</div>
+                <!-- Sezione Avviso Importante -->
+                <div id="important-message-section" class="form-section">
+                  <div class="form-section-content">
+                    <button type="button" id="add-important-message-btn" class="px-4 py-2 border border-yellow-500 text-yellow-600 font-semibold rounded-lg hover:bg-yellow-50 transition duration-200 whitespace-nowrap no-print">+ Messaggio</button>
+                    <div id="important-message-container"></div>
+                  </div>
+                </div>
                 
                 <hr class="my-8 border-t-2 border-dashed border-gray-300">
-               
-<!-- Sezione Valutazione Medica -->
-<div id="medical-evaluation-section" class="form-section">
-  <div class="section-header flex justify-between items-center cursor-pointer p-2 bg-gray-50 rounded-t-lg border">
-    <h2 class="form-section-title">Valutazione Medica</h2>
-    <span class="section-toggle-icon text-2xl text-gray-500 no-print">▼</span>
-  </div>
-  <div class="form-section-content space-y-6 p-6 border border-t-0 rounded-b-lg hidden">
-    <div class="flex justify-between items-start">
-      <p class="form-section-subtitle">Valutazione, decorso e dimissioni (Compilazione Medica).</p>
-      <div class="flex space-x-2 no-print">
-        <button type="button" id="print-evaluation-button" class="px-4 py-2 border border-blue-500 text-blue-500 font-semibold rounded-lg hover:bg-blue-50 transition duration-200 whitespace-nowrap">Stampa Valutazione</button>
-      </div>
-    </div>
-                        <div><label for="medicalCourse" class="block text-sm font-medium text-gray-700 mb-1">Valutazione e Decorso Medico</label><textarea id="medicalCourse" rows="8" class="w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data"></textarea></div>
-                        <div><label for="dischargeConditions" class="block text-sm font-medium text-gray-700 mb-1">Condizioni all'Atto delle Dimissioni (con eventuale diagnosi)</label><textarea id="dischargeConditions" rows="8" class="w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data"></textarea></div>
-                        <div><label for="homeTherapy" class="block text-sm font-medium text-gray-700 mb-1">Terapie da Continuare a Casa</label><textarea id="homeTherapy" rows="8" class="w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data"></textarea></div>
-                        <div><label for="followUp" class="block text-sm font-medium text-gray-700 mb-1">Follow-up</label><textarea id="followUp" rows="3" class="w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data"></textarea></div>
-                        
+                <!-- Sezione Valutazione Medica -->
+                <div id="medical-evaluation-section" class="form-section">
+                  <div class="section-header flex justify-between items-center cursor-pointer p-2 bg-gray-50 rounded-t-lg border">
+                    <h2 class="form-section-title">Valutazione Medica</h2>
+                    <span class="section-toggle-icon text-2xl text-gray-500 no-print">▼</span>
+                  </div>
+                  <div class="form-section-content space-y-6 p-6 border border-t-0 rounded-b-lg hidden">
+                    <div class="flex justify-between items-start">
+                      <p class="form-section-subtitle">Valutazione, decorso e dimissioni (Compilazione Medica).</p>
+                      <div class="flex space-x-2 no-print">
+                        <button type="button" id="print-evaluation-button" class="px-4 py-2 border border-blue-500 text-blue-500 font-semibold rounded-lg hover:bg-blue-50 transition duration-200 whitespace-nowrap">Stampa Valutazione</button>
+                      </div>
                     </div>
+                    <div><label for="medicalCourse" class="block text-sm font-medium text-gray-700 mb-1">Valutazione e Decorso Medico</label><textarea id="medicalCourse" rows="8" class="w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data"></textarea></div>
+                    <div><label for="dischargeConditions" class="block text-sm font-medium text-gray-700 mb-1">Condizioni all'Atto delle Dimissioni (con eventuale diagnosi)</label><textarea id="dischargeConditions" rows="8" class="w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data"></textarea></div>
+                    <div><label for="homeTherapy" class="block text-sm font-medium text-gray-700 mb-1">Terapie da Continuare a Casa</label><textarea id="homeTherapy" rows="8" class="w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data"></textarea></div>
+                    <div><label for="followUp" class="block text-sm font-medium text-gray-700 mb-1">Follow-up</label><textarea id="followUp" rows="3" class="w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data"></textarea></div>
+                  </div>
                 </div>
 
                 <hr class="my-8 border-t-2 border-dashed border-gray-300">
@@ -577,8 +568,7 @@
                 <div><label class="block text-sm font-medium">Pressione Sanguigna</label><input type="text" data-field="bp" class="w-full mt-1 p-2 border rounded-md printable-data"></div>
             </div>
             <div><label class="block text-sm font-medium">Note Aggiuntive</label><textarea data-field="notes" rows="2" class="w-full mt-1 p-2 border rounded-md printable-data"></textarea></div>
-                        <div><label class="block text-sm font-medium">Operatore</label><input type="text" data-field="operator" class="w-full mt-1 p-2 border rounded-md printable-data"></div>
-
+            <div><label class="block text-sm font-medium">Operatore</label><input type="text" data-field="operator" class="w-full mt-1 p-2 border rounded-md printable-data"></div>
             <hr class="my-4">
             <div><label class="block text-sm font-medium">Monitoraggio Chirurgico</label><textarea data-field="surgicalMonitoring" rows="2" class="w-full mt-1 p-2 border rounded-md printable-data"></textarea></div>
             <hr class="my-4">
@@ -606,8 +596,6 @@
 
     <div id="therapy-log-template" class="hidden p-4 border rounded-lg bg-gray-50 relative">
         <button type="button" class="remove-entry-btn absolute top-2 right-2 text-red-500 hover:text-red-700 no-print">&times;</button>
-        
-        <!-- Sezione Farmaci -->
         <h4 class="font-semibold text-md text-gray-700 mb-2">Farmaci</h4>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
             <div><label class="block text-sm font-medium">Data</label><input type="date" data-field="date" class="w-full mt-1 p-2 border rounded-md printable-data"></div>
@@ -620,10 +608,7 @@
             <div class="md:col-span-2"><label class="block text-sm font-medium">Via di Somministrazione</label><input type="text" data-field="administrationRoute" class="w-full mt-1 p-2 border rounded-md printable-data"></div>
         </div>
         <div class="mt-4"><label class="block text-sm font-medium">Note Farmaci</label><textarea data-field="drugNotes" rows="2" class="w-full mt-1 p-2 border rounded-md printable-data"></textarea></div>
-
         <hr class="my-6 border-gray-300">
-
-        <!-- Sezione Fluidoterapia -->
         <h4 class="font-semibold text-md text-gray-700 mb-2">Fluidoterapia</h4>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div><label class="block text-sm font-medium">Tipo di Flebo</label><input type="text" data-field="fluidType" class="w-full mt-1 p-2 border rounded-md printable-data"></div>
@@ -676,7 +661,6 @@
         </div>
     </div>
 
-    <!-- Attention Modal -->
     <div id="attention-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50 hidden no-print">
         <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-2xl text-left relative">
             <button id="close-attention-modal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
@@ -686,6 +670,12 @@
             </div>
         </div>
     </div>
+
+    <script>
+    // ...script JS qui...
+    </script>
+</body>
+                
 
    <script>
     // --- Riferimenti a Firebase Authentication e Firestore ---
@@ -1482,6 +1472,7 @@ examsExecuted: {
 </script>
 </body>
 </html>
+
 
 
 
