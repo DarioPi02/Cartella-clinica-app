@@ -1055,8 +1055,7 @@
     });
     document.getElementById('print-evaluation-button').addEventListener('click', () => {
         document.body.classList.add('print-evaluation-only');
-        document.querySelector('#patient-info-header-print h1').textContent = `Valutazione Medica: ${document.getElementById('patientName').value || 'N/D'} (${document.getElementById('ownerLastname').value || 'N/D'})`;
-        document.querySelector('#patient-info-header-print p').textContent = `Data di Stampa: ${new Date().toLocaleDateString('it-IT')}`;
+document.querySelector('#patient-info-header-print h1').innerHTML = `Ambulatorio Veterinario Pio De Angelis<br>Valutazione Medica: ${document.getElementById('patientName').value || 'N/D'} (${document.getElementById('ownerLastname').value || 'N/D'})`;        document.querySelector('#patient-info-header-print p').textContent = `Data di Stampa: ${new Date().toLocaleDateString('it-IT')}`;
         window.print();
     });
 
@@ -1483,6 +1482,7 @@ examsExecuted: {
 </script>
 </body>
 </html>
+
 
 
 
