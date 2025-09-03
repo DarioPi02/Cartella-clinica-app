@@ -471,19 +471,28 @@
                 </div>
 
                 <hr class="my-8 border-t-2 border-dashed border-gray-300">
-                <div id="medical-evaluation-section" class="form-section">
-                    <div class="section-header flex justify-between items-center cursor-pointer p-2 bg-gray-50 rounded-t-lg border">
-                        <h2 class="form-section-title">Valutazione Medica</h2>
-                        <span class="section-toggle-icon text-2xl text-gray-500 no-print">▼</span>
-                    </div>
-                    <div class="form-section-content space-y-6 p-6 border border-t-0 rounded-b-lg hidden">
-                        <div class="flex justify-between items-start">
-                            <p class="form-section-subtitle">Valutazione, decorso e dimissioni (Compilazione Medica).</p>
-                            <div class="flex space-x-2 no-print">
-                                <button type="button" id="add-important-message-btn" class="px-4 py-2 border border-yellow-500 text-yellow-600 font-semibold rounded-lg hover:bg-yellow-50 transition duration-200 whitespace-nowrap">+ Messaggio</button>
-                                <button type="button" id="print-evaluation-button" class="px-4 py-2 border border-blue-500 text-blue-500 font-semibold rounded-lg hover:bg-blue-50 transition duration-200 whitespace-nowrap">Stampa Valutazione</button>
-                            </div>
-                        </div>
+
+                <!-- Sezione Avviso Importante -->
+<div id="important-message-section" class="form-section">
+  <div class="form-section-content">
+    <button type="button" id="add-important-message-btn" class="px-4 py-2 border border-yellow-500 text-yellow-600 font-semibold rounded-lg hover:bg-yellow-50 transition duration-200 whitespace-nowrap no-print">+ Messaggio</button>
+    <div id="important-message-container"></div>
+  </div>
+</div>
+                
+<!-- Sezione Valutazione Medica -->
+<div id="medical-evaluation-section" class="form-section">
+  <div class="section-header flex justify-between items-center cursor-pointer p-2 bg-gray-50 rounded-t-lg border">
+    <h2 class="form-section-title">Valutazione Medica</h2>
+    <span class="section-toggle-icon text-2xl text-gray-500 no-print">▼</span>
+  </div>
+  <div class="form-section-content space-y-6 p-6 border border-t-0 rounded-b-lg hidden">
+    <div class="flex justify-between items-start">
+      <p class="form-section-subtitle">Valutazione, decorso e dimissioni (Compilazione Medica).</p>
+      <div class="flex space-x-2 no-print">
+        <button type="button" id="print-evaluation-button" class="px-4 py-2 border border-blue-500 text-blue-500 font-semibold rounded-lg hover:bg-blue-50 transition duration-200 whitespace-nowrap">Stampa Valutazione</button>
+      </div>
+    </div>
                         <div><label for="medicalCourse" class="block text-sm font-medium text-gray-700 mb-1">Valutazione e Decorso Medico</label><textarea id="medicalCourse" rows="8" class="w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data"></textarea></div>
                         <div><label for="dischargeConditions" class="block text-sm font-medium text-gray-700 mb-1">Condizioni all'Atto delle Dimissioni (con eventuale diagnosi)</label><textarea id="dischargeConditions" rows="8" class="w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data"></textarea></div>
                         <div><label for="homeTherapy" class="block text-sm font-medium text-gray-700 mb-1">Terapie da Continuare a Casa</label><textarea id="homeTherapy" rows="8" class="w-full px-4 py-2 bg-gray-50 border rounded-lg printable-data"></textarea></div>
@@ -1463,4 +1472,5 @@ examsExecuted: {
 </script>
 </body>
 </html>
+
 
