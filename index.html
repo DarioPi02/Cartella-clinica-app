@@ -40,82 +40,124 @@
     }
 
     /* Stili per la Stampa */
-@media print {
-    body {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-        margin: 0;
-        padding: 0;
-    }
-    .no-print { display: none !important; }
-    .printable-area {
-        box-shadow: none !important;
-        border: none !important;
-        margin: 0 !important;
-        padding: 1cm !important;
-    }
-    .printable-data {
-        display: block !important;
-        background: none !important;
-        border: none !important;
-        padding: 0 !important;
-        font-size: 10pt !important;
-        line-height: 1.4 !important;
-        color: black !important;
-        width: 100% !important;
-        resize: none !important;
-        overflow: hidden !important;
-        -webkit-box-shadow: none !important;
-        box-shadow: none !important;
-        -webkit-text-fill-color: black !important;
-        text-fill-color: black !important;
-    }
-    input, select, textarea {
-        font-size: 10pt !important;
-    }
-    input[type="checkbox"] + label {
-        display: inline-block !important;
-    }
-    textarea.printable-data {
-        height: auto !important;
-        min-height: unset !important;
-        white-space: pre-wrap !important;
-    }
-    .p-4.border.rounded-lg, .p-4.border.rounded-lg.bg-gray-50 {
-        border: 1px solid #ddd !important;
-        padding: 0.5rem !important;
-        margin-bottom: 0.5rem !important;
-    }
-    .form-section-title {
-        margin-top: 1.2rem !important;
-        margin-bottom: 0.4rem !important;
-        padding-bottom: 0.25rem !important;
-        border-bottom: 1px solid black !important;
-        color: black !important;
-        font-size: 1.1rem !important;
-    }
-    .form-section-subtitle { display: none !important; }
-    .group-content, .form-section-content { display: block !important; border: none !important; padding: 0 !important; }
-    .group-header .toggle-icon, .section-header .section-toggle-icon { display: none !important; }
-    .section-header { background: none !important; padding: 0 !important; border: none !important; }
-    .print-hide { display: none !important; }
-    .print-hidden-original { display: none !important; }
-    .form-section { padding: 0.5rem 0 !important; margin: 0 !important; border: none !important; }
-    hr.border-dashed { display: none !important; }
-    .form-section, .monitoring-group, .therapy-group { page-break-inside: avoid; }
-    #medical-evaluation-section, #monitoring-entries-container, #therapy-log-container { page-break-before: auto; }
-    /* PATCH: Stampa solo Valutazione Medica */
-    body.print-evaluation-only .form-section { display: none !important; }
-    body.print-evaluation-only #medical-evaluation-section { display: block !important; }
-    body.print-evaluation-only #medical-evaluation-section > .flex.justify-between.items-start { display: none !important; }
-    body.print-evaluation-only #important-message-section,
-    body.print-evaluation-only #important-message-container,
-    body.print-evaluation-only .p-4.border.rounded-lg.bg-yellow-100 { display: none !important; }
-    body.print-evaluation-only #dynamic-infusion-inputs,
-    body.print-evaluation-only .infusion-row,
-    body.print-evaluation-only #add-infusion-btn,
-    body.print-evaluation-only #add-drug-btn,
-    body.print-evaluation-only #dynamic-drug-inputs { display: none !important; }
+    @media print {
+        body {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            margin: 0;
+            padding: 0;
+        }
+        .no-print { display: none !important; }
+        .printable-area {
+            box-shadow: none !important;
+            border: none !important;
+            margin: 0 !important;
+            padding: 1cm !important;
+        }
+        
+        .printable-data {
+            display: block !important;
+            background: none !important;
+            border: none !important;
+            padding: 0 !important;
+            font-size: 10pt !important;
+            line-height: 1.4 !important;
+            color: black !important;
+            width: 100% !important;
+            resize: none !important;
+            overflow: hidden !important;
+            -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+            -webkit-text-fill-color: black !important;
+            text-fill-color: black !important;
+        }
+
+        input, select, textarea {
+            font-size: 10pt !important;
+        }
+
+        input[type="checkbox"] + label {
+            display: inline-block !important;
+        }
+        
+        textarea.printable-data {
+            height: auto !important;
+            min-height: unset !important;
+            white-space: pre-wrap !important;
+        }
+
+        .p-4.border.rounded-lg, .p-4.border.rounded-lg.bg-gray-50 {
+            border: 1px solid #ddd !important;
+            padding: 0.5rem !important;
+            margin-bottom: 0.5rem !important;
+        }
+
+        .form-section-title {
+            margin-top: 1.2rem !important;
+            margin-bottom: 0.4rem !important;
+            padding-bottom: 0.25rem !important;
+            border-bottom: 1px solid black !important;
+            color: black !important;
+            font-size: 1.1rem !important;
+        }
+        .form-section-subtitle { display: none !important; }
+
+        .group-content, .form-section-content { display: block !important; border: none !important; padding: 0 !important; }
+        .group-header .toggle-icon, .section-header .section-toggle-icon { display: none !important; }
+        .section-header { background: none !important; padding: 0 !important; border: none !important; }
+
+
+        /* REGOLE PER OTTIMIZZAZIONE STAMPA */
+        .print-hide {
+            display: none !important;
+        }
+        .print-hidden-original {
+            display: none !important;
+        }
+
+        .form-section {
+            padding: 0.5rem 0 !important;
+            margin: 0 !important;
+            border: none !important;
+        }
+        hr.border-dashed {
+            display: none !important;
+        }
+
+        .form-section, .monitoring-group, .therapy-group {
+            page-break-inside: avoid;
+        }
+
+        #medical-evaluation-section,
+        #monitoring-entries-container,
+        #therapy-log-container {
+            page-break-before: auto;
+        }
+
+        /* NUOVE REGOLE SPECIFICHE PER STAMPA VALUTAZIONE */
+        body.print-evaluation-only .form-section {
+            display: none !important;
+        }
+        body.print-evaluation-only #medical-evaluation-section {
+            display: block !important;
+        }
+        body.print-evaluation-only #medical-evaluation-section > .flex.justify-between.items-start {
+            display: none !important;
+        }
+
+
+          body.print-evaluation-only #important-message-section,
+  body.print-evaluation-only #important-message-container,
+  body.print-evaluation-only .p-4.border.rounded-lg.bg-yellow-100 {
+    display: none !important;
+  }
+          body.print-evaluation-only #dynamic-infusion-inputs,
+  body.print-evaluation-only .infusion-row,
+  body.print-evaluation-only #add-infusion-btn,
+  body.print-evaluation-only #add-drug-btn,
+  body.print-evaluation-only #dynamic-drug-inputs {
+    display: none !important;
+  }
 }
 </style>
 </head>
@@ -1011,12 +1053,11 @@
         document.querySelector('#patient-info-header-print p').textContent = `Data di Stampa: ${new Date().toLocaleDateString('it-IT')}`;
         window.print();
     });
-document.getElementById('print-button').addEventListener('click', () => {
-    document.body.classList.remove('print-evaluation-only');
-    document.querySelector('#patient-info-header-print h1').innerHTML = `Ambulatorio Veterinario Pio De Angelis<br>Cartella Clinica: ${document.getElementById('patientName').value || 'N/D'} (${document.getElementById('ownerLastname').value || 'N/D'})`;
-    document.querySelector('#patient-info-header-print p').textContent = `Data di Stampa: ${new Date().toLocaleDateString('it-IT')}`;
-    window.print();
-});
+    document.getElementById('print-evaluation-button').addEventListener('click', () => {
+        document.body.classList.add('print-evaluation-only');
+document.querySelector('#patient-info-header-print h1').innerHTML = `Ambulatorio Veterinario Pio De Angelis<br>Valutazione Medica: ${document.getElementById('patientName').value || 'N/D'} (${document.getElementById('ownerLastname').value || 'N/D'})`;        document.querySelector('#patient-info-header-print p').textContent = `Data di Stampa: ${new Date().toLocaleDateString('it-IT')}`;
+        window.print();
+    });
 
     // --- GESTIONE AUTHENTICATION E FIREBASE ---
     auth.onAuthStateChanged(user => {
@@ -1441,8 +1482,6 @@ examsExecuted: {
 </script>
 </body>
 </html>
-
-
 
 
 
