@@ -356,7 +356,12 @@
                                 <button type="button" id="add-custom-exam-btn" class="no-print px-3 py-1 text-sm bg-green-500 text-white rounded-lg hover:bg-green-600 transition">+ Aggiungi altro esame</button>
                             </div>
                             <div id="exams-to-perform-list" class="space-y-3 printable-data">
-                                <div class="flex items-center"><input id="exam-cbc" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="exam-cbc" class="ml-2">Emocromo</label></div>
+                                <div class="flex items-center"><input id="exam-cbc" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="exam-cbc" class="ml-2">Emocromo</label>
+                                    <div class="ml-4 flex items-center">
+        <label for="exam-cbc-count" class="text-sm mr-1">Quanti?</label>
+        <input type="number" id="exam-cbc-count" class="w-16 px-2 py-1 bg-gray-50 border rounded-md printable-data" min="1">
+    </div>
+                                </div>
                                 <div>
                                     <div class="flex items-center"><input id="exam-biochem" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="exam-biochem" class="ml-2">Biochimico</label></div>
                                     <div class="ml-6 mt-1"><label for="exam-biochem-other" class="text-sm">Che tipo di biochimico?</label><input type="text" id="exam-biochem-other" class="w-full mt-1 px-2 py-1 bg-gray-50 border rounded-md printable-data"></div>
@@ -390,7 +395,12 @@
                         <div class="mt-6 pt-6 border-t border-gray-200">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Esami Effettivamente Eseguiti</label>
                             <div class="space-y-3 printable-data">
-                                <div class="flex items-center"><input id="executed-exam-cbc" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="executed-exam-cbc" class="ml-2">Emocromo</label></div>
+                                <div class="flex items-center"><input id="executed-exam-cbc" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="executed-exam-cbc" class="ml-2">Emocromo</label>
+                                    <div class="ml-4 flex items-center">
+        <label for="executed-exam-cbc-count" class="text-sm mr-1">Quanti?</label>
+        <input type="number" id="executed-exam-cbc-count" class="w-16 px-2 py-1 bg-gray-50 border rounded-md printable-data" min="1">
+    </div>
+                                </div>
                                 <div>
                                     <div class="flex items-center">
                                         <input id="executed-exam-biochem" type="checkbox" class="h-4 w-4 rounded printable-data"><label for="executed-exam-biochem" class="ml-2">Biochimico</label>
@@ -1482,6 +1492,7 @@ examsExecuted: {
 </script>
 </body>
 </html>
+
 
 
 
