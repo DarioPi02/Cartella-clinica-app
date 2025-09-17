@@ -1340,6 +1340,7 @@ if (data.examsExecuted) {
             surgeryCondition: document.getElementById('surgeryCondition').value.trim(),
             examsToPerform: {
                 cbc: document.getElementById('exam-cbc').checked,
+                  cbcCount: document.getElementById('exam-cbc-count').value,
                 biochem: document.getElementById('exam-biochem').checked, biochem_other: document.getElementById('exam-biochem-other').value.trim(),
                 snap: document.getElementById('exam-snap').checked, snap_other: document.getElementById('exam-snap-other').value.trim(),
                 urinalysis: document.getElementById('exam-urinalysis').checked, pucu: document.getElementById('exam-pucu').checked,
@@ -1353,6 +1354,7 @@ if (data.examsExecuted) {
             },
 examsExecuted: {
     cbc: document.getElementById('executed-exam-cbc').checked,
+      cbcCount: document.getElementById('executed-exam-cbc-count').value,
     biochem: document.getElementById('executed-exam-biochem').checked,
     biochem_other: document.getElementById('executed-exam-biochem-other').value.trim(),
     snap: document.getElementById('executed-exam-snap').checked,
@@ -1492,6 +1494,7 @@ examsExecuted: {
 </script>
 </body>
 </html>
+
 
 
 
