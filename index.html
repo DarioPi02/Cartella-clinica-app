@@ -1185,6 +1185,9 @@ document.querySelector('#patient-info-header-print h1').innerHTML = `Ambulatorio
 
         // Popola esami (standard, custom, eseguiti)
         if (data.examsToPerform) {
+              document.getElementById('exam-cbc').checked = !!data.examsToPerform.cbc;
+  document.getElementById('exam-cbc-count').value = data.examsToPerform.cbcCount || '';
+
             Object.keys(data.examsToPerform).forEach(key => {
                 const el = document.getElementById(`exam-${key.replace('_other', '-other')}`);
                 if (el) el.type === 'checkbox' ? el.checked = data.examsToPerform[key] : el.value = data.examsToPerform[key];
@@ -1221,6 +1224,8 @@ if (data.examsExecuted) {
     // Campi testo/numero
     [
     { id: 'executed-exam-biochem-other', key: 'biochem_other' },
+        { id: 'executed-exam-cbc-count', key: 'cbcCount' },
+
     { id: 'executed-exam-snap-other', key: 'snap_other' },
     { id: 'executed-exam-rx-other', key: 'rx_other' }, // <-- CORRETTO!
     { id: 'executed-exam-emogas-count', key: 'emogas_count' },
@@ -1494,6 +1499,7 @@ examsExecuted: {
 </script>
 </body>
 </html>
+
 
 
 
